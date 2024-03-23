@@ -1,0 +1,28 @@
+.user-row-cadastro {
+    height: 100vh;
+    width: 100vw;
+    background: #F7F7F7;
+}
+
+.user-content-cadastro {
+    width: 100%;
+    margin-top: 20vh;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 1px 2px 5px 0px #272929;
+}
+
+.user-cadastro-title {
+    text-align: center;
+}
+
+.user-cadastro-logo {
+    max-width: 100%;
+    margin-bottom: 40px;
+}
+
+.cad-button {
+    width: 100%;
+}

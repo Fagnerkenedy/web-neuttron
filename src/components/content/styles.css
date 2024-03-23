@@ -1,0 +1,38 @@
+.antd-table thead th, .antd-table tbody td
+{    
+    white-space: nowrap;
+    word-break:break-word;
+    word-break: break-all;
+}
+
+.ant-table-body {
+    height: 100vh;
+    overflow: auto !important;
+}
+
+/* Content.js */
+.content {
+    padding: 0 15px;
+    overflow: hidden;
+}
+
+.sider {
+    padding: 10px;
+    overflow-y: auto;
+    height: calc(100vh - 155px);
+}
+
+.dataTable {
+    overflow-x: auto;
+    overflow-y: auto;
+    height: calc(100vh - 145px);
+}
+
+.ant_input {
+    border: none;
+    outline: none;
+}
+
+.ant-input:hover {
+    border: 1px solid #ccc;
+}
