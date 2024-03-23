@@ -1,6 +1,1 @@
 # crm-web
-
-#Ambiente de testes
-REACT_APP_LINK_API='http://localhost:3002'
-REACT_APP_USER_API_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzNhOGViZjViOWI0MTkwYzVlM2M0OCIsImlhdCI6MTY1NzA1NTQ4OCwiZXhwIjoxNjU3NjYwMjg4fQ.YYNnfplDzg0A2YJ0HcwXQLmunzIcLZYf0FCIrf97m9A"
-REACT_APP_USER_API_BASE_URL="http://localhost:3002/auth"
