@@ -14,8 +14,6 @@ function Modules() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-
-
                 const token = localStorage.getItem('token');
                 const config = {
                     headers: {

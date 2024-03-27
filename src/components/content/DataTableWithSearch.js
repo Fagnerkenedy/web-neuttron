@@ -134,6 +134,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth }
           x: totalTableWidth,
           y: 'calc(100vh - 192px)',
         }}
+        locale={{ emptyText: 'Nenhum registro encontrado' }}
       />
     </ConfigProvider>
   );

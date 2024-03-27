@@ -8,6 +8,7 @@ import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 import { LeftOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/es/typography/Paragraph.js';
+import RelatedList from './RelatedList.js';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -27,6 +28,7 @@ const DetailView = ({ itemId }) => {
     const [relatedModuleData, setRelatedModuleData] = useState([]);
     const [selectedValue, setSelectedValue] = useState(null);
     const [isChecked, setIsChecked] = useState(false);
+    const [relatedList, setRelatedModuleList] = useState('');
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -49,9 +51,9 @@ const DetailView = ({ itemId }) => {
         try {
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
-            const org = pathParts[0];
-            const moduleName = pathParts[1];
-            const record_id = pathParts[2];
+            const org = pathParts[1];
+            const moduleName = pathParts[2];
+            const record_id = pathParts[3];
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
@@ -72,6 +74,33 @@ const DetailView = ({ itemId }) => {
             });
             console.log("combinedData:", combinedData);
 
+            const relatedModulePromises = combinedData.map(async field => {
+                if (field.related_module != null) {
+
+                    console.log("field.related_module: ", field.related_module)
+                    console.log("field.related_id: ", field.related_id)
+                    console.log("field: ", field)
+                    const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}`, config);
+                    console.log("setRelatedModuleDatasetRelatedModuleData: ", response.data)
+                    // const matchingResponse = response.data.map(item => {
+                    //     return {
+                    //         field_value: item[api_name],
+                    //         related_id: item.id
+                    //     };
+                    // });
+                    const matchingResponse = response.data.find(item => item[field.api_name]);
+                    console.log("matchingResponse12:", matchingResponse);
+                    return {
+                        ...field,
+                        field_value: matchingResponse ? matchingResponse[field.api_name] : ''
+                    };
+                }
+            })
+
+            const relatedModuleResponses = await Promise.all(relatedModulePromises);
+            console.log("relatedModuleResponses:", relatedModuleResponses);
+            // setRelatedModuleData(matchingResponse);
+
             if (Array.isArray(combinedData)) {
                 setData(combinedData);
             } else {
@@ -82,7 +111,8 @@ const DetailView = ({ itemId }) => {
         }
     };
 
-    const fetchRelatedModule = async (open, relatedModuleName) => {
+    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
+        console.log("api_name", api_name)
         if (open) {
             const token = localStorage.getItem('token');
             const config = {
@@ -90,10 +120,18 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${relatedModuleName}/records`, config);
+            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
             console.log("setRelatedModuleData: ", response.data)
-            setRelatedModuleData(response.data);
-            setSelectedValue({ value: response.data.field_value, id: response.data.record_id });
+            const matchingResponse = response.data.map(item => {
+                return {
+                    field_value: item[api_name],
+                    related_id: item.id
+                };
+            });
+
+            console.log("matchingResponse12:", matchingResponse);
+            setRelatedModuleData(matchingResponse);
+            // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
     }
 
@@ -102,8 +140,35 @@ const DetailView = ({ itemId }) => {
         setSelectedValue({ value: value, id: option.key });
     };
 
+    const relatedModuleList = async () => {
+        const token = localStorage.getItem('token');
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+        console.log("teasdasdhjasuiod")
+        const currentPath = window.location.pathname;
+        const pathParts = currentPath.split('/');
+        const org = pathParts[1];
+        const moduleName = pathParts[2];
+        const record_id = pathParts[3];
+        const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField`, config);
+        // const relatedModules = response.data.result;
+        // // Para cada módulo relacionado, faça uma solicitação para obter mais detalhes
+        // const detailedModules = await Promise.all(relatedModules.map(async (element) => {
+        //     const moduleResponse = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField`, element.related_module, config);
+        //     return moduleResponse.data;
+        // }));
+
+        // console.log("Detalhes dos módulos relacionados:", detailedModules);
+        console.log("relatedListrelatedListrelatedList: ", response.data)
+        setRelatedModuleList(response.data)
+    }
+
     useEffect(() => {
         fetchData();
+        relatedModuleList();
     }, [itemId]);
 
     if (!data) {
@@ -112,24 +177,24 @@ const DetailView = ({ itemId }) => {
 
     console.log("datssa:", data);
 
-    const handleFieldChange = async (index, newValue) => {
+    const handleFieldChange = async (index, newValue, id) => {
         try {
+            console.log("iiiddd", id)
             const updatedData = [...data];
             console.log("updatedData", updatedData)
             const fieldToUpdate = updatedData[index];
             console.log("fieldToUpdate", fieldToUpdate)
             fieldToUpdate.field_value = newValue;
+            fieldToUpdate.related_id = id;
             console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
-            delete fieldToUpdate.field_name;
-            delete fieldToUpdate.record_id;
             console.log("newdata", [fieldToUpdate])
 
             const fieldToUpdate3 = {};
             [fieldToUpdate].map(field => {
                 const { api_name, field_value } = field;
-                fieldToUpdate3[api_name] = field_value;
+                fieldToUpdate3[api_name] = field_value
             });
-            console.log("fieldToUpdateMAP", fieldToUpdate3);
+            console.log("fieldToUpdateMAP3", fieldToUpdate3);
 
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
@@ -143,6 +208,68 @@ const DetailView = ({ itemId }) => {
                 }
             };
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+            message.success('Registro Atualizado!');
+            fetchData()
+        } catch (error) {
+            console.error("Erro ao atualizar os dados:", error);
+        }
+    };
+    const handleFieldChangeRelatedModule = async (index, newValue, id) => {
+        try {
+            console.log("iiiddd", id)
+            const updatedData = [...data];
+            console.log("updatedData", updatedData)
+            const fieldToUpdate = updatedData[index];
+            console.log("fieldToUpdate", fieldToUpdate)
+            fieldToUpdate.field_value = newValue;
+            fieldToUpdate.related_id = id;
+            console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
+            console.log("newdata", [fieldToUpdate])
+            const currentPath = window.location.pathname;
+            const pathParts = currentPath.split('/');
+            const org = pathParts[1];
+            const moduleName = pathParts[2];
+            const record_id = pathParts[3];
+
+            const fieldToUpdate3 = {};
+            [fieldToUpdate].map(field => {
+                const { name, api_name, field_value, related_id } = field;
+                fieldToUpdate3[api_name] = related_id.key
+                // fieldToUpdate3.related_id = related_id.key
+            });
+            console.log("fieldToUpdateMAP3", fieldToUpdate3);
+            const fieldToUpdate4 = {};
+            [fieldToUpdate].map(field => {
+                const { name, related_id, related_module, id, api_name } = field;
+                fieldToUpdate4.id = id
+                fieldToUpdate4.api_name = api_name
+                fieldToUpdate4.name = name
+                fieldToUpdate4.related_module = related_module
+                fieldToUpdate4.related_id = related_id.key
+            });
+            console.log("fieldToUpdateMAP4", fieldToUpdate4);
+
+            const fieldToUpdate5 = {};
+            [fieldToUpdate].map(field => {
+                const { name, related_id, related_module, id, api_name } = field;
+                fieldToUpdate5.id = id
+                fieldToUpdate5.api_name = api_name
+                fieldToUpdate5.name = name
+                fieldToUpdate5.related_module = related_module
+                fieldToUpdate5.related_id = related_id.key
+                fieldToUpdate5.module_id = record_id
+            });
+            console.log("fieldToUpdateMAP4", fieldToUpdate5);
+
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
             message.success('Registro Atualizado!');
             fetchData()
         } catch (error) {
@@ -210,7 +337,7 @@ const DetailView = ({ itemId }) => {
                                                             </Col>
                                                             <Col span={14}>
                                                                 {(() => {
-                                                                    if (fieldData.field_type === "related_module") {
+                                                                    if (fieldData.related_module != null) {
                                                                         return (
                                                                             <Select
                                                                                 style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
@@ -218,24 +345,23 @@ const DetailView = ({ itemId }) => {
                                                                                 // value={selectedValue ? selectedValue.value : null}
                                                                                 defaultValue={fieldData.field_value}
                                                                                 placeholder="Selecione"
-                                                                                onChange={handleSelectChange}
+                                                                                onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
                                                                                 // loading={loading}
-                                                                                onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module)}
-                                                                                onSelect={(value) => handleFieldChange(index, value)}
+                                                                                onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
+                                                                                onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
                                                                                 dropdownRender={(menu) => (
                                                                                     <div>
                                                                                         {menu}
                                                                                         <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                                                                                            <a href={`/${fieldData.related_module}/${selectedValue}`} target="_blank" rel="noopener noreferrer">
-                                                                                                {selectedValue && `Ir para ${selectedValue}`}
+                                                                                            <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
+                                                                                                {`Ir para ${fieldData.field_value}`}
                                                                                             </a>
                                                                                         </div>
                                                                                     </div>
                                                                                 )}
                                                                             >
                                                                                 {relatedModuleData.map(item => (
-                                                                                    <Option key={item.record_id} value={item.field_value}>
-                                                                                        {item.field_value}
+                                                                                    <Option key={item.related_id} value={item.field_value}>
                                                                                     </Option>
                                                                                 ))}
                                                                             </Select>
@@ -271,7 +397,7 @@ const DetailView = ({ itemId }) => {
                                                                             <Checkbox
                                                                                 // indeterminate={!isChecked} // Define o estado intermediário quando o checkbox é clicado pela primeira vez
                                                                                 // checked={fieldData.field_value === 'true' || fieldData.field_value === true}
-                                                                                
+
                                                                                 defaultChecked={teste}
                                                                                 onChange={(e) => handleFieldChange(index, e.target.checked)}
                                                                             >
@@ -297,7 +423,11 @@ const DetailView = ({ itemId }) => {
                                     </Col>
                                 </Row>
                             </Layout>
+
                         </Content>
+                        {relatedList != null && relatedList.map((item, index) => (
+                            <RelatedList key={index} related_module={item.module_name} related_id={record_id} />
+                        ))}
                     </div>
                 </div>
             )}
