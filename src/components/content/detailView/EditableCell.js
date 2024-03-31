@@ -26,16 +26,22 @@ const EditableCell = ({ value, onChange, type }) => {
     <div>
       {
         type === 'number' ? (
-          <InputNumber style={{ fontSize: '16px' }} value={inputValue} onChange={handleInputChange} onBlur={toggleEditing} autoFocus />
+          <InputNumber style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s', minWidth: '100%' }}
+            onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
+            onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }} 
+            value={inputValue} 
+            onChange={handleInputChange} 
+            onPressEnter={handleSave}
+            onBlur={toggleEditing} />
         ) : (
           <Form.Item>
-            <Input 
+            <Input
               style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
               onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
-              onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }} 
-              value={inputValue} 
-              onChange={(e) => handleInputChange(e.target.value)} 
-              onPressEnter={handleSave} 
+              onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+              value={inputValue}
+              onChange={(e) => handleInputChange(e.target.value)}
+              onPressEnter={handleSave}
               onBlur={toggleEditing}
             />
           </Form.Item>

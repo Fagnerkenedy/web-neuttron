@@ -32,7 +32,7 @@ function PageBase() {
             <Layout style={{ minHeight: '100vh' }}>
                 <AppHeader darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} />
                 <Outlet />
-                <AppFooter />
+                {/* <AppFooter /> */}
             </Layout>
         </ConfigProvider>
     )

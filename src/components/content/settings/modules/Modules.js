@@ -43,7 +43,7 @@ function Modules() {
     ]
 
     return (
-        <Content className='content' style={{ paddingTop: '20px' }}>
+        <Content className='content' style={{ paddingTop: '20px', marginTop: '50px' }}>
             <Layout style={{ minHeight: 'calc(100vh - 160px)' }}>
                 <Card title="Módulos">
                     <Table columns={columns} dataSource={data} />

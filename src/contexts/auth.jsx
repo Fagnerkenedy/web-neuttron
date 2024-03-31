@@ -46,7 +46,7 @@ export const AuthProvider = ({children}) => {
             localStorage.setItem("token", token);
 
             setUser(loggedUser);
-            navigate(`/${response.data.org}/`);
+            navigate(`/${response.data.org}/home`);
         }
         
         setLoading(false);

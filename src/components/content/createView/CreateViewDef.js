@@ -74,7 +74,22 @@ const EditView = ({ itemId }) => {
         }
     };
 
-    const fetchRelatedModule = async (open, relatedModuleName) => {
+    // const fetchRelatedModule = async (open, relatedModuleName) => {
+    //     if (open) {
+    //         const token = localStorage.getItem('token');
+    //         const config = {
+    //             headers: {
+    //                 'Authorization': `Bearer ${token}`
+    //             }
+    //         };
+    //         const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/records`, config);
+    //         console.log("setRelatedModuleData: ", response.data)
+    //         setRelatedModuleData(response.data);
+    //     }
+    // }
+
+    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
+        console.log("api_name", api_name)
         if (open) {
             const token = localStorage.getItem('token');
             const config = {
@@ -82,9 +97,18 @@ const EditView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/records`, config);
+            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
             console.log("setRelatedModuleData: ", response.data)
-            setRelatedModuleData(response.data);
+            const matchingResponse = response.data.map(item => {
+                return {
+                    field_value: item[api_name],
+                    related_id: item.id
+                };
+            });
+
+            console.log("matchingResponse12:", matchingResponse);
+            setRelatedModuleData(matchingResponse);
+            // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
     }
 
@@ -133,6 +157,69 @@ const EditView = ({ itemId }) => {
         }
     };
 
+    const handleFieldChangeRelatedModule = async (index, newValue, id) => {
+        try {
+            console.log("iiiddd", id)
+            const updatedData = [...data];
+            console.log("updatedData", updatedData)
+            const fieldToUpdate = updatedData[index];
+            console.log("fieldToUpdate", fieldToUpdate)
+            fieldToUpdate.field_value = newValue;
+            fieldToUpdate.related_id = id;
+            console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
+            console.log("newdata", [fieldToUpdate])
+            const currentPath = window.location.pathname;
+            const pathParts = currentPath.split('/');
+            const org = pathParts[1];
+            const moduleName = pathParts[2];
+            const record_id = pathParts[3];
+
+            const fieldToUpdate3 = {};
+            [fieldToUpdate].map(field => {
+                const { name, api_name, field_value, related_id } = field;
+                fieldToUpdate3[api_name] = related_id.key
+                // fieldToUpdate3.related_id = related_id.key
+            });
+            console.log("fieldToUpdateMAP3", fieldToUpdate3);
+            const fieldToUpdate4 = {};
+            [fieldToUpdate].map(field => {
+                const { name, related_id, related_module, id, api_name } = field;
+                fieldToUpdate4.id = id
+                fieldToUpdate4.api_name = api_name
+                fieldToUpdate4.name = name
+                fieldToUpdate4.related_module = related_module
+                fieldToUpdate4.related_id = related_id.key
+            });
+            console.log("fieldToUpdateMAP4", fieldToUpdate4);
+
+            const fieldToUpdate5 = {};
+            [fieldToUpdate].map(field => {
+                const { name, related_id, related_module, id, api_name } = field;
+                fieldToUpdate5.id = id
+                fieldToUpdate5.api_name = api_name
+                fieldToUpdate5.name = name
+                fieldToUpdate5.related_module = related_module
+                fieldToUpdate5.related_id = related_id.key
+                fieldToUpdate5.module_id = record_id
+            });
+            console.log("fieldToUpdateMAP4", fieldToUpdate5);
+
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
+            message.success('Registro Atualizado!');
+            fetchData()
+        } catch (error) {
+            console.error("Erro ao atualizar os dados:", error);
+        }
+    };
+
     return (
         <div>
             {data && (
@@ -141,6 +228,7 @@ const EditView = ({ itemId }) => {
                         <Layout
                             style={{
                                 background: colorBgContainer,
+                                marginTop: '50px'
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
@@ -168,7 +256,7 @@ const EditView = ({ itemId }) => {
                                     minHeight: 'calc(100vh - 160px)'
                                 }}
                             >
-                                <Text style={{ padding: '15px 25px', fontSize: '18px', color: '#838da1' }}>{toSingular(moduleName)} Informações</Text>
+                                <Text style={{ padding: '15px 25px', fontSize: '18px', color: '#ffff' }}>{toSingular(moduleName)} Informações</Text>
                                 <Row>
                                     <Col span={24}>
                                         <Row gutter={16}>
@@ -185,18 +273,44 @@ const EditView = ({ itemId }) => {
                                                                 {
                                                                     <Form.Item>
                                                                         {(() => {
-                                                                            if (fieldData.field_type === "related_module") {
+                                                                            if (fieldData.related_module != null) {
                                                                                 return (
+                                                                                    // <Select
+                                                                                    //     placeholder="Selecione"
+                                                                                    //     // loading={loading}
+                                                                                    //     onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module)}
+                                                                                    //     onSelect={(value) => handleFieldChange(index, value)}
+                                                                                    //     style={{ width: "100%" }}
+                                                                                    // >
+                                                                                    //     {relatedModuleData.map(item => (
+                                                                                    //         <Option key={item.record_id} value={item.field_value}>
+                                                                                    //             {item.field_value}
+                                                                                    //         </Option>
+                                                                                    //     ))}
+                                                                                    // </Select>
                                                                                     <Select
+                                                                                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                                                                                        onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                                                                                        // value={selectedValue ? selectedValue.value : null}
+                                                                                        defaultValue={fieldData.field_value}
                                                                                         placeholder="Selecione"
+                                                                                        onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
                                                                                         // loading={loading}
-                                                                                        onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module)}
-                                                                                        onSelect={(value) => handleFieldChange(index, value)}
-                                                                                        style={{ width: "100%" }}
+                                                                                        onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
+                                                                                        onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                                                                                        dropdownRender={(menu) => (
+                                                                                            <div>
+                                                                                                {menu}
+                                                                                                <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                                                                                    <a href={`/${org}/${fieldData.related_module}/${fieldData.field_value}`} rel="noopener noreferrer">
+                                                                                                        {`Ir para ${fieldData.field_value}`}
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        )}
                                                                                     >
                                                                                         {relatedModuleData.map(item => (
-                                                                                            <Option key={item.record_id} value={item.field_value}>
-                                                                                                {item.field_value}
+                                                                                            <Option key={item.related_id} value={item.field_value}>
                                                                                             </Option>
                                                                                         ))}
                                                                                     </Select>
@@ -209,7 +323,7 @@ const EditView = ({ itemId }) => {
                                                                                         style={{ width: "100%" }}
                                                                                     />
                                                                                 );
-                                                                            } else  if (fieldData.field_type == "multi_line") {
+                                                                            } else if (fieldData.field_type == "multi_line") {
                                                                                 return (
                                                                                     <TextArea
                                                                                         rows={4}
@@ -217,7 +331,7 @@ const EditView = ({ itemId }) => {
                                                                                         onChange={(newValue) => handleFieldChange(index, newValue)}
                                                                                         maxLength={16000}
                                                                                     />
-        
+
                                                                                 )
                                                                             } else {
                                                                                 return (

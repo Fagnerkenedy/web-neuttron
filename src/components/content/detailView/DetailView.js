@@ -286,6 +286,7 @@ const DetailView = ({ itemId }) => {
                         <Layout
                             style={{
                                 background: colorBgContainer,
+                                marginTop: '50px'
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
@@ -319,10 +320,11 @@ const DetailView = ({ itemId }) => {
                                 style={{
                                     background: colorBgContainer,
                                     borderRadius: borderRadiusLG,
-                                    minHeight: 'calc(100vh - 160px)'
+                                    minHeight: (relatedList.length === 0 ? 'calc(100vh - 161px)' : ''),
+                                    padding: '20px'
                                 }}
                             >
-                                <Text style={{ padding: '15px 25px', fontSize: '18px', color: '#838da1' }}>{toSingular(moduleName)} Informações</Text>
+                                <Text style={{ padding: '0px 25px 10px', fontSize: '18px', color: '#ffff' }}>{toSingular(moduleName)} Informações</Text>
                                 <Row>
                                     <Col span={24}>
                                         <Row gutter={16}>
@@ -353,7 +355,7 @@ const DetailView = ({ itemId }) => {
                                                                                     <div>
                                                                                         {menu}
                                                                                         <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                                                                                            <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
+                                                                                            <a href={`/${org}/${fieldData.related_module}/${fieldData.field_value}`} rel="noopener noreferrer">
                                                                                                 {`Ir para ${fieldData.field_value}`}
                                                                                             </a>
                                                                                         </div>

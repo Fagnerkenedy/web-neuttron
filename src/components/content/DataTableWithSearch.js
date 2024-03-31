@@ -6,6 +6,10 @@ import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
 
 const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth }) => {
+  const currentPath = window.location.pathname;
+  const pathParts = currentPath.split('/');
+  const org = pathParts[1]
+  const moduleName = pathParts[2]
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -135,6 +139,9 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth }
           y: 'calc(100vh - 192px)',
         }}
         locale={{ emptyText: 'Nenhum registro encontrado' }}
+        onRow={(record) => ({
+          onClick: () => window.location.href = `/${org}/${moduleName}/${record.key}`
+        })}
       />
     </ConfigProvider>
   );

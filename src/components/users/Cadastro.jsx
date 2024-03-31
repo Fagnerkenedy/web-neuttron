@@ -1,11 +1,11 @@
-import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone, SmileOutlined } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result } from 'antd';
 import { PasswordInput } from 'antd-password-input-strength';
 import { React, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import userApiURI from '../../Utility/userApiURI';
-import logo from '../../img/logo.jpeg';
+// import logo from '../../img/logo.jpeg';
 import Loading from '../utils/Loading';
 import FooterText from '../utils/FooterText';
 import './styles.css'
@@ -73,9 +73,9 @@ function Cadastro() {
     if (cadastrado) {
         return (
             <Result
-                icon={<SmileOutlined />}
+                // icon={<SmileOutlined />}
                 title="Cadastro efetuado com sucesso!"
-                // subTitle="Enviamos um e-mail para sua caixa de entrada, é só entrar lá e confirmar"
+                subTitle="Faça o login abaixo."
                 extra={<Link to='/login'><Button type="primary">Login</Button></Link>}
             />
 
@@ -127,7 +127,7 @@ function Cadastro() {
                                                 ]}
                                                 // style={{ display: 'inline-block', width: 'calc(50% - 10px)' }}
                                             >
-                                                <Input size='large' prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Nome" autoFocus />
+                                                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Nome" autoFocus />
                                             </Form.Item>
                                             {/* <Form.Item
                                                 name="lastname"
@@ -152,18 +152,29 @@ function Cadastro() {
                                                     }
                                                 ]}
                                             >
-                                                <Input size='large' prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-mail" />
+                                                <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-mail" />
                                             </Form.Item>
 
                                             <Form.Item
-                                                name="orgId"
+                                                name="empresa"
                                                 rules={[
                                                     {
                                                         required: true,
                                                     },
                                                 ]}
                                             >
-                                                <Input size='large' prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Id da Organização" />
+                                                <Input placeholder="Nome da Empresa" />
+                                            </Form.Item>
+
+                                            <Form.Item
+                                                name="phone"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <Input addonBefore={'+55'} placeholder="Celular" />
                                             </Form.Item>
 
                                             <Form.Item
@@ -177,7 +188,6 @@ function Cadastro() {
                                                 hasFeedback
                                             >
                                                 <PasswordInput
-                                                    size='large'
                                                     prefix={<LockOutlined className="site-form-item-icon" />}
                                                     type="password"
                                                     placeholder="Senha"
@@ -219,7 +229,7 @@ function Cadastro() {
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Col span={20} offset={2}>
+                                    <Col span={15} offset={6}>
                                         <Text className='text-center'>
                                             Já possui conta? Faça o <Link to="/login">Login.</Link>
                                         </Text>

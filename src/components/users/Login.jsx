@@ -2,8 +2,8 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Row, Col, Button, Form, Input, Typography, Divider } from 'antd';
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-
-import logo from '../../img/logo.jpeg';
+import './styles.css'
+// import logo from '../../img/logo.jpeg';
 import FooterText from '../utils/FooterText';
 import AuthContext from '../../contexts/auth';
 import Loading from '../utils/Loading';
@@ -13,7 +13,7 @@ const { Content } = Layout;
 const { Title, Text } = Typography;
 
 const Login = () => {
-    const { authenticated, login, loading, alertMessage } = useContext(AuthContext);
+    const { login, loading, alertMessage } = useContext(AuthContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -81,7 +81,7 @@ const Login = () => {
                                                 ]}
                                             >
                                                 <Input
-                                                    size='large'
+                                                    // size='large'
                                                     prefix={<UserOutlined className="site-form-item-icon" />}
                                                     placeholder="E-mail"
                                                     autoFocus
@@ -100,7 +100,7 @@ const Login = () => {
                                                 ]}
                                             >
                                                 <Input
-                                                    size='large'
+                                                    // size='large'
                                                     prefix={<LockOutlined className="site-form-item-icon" />}
                                                     type="password"
                                                     placeholder="Password"
@@ -127,13 +127,13 @@ const Login = () => {
                                         </Form>
                                     </Col>
                                 </Row>
-                                {/* <Row>
-                                    <Col span={20} offset={2}>
-                                        <Text className='text-center'>
+                                <Row>
+                                    <Col span={15} offset={5}>
+                                        <Text>
                                             Não possui conta? Faça o <Link to="/cadastro">Cadastro.</Link>
                                         </Text>
                                     </Col>
-                                </Row> */}
+                                </Row>
                             </div>
                             <FooterText />
                         </Col>

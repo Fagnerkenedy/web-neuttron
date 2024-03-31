@@ -1,21 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Button, Col, Divider, Layout, Popover, Row } from 'antd';
+import { Button, Col, Popover, Row } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { fetchModules } from './fetchModules';
 import AuthContext from '../../contexts/auth';
 import { SettingOutlined, UserOutlined } from '@ant-design/icons';
 import ButtonDarkMode from './ButtonDarkMode';
-import Title from 'antd/es/typography/Title';
+import './styles.css'
 import Logo from '../utils/Logo';
-
-const { Header } = Layout;
 
 const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const currentPath = window.location.pathname;
   const pathParts = currentPath.split('/');
   const org = pathParts[1]
+  const module = pathParts[2]
   const { logout } = useContext(AuthContext);
   const [modules, setModules] = useState([]);
+  const [activeModule, setActiveModule] = useState(null);
 
   const Content = (
     <div>
@@ -30,21 +30,38 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
       console.log("fetchedModules:", fetchedModules.result)
       setModules(fetchedModules.result);
     }
+    setActiveModule(module)
     fetchModulesData();
   }, []);
 
   return (
-    <Col style={{ display: 'flex', alignItems: 'center', height: '49px', backgroundColor: '#1d1d1d', padding: "25px" }}>
+    <Col style={{ display: 'flex', alignItems: 'center', height: '49px', backgroundColor: '#1d1d1d', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000' }}>
 
       <Logo color="white" />
 
       <Col style={{ margin: "20px" }}>
+        <React.Fragment>
+          <Link
+            className={`modules ${activeModule === 'home' ? 'active' : ''}`}
+            style={{ color: 'white' }}
+            href={`/${org}/home`}
+            onClick={() => setActiveModule('home')}
+          >
+            Página Inicial
+          </Link>
+          {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
+        </React.Fragment>
         {modules.map((module, index) => (
           <React.Fragment key={index}>
-            <Link style={{ color: 'white' }} href={`/${org}/${module.name}`}>
+            <Link
+              className={`modules ${activeModule === module.name ? 'active' : ''}`}
+              style={{ color: 'white' }}
+              href={`/${org}/${module.name}`}
+              onClick={() => setActiveModule(module.name)}
+            >
               {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
             </Link>
-            {index < modules.length - 1 && <Divider type="vertical" />}
+            {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
           </React.Fragment>
         ))}
       </Col>

@@ -236,6 +236,7 @@ const EditView = ({ itemId }) => {
                         <Layout
                             style={{
                                 background: colorBgContainer,
+                                marginTop: '50px'
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
@@ -267,7 +268,7 @@ const EditView = ({ itemId }) => {
                                     minHeight: 'calc(100vh - 160px)'
                                 }}
                             >
-                                <Text style={{ padding: '15px 25px', fontSize: '18px', color: '#838da1' }}>{toSingular(moduleName)} Informações</Text>
+                                <Text style={{ padding: '15px 25px', fontSize: '18px', color: '#ffff' }}>{toSingular(moduleName)} Informações</Text>
                                 <Row>
                                     <Col span={24}>
                                         <Row gutter={16}>
@@ -277,7 +278,7 @@ const EditView = ({ itemId }) => {
                                                         <Row>
                                                             <Col span={10} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>
-                                                                    {JSON.stringify(fieldData)}:
+                                                                    {fieldData.name}:
                                                                 </Text>
                                                             </Col>
                                                             <Col span={14}>
