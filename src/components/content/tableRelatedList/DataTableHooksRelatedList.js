@@ -20,8 +20,6 @@ export const useDataTable = ({ related_module, related_id }) => {
           fetchColumns(org, related_module, related_id),
           fetchData(org, related_module, related_id),
         ]);
-        console.log("columnsResult",columnsResult)
-        console.log("dataResult",dataResult)
 
         setColumns(columnsResult);
         setTableData(dataResult);

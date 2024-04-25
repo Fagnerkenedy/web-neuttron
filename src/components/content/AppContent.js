@@ -23,8 +23,6 @@ const AppContent = () => {
     const currentData = tableData.slice(startIndex, endIndex);
     const totalTableWidth = columns.reduce((acc, col) => acc + col.width, 0);
 
-    console.log("columnscolumnscolumns:",columns)
-
     return (
         <Content className='content'>
             <TableControls

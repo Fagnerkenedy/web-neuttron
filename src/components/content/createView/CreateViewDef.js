@@ -62,9 +62,7 @@ const EditView = ({ itemId }) => {
                     ...field,
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
-            });
-            console.log("dasdasdatatatata", combinedData)
-            if (Array.isArray(combinedData)) {
+            });            if (Array.isArray(combinedData)) {
                 setData(combinedData);
             } else {
                 setData([combinedData]);
@@ -82,31 +80,23 @@ const EditView = ({ itemId }) => {
     //                 'Authorization': `Bearer ${token}`
     //             }
     //         };
-    //         const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/records`, config);
-    //         console.log("setRelatedModuleData: ", response.data)
-    //         setRelatedModuleData(response.data);
+    //         const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/records`, config);    //         setRelatedModuleData(response.data);
     //     }
     // }
 
-    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
-        console.log("api_name", api_name)
-        if (open) {
+    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {        if (open) {
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-            console.log("setRelatedModuleData: ", response.data)
-            const matchingResponse = response.data.map(item => {
+            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);            const matchingResponse = response.data.map(item => {
                 return {
                     field_value: item[api_name],
                     related_id: item.id
                 };
             });
-
-            console.log("matchingResponse12:", matchingResponse);
             setRelatedModuleData(matchingResponse);
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
@@ -128,16 +118,12 @@ const EditView = ({ itemId }) => {
 
     const handleSave = async () => {
         try {
-            console.log("fieldToUpdate2", fieldToUpdate)
-
             const fieldToUpdate3 = {};
             if (fieldToUpdate) {
                 fieldToUpdate.map(field => {
                     const { api_name, field_value } = field;
                     fieldToUpdate3[api_name] = field_value;
                 });
-                console.log("fieldToUpdateMAP", fieldToUpdate3);
-
 
                 const token = localStorage.getItem('token');
                 const config = {
@@ -145,9 +131,7 @@ const EditView = ({ itemId }) => {
                         'Authorization': `Bearer ${token}`
                     }
                 }
-                const create = await axios.post(`${linkApi}/crm/${org}/${moduleName}/record`, fieldToUpdate3, config);
-                console.log("create", create.data.record_id)
-                const record_id = create.data.record_id
+                const create = await axios.post(`${linkApi}/crm/${org}/${moduleName}/record`, fieldToUpdate3, config);                const record_id = create.data.record_id
                 message.success('Registro Criado!');
                 navigate(`/${org}/${moduleName}/${record_id}`)
             }
@@ -158,17 +142,8 @@ const EditView = ({ itemId }) => {
     };
 
     const handleFieldChangeRelatedModule = async (index, newValue, id) => {
-        try {
-            console.log("iiiddd", id)
-            const updatedData = [...data];
-            console.log("updatedData", updatedData)
-            const fieldToUpdate = updatedData[index];
-            console.log("fieldToUpdate", fieldToUpdate)
-            fieldToUpdate.field_value = newValue;
-            fieldToUpdate.related_id = id;
-            console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
-            console.log("newdata", [fieldToUpdate])
-            const currentPath = window.location.pathname;
+        try {            const updatedData = [...data];            const fieldToUpdate = updatedData[index];            fieldToUpdate.field_value = newValue;
+            fieldToUpdate.related_id = id;            const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
             const org = pathParts[1];
             const moduleName = pathParts[2];
@@ -179,9 +154,7 @@ const EditView = ({ itemId }) => {
                 const { name, api_name, field_value, related_id } = field;
                 fieldToUpdate3[api_name] = related_id.key
                 // fieldToUpdate3.related_id = related_id.key
-            });
-            console.log("fieldToUpdateMAP3", fieldToUpdate3);
-            const fieldToUpdate4 = {};
+            });            const fieldToUpdate4 = {};
             [fieldToUpdate].map(field => {
                 const { name, related_id, related_module, id, api_name } = field;
                 fieldToUpdate4.id = id
@@ -190,8 +163,6 @@ const EditView = ({ itemId }) => {
                 fieldToUpdate4.related_module = related_module
                 fieldToUpdate4.related_id = related_id.key
             });
-            console.log("fieldToUpdateMAP4", fieldToUpdate4);
-
             const fieldToUpdate5 = {};
             [fieldToUpdate].map(field => {
                 const { name, related_id, related_module, id, api_name } = field;
@@ -202,8 +173,6 @@ const EditView = ({ itemId }) => {
                 fieldToUpdate5.related_id = related_id.key
                 fieldToUpdate5.module_id = record_id
             });
-            console.log("fieldToUpdateMAP4", fieldToUpdate5);
-
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
@@ -227,8 +196,7 @@ const EditView = ({ itemId }) => {
                     <div>
                         <Layout
                             style={{
-                                background: colorBgContainer,
-                                marginTop: '50px'
+                                background: colorBgContainer
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>

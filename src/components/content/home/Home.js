@@ -18,14 +18,13 @@ function Home() {
     useEffect(() => {
         async function fetchModulesData() {
             const fetchedModules = await fetchModules(org);
-            console.log("fetchedModules:", fetchedModules.result)
             setModules(fetchedModules.result);
         }
         fetchModulesData();
     }, []);
 
     return (
-        <Layout style={{ marginTop: '50px', padding: '20px 25px' }}>
+        <Layout style={{ padding: '20px 25px' }}>
             <Text style={{ fontSize: '20px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
             <Row gutter={16}>
                 {modules.map((module, index) => (

@@ -4,16 +4,12 @@ let columns = []
 
 export const fetchColumns = async (org, moduleName) => {
   try {
-    const token = localStorage.getItem('token');
-    console.log("local tokentoken:", token)
-    const config = {
+    const token = localStorage.getItem('token');    const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
-    const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);
-    console.log("Columns:", response.data);
-    const columnsData = response.data;
+    const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);    const columnsData = response.data;
     columns = columnsData.map((column) => ({
       title: column.name,
       dataIndex: column.api_name,
@@ -21,8 +17,6 @@ export const fetchColumns = async (org, moduleName) => {
       width: 200,
       ellipsis: true,
     }));
-
-    console.log("Columns columns:", columns);
     return columns;
   } catch (err) {
     console.log("Network " + err);
@@ -32,16 +26,12 @@ export const fetchColumns = async (org, moduleName) => {
 
 export const fetchData = async (org, moduleName) => {
   try {
-    const token = localStorage.getItem('token');
-    console.log("local tokentokentokentoken:", token)
-    const config = {
+    const token = localStorage.getItem('token');    const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
     const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}`, config);
-    console.log("Data:", response.data);
-
     const groupRecords = (records) => {
       const groupedData = {};
 
@@ -63,9 +53,6 @@ export const fetchData = async (org, moduleName) => {
     };
 
     const result = groupRecords(response.data);
-    console.log("result laranja:", result);
-    console.log("result laranja:", response);
-
     // const recordsData = response.data;
     // const data = recordsData.map((record) => {
     //   const recordObject = { key: record.field_api_name, name: record.field_value };
@@ -79,8 +66,6 @@ export const fetchData = async (org, moduleName) => {
 
     //   return recordObject;
     // });
-
-    // console.log("Data Data:", data);
     return result;
   } catch (err) {
     console.log("Network " + err);

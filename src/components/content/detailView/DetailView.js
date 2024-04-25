@@ -35,8 +35,6 @@ const DetailView = ({ itemId }) => {
         return pluralize.singular(plural)
     }
     const confirm = async (e) => {
-        console.log(e);
-
         await deleteRecord(org, moduleName, record_id)
         message.success('Registro Excluido!');
         navigate(`/${org}/${moduleName}`)
@@ -60,11 +58,7 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const responseFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);
-            console.log("responseFields:", responseFields.data);
-            const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, config);
-            console.log("response record API:", response.data);
-
+            const responseFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);            const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, config);
             const combinedData = responseFields.data.map(field => {
                 const matchingResponse = response.data.find(item => item[field.api_name]);
                 return {
@@ -72,34 +66,22 @@ const DetailView = ({ itemId }) => {
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
             });
-            console.log("combinedData:", combinedData);
-
             const relatedModulePromises = combinedData.map(async field => {
                 if (field.related_module != null) {
-
-                    console.log("field.related_module: ", field.related_module)
-                    console.log("field.related_id: ", field.related_id)
-                    console.log("field: ", field)
-                    const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}`, config);
-                    console.log("setRelatedModuleDatasetRelatedModuleData: ", response.data)
-                    // const matchingResponse = response.data.map(item => {
+                    const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}`, config);                    // const matchingResponse = response.data.map(item => {
                     //     return {
                     //         field_value: item[api_name],
                     //         related_id: item.id
                     //     };
                     // });
-                    const matchingResponse = response.data.find(item => item[field.api_name]);
-                    console.log("matchingResponse12:", matchingResponse);
-                    return {
+                    const matchingResponse = response.data.find(item => item[field.api_name]);                    return {
                         ...field,
                         field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                     };
                 }
             })
 
-            const relatedModuleResponses = await Promise.all(relatedModulePromises);
-            console.log("relatedModuleResponses:", relatedModuleResponses);
-            // setRelatedModuleData(matchingResponse);
+            const relatedModuleResponses = await Promise.all(relatedModulePromises);            // setRelatedModuleData(matchingResponse);
 
             if (Array.isArray(combinedData)) {
                 setData(combinedData);
@@ -111,33 +93,25 @@ const DetailView = ({ itemId }) => {
         }
     };
 
-    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
-        console.log("api_name", api_name)
-        if (open) {
+    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {        if (open) {
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-            console.log("setRelatedModuleData: ", response.data)
-            const matchingResponse = response.data.map(item => {
+            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);            const matchingResponse = response.data.map(item => {
                 return {
                     field_value: item[api_name],
                     related_id: item.id
                 };
             });
-
-            console.log("matchingResponse12:", matchingResponse);
             setRelatedModuleData(matchingResponse);
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
     }
 
-    const handleSelectChange = (value, option) => {
-        console.log("option", option.key)
-        setSelectedValue({ value: value, id: option.key });
+    const handleSelectChange = (value, option) => {        setSelectedValue({ value: value, id: option.key });
     };
 
     const relatedModuleList = async () => {
@@ -146,9 +120,7 @@ const DetailView = ({ itemId }) => {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-        };
-        console.log("teasdasdhjasuiod")
-        const currentPath = window.location.pathname;
+        };        const currentPath = window.location.pathname;
         const pathParts = currentPath.split('/');
         const org = pathParts[1];
         const moduleName = pathParts[2];
@@ -160,9 +132,6 @@ const DetailView = ({ itemId }) => {
         //     const moduleResponse = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField`, element.related_module, config);
         //     return moduleResponse.data;
         // }));
-
-        // console.log("Detalhes dos módulos relacionados:", detailedModules);
-        console.log("relatedListrelatedListrelatedList: ", response.data)
         setRelatedModuleList(response.data)
     }
 
@@ -175,27 +144,14 @@ const DetailView = ({ itemId }) => {
         return //<div>Carregando...</div>;
     }
 
-    console.log("datssa:", data);
-
     const handleFieldChange = async (index, newValue, id) => {
-        try {
-            console.log("iiiddd", id)
-            const updatedData = [...data];
-            console.log("updatedData", updatedData)
-            const fieldToUpdate = updatedData[index];
-            console.log("fieldToUpdate", fieldToUpdate)
-            fieldToUpdate.field_value = newValue;
+        try {            const updatedData = [...data];            const fieldToUpdate = updatedData[index];            fieldToUpdate.field_value = newValue;
             fieldToUpdate.related_id = id;
-            console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
-            console.log("newdata", [fieldToUpdate])
-
             const fieldToUpdate3 = {};
             [fieldToUpdate].map(field => {
                 const { api_name, field_value } = field;
                 fieldToUpdate3[api_name] = field_value
             });
-            console.log("fieldToUpdateMAP3", fieldToUpdate3);
-
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
             const org = pathParts[1];
@@ -215,16 +171,11 @@ const DetailView = ({ itemId }) => {
         }
     };
     const handleFieldChangeRelatedModule = async (index, newValue, id) => {
-        try {
-            console.log("iiiddd", id)
-            const updatedData = [...data];
-            console.log("updatedData", updatedData)
-            const fieldToUpdate = updatedData[index];
-            console.log("fieldToUpdate", fieldToUpdate)
+        try {            
+            const updatedData = [...data];            
+            const fieldToUpdate = updatedData[index];            
             fieldToUpdate.field_value = newValue;
-            fieldToUpdate.related_id = id;
-            console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
-            console.log("newdata", [fieldToUpdate])
+            fieldToUpdate.related_id = id;            
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
             const org = pathParts[1];
@@ -236,9 +187,7 @@ const DetailView = ({ itemId }) => {
                 const { name, api_name, field_value, related_id } = field;
                 fieldToUpdate3[api_name] = related_id.key
                 // fieldToUpdate3.related_id = related_id.key
-            });
-            console.log("fieldToUpdateMAP3", fieldToUpdate3);
-            const fieldToUpdate4 = {};
+            });            const fieldToUpdate4 = {};
             [fieldToUpdate].map(field => {
                 const { name, related_id, related_module, id, api_name } = field;
                 fieldToUpdate4.id = id
@@ -247,8 +196,6 @@ const DetailView = ({ itemId }) => {
                 fieldToUpdate4.related_module = related_module
                 fieldToUpdate4.related_id = related_id.key
             });
-            console.log("fieldToUpdateMAP4", fieldToUpdate4);
-
             const fieldToUpdate5 = {};
             [fieldToUpdate].map(field => {
                 const { name, related_id, related_module, id, api_name } = field;
@@ -259,8 +206,6 @@ const DetailView = ({ itemId }) => {
                 fieldToUpdate5.related_id = related_id.key
                 fieldToUpdate5.module_id = record_id
             });
-            console.log("fieldToUpdateMAP4", fieldToUpdate5);
-
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
@@ -285,8 +230,7 @@ const DetailView = ({ itemId }) => {
                     <div>
                         <Layout
                             style={{
-                                background: colorBgContainer,
-                                marginTop: '50px'
+                                background: colorBgContainer
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
@@ -334,6 +278,7 @@ const DetailView = ({ itemId }) => {
                                                         <Row>
                                                             <Col span={10} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>
+                                                                    {/* {JSON.stringify(fieldData)}: */}
                                                                     {fieldData.name}:
                                                                 </Text>
                                                             </Col>

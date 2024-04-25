@@ -49,7 +49,7 @@ const Login = () => {
                                             </Col>
                                         </Row> */}
                                         <Row>
-                                            <Logo color="black" text="CRM" />
+                                            <Logo color="black" text="" />
 
                                         </Row>
                                         <Title level={4} className='user-cadastro-title'>Informe os dados de acesso</Title>

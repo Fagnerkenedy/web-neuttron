@@ -5,7 +5,6 @@ const linkApi = process.env.REACT_APP_LINK_API;
 export const fetchColumns = async (org, moduleName, related_id) => {
   try {
     const token = localStorage.getItem('token');
-    console.log("local tokentoken:", token)
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -18,8 +17,6 @@ export const fetchColumns = async (org, moduleName, related_id) => {
 
     const columnsData = fieldsResponse.data;
     const relatedData = relatedDataResponse.data;
-    console.log("ColumnsData:", columnsData);
-    console.log("RelatedData:", relatedData);
 
     const columns = columnsData.map(column => ({
       title: column.name,
@@ -31,7 +28,6 @@ export const fetchColumns = async (org, moduleName, related_id) => {
       )
     }));
 
-    console.log("Columns:", columns);
     return columns;
   } catch (err) {
     console.log("Network " + err);
@@ -55,9 +51,6 @@ export const fetchData = async (org, moduleName, related_id) => {
     // Busca os campos relacionados do módulo
     const relatedFieldResponse = await axios.get(`${linkApi}/crm/${org}/${module_name}/relatedField`, config);
     const relatedFields = relatedFieldResponse.data;
-    console.log("testee", relatedFields)
-    console.log("related_idrelated_id", related_id)
-    console.log("moduleNamemoduleNamemoduleName", module_name)
 
     // Mapeia as chamadas axios para buscar os dados relacionados para cada campo
     const fetchRelatedDataPromises = relatedFields.map(async (field) => {
@@ -71,6 +64,7 @@ export const fetchData = async (org, moduleName, related_id) => {
 
     // Processa os dados recebidos, se necessário
     const processedData = relatedDataResponses.map((data) => {
+      console.log("data processed: ", data)
       // Aqui você pode manipular os dados conforme necessário
       return data;
     });

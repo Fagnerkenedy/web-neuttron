@@ -20,7 +20,6 @@ function PageBase() {
     useEffect(() => {
         user.dark_mode = darkMode
         localStorage.setItem('user', JSON.stringify(user));
-        console.log("userquevai",user)
         updateDarkMode(user, org)
     }, [darkMode]);
 

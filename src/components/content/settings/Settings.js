@@ -9,7 +9,7 @@ function Settings() {
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
     return (
-        <Content className='content' style={{ paddingTop: '20px', marginTop: '50px' }}>
+        <Content className='content' style={{ paddingTop: '20px' }}>
             <Layout style={{ minHeight: 'calc(100vh - 160px)' }}>
                 <Card title="Configurações">
                     <Link href={`/${org}/settings/modules`}>Módulos e campos</Link>

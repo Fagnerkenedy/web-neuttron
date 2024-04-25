@@ -37,7 +37,6 @@ function Cadastro() {
             //     return
             // }
 
-            console.log("values: ",values)
             const result = await userApiURI.register(values)
 
             if (result.status === 400) {
@@ -49,7 +48,6 @@ function Cadastro() {
             } else {
                 // const user = result.data.user
                 // const resultEmailConfirmation = await userApiURI.sendEmailConfirmation(user)
-                // console.log(resultEmailConfirmation)
                 setCadastrado(true)
             }
             setLoading(false)

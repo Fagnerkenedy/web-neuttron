@@ -13,7 +13,6 @@ const moduleName = pathParts[2]
 
 const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSize, onPageChange, onPageSizeChange, currentPage }) => {
   const confirm = async (e) => {
-    console.log(e);
     await deleteRecord(org, moduleName, selectedRowKeys)
     window.location.reload()
   }
@@ -23,7 +22,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   }
 
   return (
-    <Flex justify={'space-between'} style={{height: '50px', marginTop: '50px'}}>
+    <Flex justify={'space-between'} style={{height: '50px'}}>
       <Flex justify={'flex-start'} align={'center'}>
         <Breadcrumb>
           {hasSelected ? (

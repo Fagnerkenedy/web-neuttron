@@ -27,7 +27,6 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   useEffect(() => {
     async function fetchModulesData() {
       const fetchedModules = await fetchModules(org);
-      console.log("fetchedModules:", fetchedModules.result)
       setModules(fetchedModules.result);
     }
     setActiveModule(module)
@@ -35,49 +34,53 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   }, []);
 
   return (
-    <Col style={{ display: 'flex', alignItems: 'center', height: '49px', backgroundColor: '#1d1d1d', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000' }}>
+    <>
+      <Col style={{ display: 'flex', alignItems: 'center', height: '49px', backgroundColor: '#1d1d1d', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000' }}>
 
-      <Logo color="white" />
+        <Logo color="white" />
 
-      <Col style={{ margin: "20px" }}>
-        <React.Fragment>
-          <Link
-            className={`modules ${activeModule === 'home' ? 'active' : ''}`}
-            style={{ color: 'white' }}
-            href={`/${org}/home`}
-            onClick={() => setActiveModule('home')}
-          >
-            Página Inicial
-          </Link>
-          {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
-        </React.Fragment>
-        {modules.map((module, index) => (
-          <React.Fragment key={index}>
+        <Col style={{ margin: "20px" }}>
+          <React.Fragment>
             <Link
-              className={`modules ${activeModule === module.name ? 'active' : ''}`}
+              className={`modules ${activeModule === 'home' ? 'active' : ''}`}
               style={{ color: 'white' }}
-              href={`/${org}/${module.name}`}
-              onClick={() => setActiveModule(module.name)}
+              href={`/${org}/home`}
+              onClick={() => setActiveModule('home')}
             >
-              {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
+              Página Inicial
             </Link>
             {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
           </React.Fragment>
-        ))}
+          {modules.map((module, index) => (
+            <React.Fragment key={index}>
+              <Link
+                className={`modules ${activeModule === module.name ? 'active' : ''}`}
+                style={{ color: 'white' }}
+                href={`/${org}/${module.name}`}
+                onClick={() => setActiveModule(module.name)}
+              >
+                {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
+              </Link>
+              {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
+            </React.Fragment>
+          ))}
+        </Col>
+        <div style={{ marginLeft: 'auto', minWidth: '150px' }}>
+          <Row>
+            {/* <Col offset={11}>
+              <Button href={`/${org}/settings`} icon={<SettingOutlined />} />
+            </Col> 
+            <Col offset={2}>*/}
+            <Col offset={18}>
+              <Popover content={Content} trigger="click">
+                <Button icon={<UserOutlined />} />
+              </Popover>
+            </Col>
+          </Row>
+        </div>
       </Col>
-      <div style={{ marginLeft: 'auto', minWidth: '150px' }}>
-        <Row>
-          <Col offset={11}>
-            <Button href={`/${org}/settings`} icon={<SettingOutlined />} />
-          </Col>
-          <Col offset={2}>
-            <Popover content={Content} trigger="click">
-              <Button icon={<UserOutlined />} />
-            </Popover>
-          </Col>
-        </Row>
-      </div>
-    </Col>
+      <Row style={{ height: '50px' }}></Row>
+    </>
   );
 };
 

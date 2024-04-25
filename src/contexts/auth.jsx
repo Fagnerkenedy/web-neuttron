@@ -20,13 +20,10 @@ export const AuthProvider = ({children}) => {
     }, []);
 
     const login = async (data) => {
-        console.log("data:",data)
         setLoading(true);
         
         const response = await userApiURI.login(data)
-        console.log("responsedede",response.data)
         if(response.status === 200 && !response.data.success){
-            console.log("Success: ", response.data.success)
             if(response.data.message === "user_not_found")
                 setAlertMessage(<Alert message="OPS! Houve um erro no login!" description="O E-mail informado não está cadastrado" type="error" showIcon />)
             
@@ -38,9 +35,7 @@ export const AuthProvider = ({children}) => {
         }else{
 
             const loggedUser = response.data.user;
-            console.log("loggedUser: ",loggedUser)
             const token = response.data.token;
-            console.log("token: ",token)
 
             localStorage.setItem("user", JSON.stringify(loggedUser));
             localStorage.setItem("token", token);

@@ -20,8 +20,6 @@ const EditableCell = ({ value, onChange, type }) => {
     toggleEditing();
   };
 
-  console.log("sadfs", value, type)
-
   return (
     <div>
       {

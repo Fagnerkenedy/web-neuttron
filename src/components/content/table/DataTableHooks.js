@@ -20,8 +20,6 @@ export const useDataTable = () => {
           fetchColumns(org, moduleName),
           fetchData(org, moduleName),
         ]);
-        console.log("columnsResult",columnsResult)
-        console.log("dataResult",dataResult)
 
         setColumns(columnsResult);
         setTableData(dataResult);

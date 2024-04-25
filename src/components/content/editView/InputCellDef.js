@@ -21,8 +21,6 @@ const EditableCell = ({ value, onChange, type, onSave, onCellValueChange }) => {
     toggleEditing();
   };
 
-  console.log("sadfs", value, type, inputValue)
-
   return (
     <div>
       {

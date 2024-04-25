@@ -76,7 +76,6 @@ const EditView = ({ itemId }) => {
     };
 
     const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
-        console.log("api_name", api_name)
         if (open) {
             const token = localStorage.getItem('token');
             const config = {
@@ -85,15 +84,12 @@ const EditView = ({ itemId }) => {
                 }
             };
             const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-            console.log("setRelatedModuleData: ", response.data)
             const matchingResponse = response.data.map(item => {
                 return {
                     field_value: item[api_name],
                     related_id: item.id
                 };
             });
-
-            console.log("matchingResponse12:", matchingResponse);
             setRelatedModuleData(matchingResponse);
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
@@ -108,19 +104,9 @@ const EditView = ({ itemId }) => {
     }
 
     const handleFieldChange = (index, field_api_name, value) => {
-        console.log("index", index)
-        console.log("field_api_name", field_api_name)
-        console.log("value", value)
-
         const updatedData = [...data];
-
-
         updatedData[index].field_value = value;
-        console.log("updatedData[index]", updatedData[index])
-
         setFieldsToUpdate(updatedData);
-
-
 
         // const updatedData = [...data];
         // const fieldToUpdate = updatedData[index];
@@ -132,7 +118,6 @@ const EditView = ({ itemId }) => {
         //         [fieldToUpdate.field_api_name]: fieldToUpdate.field_value
         //     };
         //     Object.keys(editedField).forEach(fieldName => {
-        //         console.log("hahaha", fieldName)
         //         if (fieldName !== field_api_name) {
         //             delete editedField[fieldName];
         //         }
@@ -144,22 +129,16 @@ const EditView = ({ itemId }) => {
         //     const prevFields = Array.isArray(prevState) ? prevState : [];
         //     return [...prevFields, fieldToUpdate];
         // });
-        console.log("fieldToUpdate3", JSON.stringify(fieldToUpdate))
-        // console.log("fieldToUpdate3", fieldsToUpdate)
     };
 
     const handleSave = async () => {
         try {
-            console.log("fieldToUpdate2", fieldToUpdate)
-
             const fieldToUpdate3 = {};
             if (fieldToUpdate) {
                 fieldToUpdate.map(field => {
                     const { api_name, field_value } = field;
                     fieldToUpdate3[api_name] = field_value;
                 });
-                console.log("fieldToUpdateMAP", fieldToUpdate3);
-
 
                 const token = localStorage.getItem('token');
                 const config = {
@@ -180,23 +159,16 @@ const EditView = ({ itemId }) => {
     };
     const handleFieldChangeRelatedModule = async (index, newValue, id) => {
         try {
-            console.log("iiiddd", id)
             const updatedData = [...data];
-            console.log("updatedData", updatedData)
             const fieldToUpdate = updatedData[index];
-            console.log("fieldToUpdate", fieldToUpdate)
             fieldToUpdate.field_value = newValue;
             fieldToUpdate.related_id = id;
-            console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
-            console.log("newdata", [fieldToUpdate])
-
             const fieldToUpdate3 = {};
             [fieldToUpdate].map(field => {
                 const { name, api_name, field_value, related_id } = field;
                 fieldToUpdate3[api_name] = field_value
                 fieldToUpdate3.related_id = related_id.key
             });
-            console.log("fieldToUpdateMAP3", fieldToUpdate3);
             const fieldToUpdate4 = {};
             [fieldToUpdate].map(field => {
                 const { name, related_id, related_module, id, api_name } = field;
@@ -206,8 +178,6 @@ const EditView = ({ itemId }) => {
                 fieldToUpdate4.related_module = related_module
                 fieldToUpdate4.related_id = related_id.key
             });
-            console.log("fieldToUpdateMAP4", fieldToUpdate4);
-
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
             const org = pathParts[1];
@@ -235,8 +205,7 @@ const EditView = ({ itemId }) => {
                     <div>
                         <Layout
                             style={{
-                                background: colorBgContainer,
-                                marginTop: '50px'
+                                background: colorBgContainer
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>

@@ -21,7 +21,6 @@ function Modules() {
                     }
                 };
                 const response = await axios.get(`${linkApi}/crm/${org}/modules`, config);
-                console.log("Columns:", response.data.result);
                 setData(response.data.result);
             } catch (err) {
                 console.error("Erro:", err);
@@ -43,7 +42,7 @@ function Modules() {
     ]
 
     return (
-        <Content className='content' style={{ paddingTop: '20px', marginTop: '50px' }}>
+        <Content className='content' style={{ paddingTop: '20px' }}>
             <Layout style={{ minHeight: 'calc(100vh - 160px)' }}>
                 <Card title="Módulos">
                     <Table columns={columns} dataSource={data} />

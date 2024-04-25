@@ -102,7 +102,6 @@ const MyAccount = () => {
     {/* useEffect(() => {
         async function getUser(){
             var response = await userApiURI.myAccount('/minhaconta');
-            console.log(response)
         }
         getUser();
     },[]) */}
@@ -113,7 +112,6 @@ const MyAccount = () => {
 
         try {
             const userId = user._id;
-            console.log(user._id)
             const result = await userApiURI.updateUser(values, userId)
 
             // if (result.status === 400) {
@@ -126,9 +124,7 @@ const MyAccount = () => {
             // } else {
             //     const user = result.data.user
             //     const updateUser = await userApiURI.updateUser(user)
-            //     console.log(updateUser)
             //     setCadastrado(true)
-            //     console.log('Received values of form: ', values)
             // }
             setLoading(false)
         } catch (error) {
