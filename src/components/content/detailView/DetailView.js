@@ -58,7 +58,9 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const responseFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);            const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, config);
+            const responseFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);
+            console.log("responseFields", responseFields)
+            const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, config);
             const combinedData = responseFields.data.map(field => {
                 const matchingResponse = response.data.find(item => item[field.api_name]);
                 return {
@@ -66,22 +68,29 @@ const DetailView = ({ itemId }) => {
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
             });
-            const relatedModulePromises = combinedData.map(async field => {
-                if (field.related_module != null) {
-                    const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}`, config);                    // const matchingResponse = response.data.map(item => {
-                    //     return {
-                    //         field_value: item[api_name],
-                    //         related_id: item.id
-                    //     };
-                    // });
-                    const matchingResponse = response.data.find(item => item[field.api_name]);                    return {
-                        ...field,
-                        field_value: matchingResponse ? matchingResponse[field.api_name] : ''
-                    };
-                }
-            })
 
-            const relatedModuleResponses = await Promise.all(relatedModulePromises);            // setRelatedModuleData(matchingResponse);
+            console.log("combinedData",combinedData)
+
+            // const relatedModulePromises = combinedData.map(async field => {
+            //     if (field.related_module != null) {
+            //         const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}`, config);
+            //         // const matchingResponse = response.data.map(item => {
+            //         //     return {
+            //         //         field_value: item[api_name],
+            //         //         related_id: item.id
+            //         //     };
+            //         // });
+            //         const matchingResponse = response.data.find(item => item[field.api_name]);
+            //         console.log("matching", matchingResponse[field.api_name])
+            //         return {
+            //             ...field,
+            //             field_value: matchingResponse ? matchingResponse[field.api_name] : ''
+            //         };
+            //     }
+            // })
+
+            // const relatedModuleResponses = await Promise.all(relatedModulePromises);
+            //setRelatedModuleData(relatedModuleResponses);
 
             if (Array.isArray(combinedData)) {
                 setData(combinedData);
@@ -93,14 +102,16 @@ const DetailView = ({ itemId }) => {
         }
     };
 
-    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {        if (open) {
+    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
+        if (open) {
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);            const matchingResponse = response.data.map(item => {
+            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+            const matchingResponse = response.data.map(item => {
                 return {
                     field_value: item[api_name],
                     related_id: item.id
@@ -111,7 +122,8 @@ const DetailView = ({ itemId }) => {
         }
     }
 
-    const handleSelectChange = (value, option) => {        setSelectedValue({ value: value, id: option.key });
+    const handleSelectChange = (value, option) => {
+        setSelectedValue({ value: value, id: option.key });
     };
 
     const relatedModuleList = async () => {
@@ -120,18 +132,12 @@ const DetailView = ({ itemId }) => {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-        };        const currentPath = window.location.pathname;
+        }; const currentPath = window.location.pathname;
         const pathParts = currentPath.split('/');
         const org = pathParts[1];
         const moduleName = pathParts[2];
         const record_id = pathParts[3];
-        const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField`, config);
-        // const relatedModules = response.data.result;
-        // // Para cada módulo relacionado, faça uma solicitação para obter mais detalhes
-        // const detailedModules = await Promise.all(relatedModules.map(async (element) => {
-        //     const moduleResponse = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField`, element.related_module, config);
-        //     return moduleResponse.data;
-        // }));
+        const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField/${record_id}`, config);
         setRelatedModuleList(response.data)
     }
 
@@ -145,7 +151,10 @@ const DetailView = ({ itemId }) => {
     }
 
     const handleFieldChange = async (index, newValue, id) => {
-        try {            const updatedData = [...data];            const fieldToUpdate = updatedData[index];            fieldToUpdate.field_value = newValue;
+        try {
+            const updatedData = [...data];
+            const fieldToUpdate = updatedData[index];
+            fieldToUpdate.field_value = newValue;
             fieldToUpdate.related_id = id;
             const fieldToUpdate3 = {};
             [fieldToUpdate].map(field => {
@@ -171,11 +180,17 @@ const DetailView = ({ itemId }) => {
         }
     };
     const handleFieldChangeRelatedModule = async (index, newValue, id) => {
-        try {            
-            const updatedData = [...data];            
-            const fieldToUpdate = updatedData[index];            
+        try {
+            console.log("index", index)
+            console.log("newValue", newValue)
+            console.log("id", id)
+
+            const updatedData = [...data];
+            const fieldToUpdate = updatedData[index];
+
             fieldToUpdate.field_value = newValue;
-            fieldToUpdate.related_id = id;            
+            fieldToUpdate.related_id = id;
+
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
             const org = pathParts[1];
@@ -185,9 +200,10 @@ const DetailView = ({ itemId }) => {
             const fieldToUpdate3 = {};
             [fieldToUpdate].map(field => {
                 const { name, api_name, field_value, related_id } = field;
-                fieldToUpdate3[api_name] = related_id.key
+                fieldToUpdate3[api_name] = id.value
                 // fieldToUpdate3.related_id = related_id.key
-            });            const fieldToUpdate4 = {};
+            });
+            const fieldToUpdate4 = {};
             [fieldToUpdate].map(field => {
                 const { name, related_id, related_module, id, api_name } = field;
                 fieldToUpdate4.id = id
@@ -195,6 +211,7 @@ const DetailView = ({ itemId }) => {
                 fieldToUpdate4.name = name
                 fieldToUpdate4.related_module = related_module
                 fieldToUpdate4.related_id = related_id.key
+                fieldToUpdate4.related_value = id.value
             });
             const fieldToUpdate5 = {};
             [fieldToUpdate].map(field => {
@@ -212,6 +229,7 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
+            // console.log("4",fieldToUpdate4)
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
@@ -274,12 +292,12 @@ const DetailView = ({ itemId }) => {
                                         <Row gutter={16}>
                                             {data.map((fieldData, index) => (
                                                 <Col key={index} span={10}>
-                                                    <div style={{ padding: '5px 0' }}>
+                                                    <div style={{ padding: '5px 0', minHeight: '66px' }}>
                                                         <Row>
                                                             <Col span={10} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>
-                                                                    {/* {JSON.stringify(fieldData)}: */}
-                                                                    {fieldData.name}:
+                                                                    {/* {JSON.stringify(fieldData)} */}
+                                                                    {fieldData.name}
                                                                 </Text>
                                                             </Col>
                                                             <Col span={14}>
@@ -287,12 +305,17 @@ const DetailView = ({ itemId }) => {
                                                                     if (fieldData.related_module != null) {
                                                                         return (
                                                                             <Select
+                                                                                showSearch
+                                                                                optionFilterProp="children"
+                                                                                filterOption={(input, option) =>
+                                                                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                                                }
                                                                                 style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                                                                                 onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
                                                                                 // value={selectedValue ? selectedValue.value : null}
                                                                                 defaultValue={fieldData.field_value}
                                                                                 placeholder="Selecione"
-                                                                                onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+                                                                                // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
                                                                                 // loading={loading}
                                                                                 onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
                                                                                 onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
@@ -300,15 +323,17 @@ const DetailView = ({ itemId }) => {
                                                                                     <div>
                                                                                         {menu}
                                                                                         <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                                                                                            <a href={`/${org}/${fieldData.related_module}/${fieldData.field_value}`} rel="noopener noreferrer">
-                                                                                                {`Ir para ${fieldData.field_value}`}
+                                                                                            <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
+                                                                                                {(fieldData.field_value ? `Ir para ${fieldData.field_value}` : '')}
                                                                                             </a>
                                                                                         </div>
                                                                                     </div>
                                                                                 )}
                                                                             >
+                                                                                <Option value=''>-Nenhum-</Option>
                                                                                 {relatedModuleData.map(item => (
                                                                                     <Option key={item.related_id} value={item.field_value}>
+                                                                                        {item.field_value}
                                                                                     </Option>
                                                                                 ))}
                                                                             </Select>
@@ -316,11 +341,12 @@ const DetailView = ({ itemId }) => {
                                                                     } else if (fieldData.field_type == "date") {
                                                                         return (
                                                                             <DatePicker
-                                                                                style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                                                                                style={{ height: '100%', width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                                                                                 onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
                                                                                 onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
                                                                                 onChange={(value) => handleFieldChange(index, value)}
                                                                                 value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
+                                                                                placeholder="Selecione uma data"
                                                                                 format="DD/MM/YYYY"
                                                                             />
                                                                         );
@@ -329,7 +355,7 @@ const DetailView = ({ itemId }) => {
                                                                             <TextArea
                                                                                 style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                                                                                 onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
-                                                                                onBlur={(e) => { e.target.style.overflowY = 'hidden'; e.target.scrollTop = 0; }}
+                                                                                onBlur={(e) => handleFieldChange(index, e.target.value)}
                                                                                 onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
                                                                                 onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
                                                                                 rows={4}
@@ -342,13 +368,9 @@ const DetailView = ({ itemId }) => {
                                                                     } else if (fieldData.field_type == "checkbox") {
                                                                         return (
                                                                             <Checkbox
-                                                                                // indeterminate={!isChecked} // Define o estado intermediário quando o checkbox é clicado pela primeira vez
-                                                                                // checked={fieldData.field_value === 'true' || fieldData.field_value === true}
-
-                                                                                defaultChecked={teste}
+                                                                                defaultChecked={fieldData.field_value == 1 ? true : false}
                                                                                 onChange={(e) => handleFieldChange(index, e.target.checked)}
                                                                             >
-                                                                                Checkbox {fieldData.field_value}
                                                                             </Checkbox>
                                                                         )
                                                                     } else {
@@ -372,7 +394,8 @@ const DetailView = ({ itemId }) => {
                             </Layout>
 
                         </Content>
-                        {relatedList != null && relatedList.map((item, index) => (
+                        {(console.log("relatedList", relatedList))}
+                        {Array.isArray(relatedList) && relatedList.map((item, index) => (
                             <RelatedList key={index} related_module={item.module_name} related_id={record_id} />
                         ))}
                     </div>

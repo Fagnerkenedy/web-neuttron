@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 const { TextArea } = Input;
@@ -25,6 +25,8 @@ const EditView = ({ itemId }) => {
     let navigate = useNavigate()
     const [inputValue, setInputValue] = useState("")
     const [editedFields, setEditedFields] = useState({})
+    const [relatedFieldData, setRelatedFieldData] = useState([]);
+
     const toSingular = (plural) => {
         return pluralize.singular(plural)
     }
@@ -147,7 +149,22 @@ const EditView = ({ itemId }) => {
                     }
                 }
                 await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+                console.log("RECORD ID:", record_id)
+                const records = relatedFieldData.filter(record => !!record);
+                const newRelatedFieldData = records.map((item) => {
+                    return {
+                        ...item,
+                        module_id: record_id
+                    };
+                })
+                console.log("newRelatedFieldData: ", newRelatedFieldData)
+                const promises = newRelatedFieldData.map(async item => {
+                    await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, {related_id: item.related_id, id: item.id, api_name: item.api_name}, config);
+                    return axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, item, config);
+                });
+                const results = await Promise.all(promises);
 
+                console.log("results", results);
                 message.success('Registro Atualizado!');
                 navigate(`/${org}/${moduleName}`)
             }
@@ -157,46 +174,75 @@ const EditView = ({ itemId }) => {
             console.error('Error saving data:', error);
         }
     };
-    const handleFieldChangeRelatedModule = async (index, newValue, id) => {
+
+    const handleFieldChangeRelatedModule = async (index, id, newValue) => {
         try {
+            console.log("newValue:", newValue.key)
             const updatedData = [...data];
-            const fieldToUpdate = updatedData[index];
-            fieldToUpdate.field_value = newValue;
-            fieldToUpdate.related_id = id;
-            const fieldToUpdate3 = {};
-            [fieldToUpdate].map(field => {
-                const { name, api_name, field_value, related_id } = field;
-                fieldToUpdate3[api_name] = field_value
-                fieldToUpdate3.related_id = related_id.key
-            });
-            const fieldToUpdate4 = {};
-            [fieldToUpdate].map(field => {
-                const { name, related_id, related_module, id, api_name } = field;
-                fieldToUpdate4.id = id
-                fieldToUpdate4.api_name = api_name
-                fieldToUpdate4.name = name
-                fieldToUpdate4.related_module = related_module
-                fieldToUpdate4.related_id = related_id.key
-            });
-            const currentPath = window.location.pathname;
-            const pathParts = currentPath.split('/');
-            const org = pathParts[1];
-            const moduleName = pathParts[2];
-            const record_id = pathParts[3];
-            const token = localStorage.getItem('token');
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+            const fieldToUpdate1 = updatedData[index];
+            console.log("related field update", fieldToUpdate1)
+
+            const fieldToUpdate5 = {
+                index: index,
+                related_module: fieldToUpdate1.related_module,
+                related_id: newValue.key,
+                module_id: null,
+                id: fieldToUpdate1.id,
+                api_name: fieldToUpdate1.api_name
             };
-            await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
-            await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
-            message.success('Registro Atualizado!');
-            fetchData()
+
+            console.log("Batatinha quando nasce", fieldToUpdate5)
+            console.log("Batatinha quando relatedFieldData", relatedFieldData)
+            const updatedRelatedFieldData = [...relatedFieldData];
+            updatedRelatedFieldData[index] = fieldToUpdate5;
+            setRelatedFieldData(updatedRelatedFieldData);
+
+            //await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
         } catch (error) {
             console.error("Erro ao atualizar os dados:", error);
         }
     };
+
+    // const handleFieldChangeRelatedModule = async (index, newValue, id) => {
+    //     try {
+    //         const updatedData = [...data];
+    //         const fieldToUpdate = updatedData[index];
+    //         fieldToUpdate.field_value = newValue;
+    //         fieldToUpdate.related_id = id;
+    //         const fieldToUpdate3 = {};
+    //         [fieldToUpdate].map(field => {
+    //             const { name, api_name, field_value, related_id } = field;
+    //             fieldToUpdate3[api_name] = field_value
+    //             fieldToUpdate3.related_id = related_id.key
+    //         });
+    //         const fieldToUpdate4 = {};
+    //         [fieldToUpdate].map(field => {
+    //             const { name, related_id, related_module, id, api_name } = field;
+    //             fieldToUpdate4.id = id
+    //             fieldToUpdate4.api_name = api_name
+    //             fieldToUpdate4.name = name
+    //             fieldToUpdate4.related_module = related_module
+    //             fieldToUpdate4.related_id = related_id.key
+    //         });
+    //         const currentPath = window.location.pathname;
+    //         const pathParts = currentPath.split('/');
+    //         const org = pathParts[1];
+    //         const moduleName = pathParts[2];
+    //         const record_id = pathParts[3];
+    //         const token = localStorage.getItem('token');
+    //         const config = {
+    //             headers: {
+    //                 'Authorization': `Bearer ${token}`
+    //             }
+    //         };
+    //         await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+    //         await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
+    //         message.success('Registro Atualizado!');
+    //         fetchData()
+    //     } catch (error) {
+    //         console.error("Erro ao atualizar os dados:", error);
+    //     }
+    // };
 
     return (
         <div>
@@ -243,7 +289,7 @@ const EditView = ({ itemId }) => {
                                         <Row gutter={16}>
                                             {data.map((fieldData, index) => (
                                                 <Col key={index} span={10}>
-                                                    <div style={{ padding: '5px 0' }}>
+                                                    <div style={{ padding: '5px 0', minHeight: '66px' }}>
                                                         <Row>
                                                             <Col span={10} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>
@@ -256,31 +302,39 @@ const EditView = ({ itemId }) => {
                                                                         return (
                                                                             <Form.Item>
                                                                                 <Select
-                                                                                style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                                                                                onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                                                                                // value={selectedValue ? selectedValue.value : null}
-                                                                                defaultValue={fieldData.field_value}
-                                                                                placeholder="Selecione"
-                                                                                onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-                                                                                // loading={loading}
-                                                                                onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
-                                                                                onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
-                                                                                dropdownRender={(menu) => (
-                                                                                    <div>
-                                                                                        {menu}
-                                                                                        <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                                                                    showSearch
+                                                                                    optionFilterProp="children"
+                                                                                    filterOption={(input, option) =>
+                                                                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                                                    }
+                                                                                    style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                                                                                    // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                                                                                    // value={selectedValue ? selectedValue.value : null}
+                                                                                    defaultValue={fieldData.field_value}
+                                                                                    placeholder="Selecione"
+                                                                                    // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+                                                                                    onChange={(value) => handleFieldChange(index, fieldData.field_api_name, value)}
+                                                                                    // loading={loading}
+                                                                                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
+                                                                                    onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                                                                                    dropdownRender={(menu) => (
+                                                                                        <div>
+                                                                                            {menu}
+                                                                                            {/* <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
                                                                                                 <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} target="_blank" rel="noopener noreferrer">
-                                                                                                    {`Ir para ${fieldData.field_value}`}
+                                                                                                    {(fieldData.field_value ? `Ir para ${fieldData.field_value}` : '')}
                                                                                                 </a>
+                                                                                            </div> */}
                                                                                         </div>
-                                                                                    </div>
-                                                                                )}
-                                                                            >
-                                                                                {relatedModuleData.map(item => (
-                                                                                    <Option key={item.related_id} value={item.field_value}>
-                                                                                    </Option>
-                                                                                ))}
-                                                                            </Select>
+                                                                                    )}
+                                                                                >
+                                                                                    <Option value=''>-Nenhum-</Option>
+                                                                                    {relatedModuleData.map(item => (
+                                                                                        <Option key={item.related_id} value={item.field_value}>
+                                                                                            {item.field_value}
+                                                                                        </Option>
+                                                                                    ))}
+                                                                                </Select>
                                                                             </Form.Item>
                                                                         );
                                                                     } else if (fieldData.field_type == "date") {
@@ -297,12 +351,22 @@ const EditView = ({ itemId }) => {
                                                                     } else if (fieldData.field_type == "multi_line") {
                                                                         return (
                                                                             <TextArea
+                                                                                onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
+                                                                                onBlur={(e) => { e.target.style.overflowY = 'hidden'; e.target.scrollTop = 0; }}
                                                                                 rows={4}
                                                                                 defaultValue={fieldData.field_value}
-                                                                                onChange={(newValue) => handleFieldChange(index, newValue)}
+                                                                                onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.value)}
                                                                                 maxLength={16000}
                                                                             />
 
+                                                                        )
+                                                                    } else if (fieldData.field_type == "checkbox") {
+                                                                        return (
+                                                                            <Checkbox
+                                                                                defaultChecked={fieldData.field_value == 1 ? true : false}
+                                                                                onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+                                                                            >
+                                                                            </Checkbox>
                                                                         )
                                                                     } else {
                                                                         return (
