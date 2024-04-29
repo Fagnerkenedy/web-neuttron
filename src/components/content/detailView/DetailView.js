@@ -77,10 +77,15 @@ const DetailView = ({ itemId }) => {
 
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
                     console.log("response", response)
-                    return {
-                        api_name: field.api_name,
-                        related_id: response.data[0].related_id
-                    };
+                    if(response.data != ""){
+                        return {
+                            api_name: field.api_name,
+                            related_id: response.data[0].related_id
+                        };
+
+                    }
+                } else {
+                    return field;
                 }
             })
 

@@ -45,7 +45,7 @@ const EditableCell = ({ value, onChange, type }) => {
             />
           </Form.Item>
         )}
-      {editing && <Button onClick={handleSave}>Salvar</Button>}
+      {/* {editing && <Button onClick={handleSave}>Salvar</Button>} */}
     </div>
   );
 };
