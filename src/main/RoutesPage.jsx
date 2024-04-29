@@ -35,6 +35,8 @@ function RoutesPage() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+
           <Route path="/:org" element={<Private><PageBase /></Private>}>
             <Route path="/:org/home" element={<Home />} />
             <Route path="/:org/:module" element={<AppContent />} />

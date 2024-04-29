@@ -67,10 +67,46 @@ const EditView = ({ itemId }) => {
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
             });
-            if (Array.isArray(combinedData)) {
-                setData(combinedData);
+            const relatedModulePromises = combinedData.map(async field => {
+                if (field.related_module != null) {
+                    console.log("field.related_module", field)
+
+                    const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
+                    console.log("response", response)
+                    return {
+                        api_name: field.api_name,
+                        related_id: response.data[0].related_id
+                    };
+                }
+            })
+
+            const relatedModuleResponses = await Promise.all(relatedModulePromises);
+            console.log("relatedModuleResponses", relatedModuleResponses)
+            const updatedCombinedData = combinedData.map(field => {
+                if (field.related_module != null) {
+                    console.log("field", field);
+                    const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name);
+                    console.log("relatedData", relatedData);
+                    if (relatedData) {
+                        return {
+                            ...field,
+                            related_id: relatedData.related_id
+                        };
+                    } else {
+                        return field;
+                    }
+                } else {
+                    return field;
+                }
+            });
+            console.log("updatedCombinedData", updatedCombinedData);
+            
+
+
+            if (Array.isArray(updatedCombinedData)) {
+                setData(updatedCombinedData);
             } else {
-                setData([combinedData]);
+                setData([updatedCombinedData]);
             }
         } catch (error) {
             console.error("Erro ao buscar os dados:", error);
@@ -159,7 +195,7 @@ const EditView = ({ itemId }) => {
                 })
                 console.log("newRelatedFieldData: ", newRelatedFieldData)
                 const promises = newRelatedFieldData.map(async item => {
-                    await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, {related_id: item.related_id, id: item.id, api_name: item.api_name}, config);
+                    await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, { related_id: item.related_id, id: item.id, api_name: item.api_name }, config);
                     return axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, item, config);
                 });
                 const results = await Promise.all(promises);
@@ -197,52 +233,10 @@ const EditView = ({ itemId }) => {
             updatedRelatedFieldData[index] = fieldToUpdate5;
             setRelatedFieldData(updatedRelatedFieldData);
 
-            //await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
         } catch (error) {
             console.error("Erro ao atualizar os dados:", error);
         }
     };
-
-    // const handleFieldChangeRelatedModule = async (index, newValue, id) => {
-    //     try {
-    //         const updatedData = [...data];
-    //         const fieldToUpdate = updatedData[index];
-    //         fieldToUpdate.field_value = newValue;
-    //         fieldToUpdate.related_id = id;
-    //         const fieldToUpdate3 = {};
-    //         [fieldToUpdate].map(field => {
-    //             const { name, api_name, field_value, related_id } = field;
-    //             fieldToUpdate3[api_name] = field_value
-    //             fieldToUpdate3.related_id = related_id.key
-    //         });
-    //         const fieldToUpdate4 = {};
-    //         [fieldToUpdate].map(field => {
-    //             const { name, related_id, related_module, id, api_name } = field;
-    //             fieldToUpdate4.id = id
-    //             fieldToUpdate4.api_name = api_name
-    //             fieldToUpdate4.name = name
-    //             fieldToUpdate4.related_module = related_module
-    //             fieldToUpdate4.related_id = related_id.key
-    //         });
-    //         const currentPath = window.location.pathname;
-    //         const pathParts = currentPath.split('/');
-    //         const org = pathParts[1];
-    //         const moduleName = pathParts[2];
-    //         const record_id = pathParts[3];
-    //         const token = localStorage.getItem('token');
-    //         const config = {
-    //             headers: {
-    //                 'Authorization': `Bearer ${token}`
-    //             }
-    //         };
-    //         await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
-    //         await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
-    //         message.success('Registro Atualizado!');
-    //         fetchData()
-    //     } catch (error) {
-    //         console.error("Erro ao atualizar os dados:", error);
-    //     }
-    // };
 
     return (
         <div>
@@ -367,6 +361,33 @@ const EditView = ({ itemId }) => {
                                                                                 onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
                                                                             >
                                                                             </Checkbox>
+                                                                        )
+                                                                    } else if (fieldData.field_type == "number") {
+                                                                        return (
+                                                                            <InputNumber
+                                                                                style={{ width: "100%" }}
+                                                                                changeOnWheel
+                                                                                defaultValue={fieldData.field_value}
+                                                                                onChange={(e) => handleFieldChange(index, e)}
+                                                                            />
+                                                                        )
+                                                                    } else if (fieldData.field_type == "currency") {
+                                                                        return (
+                                                                            <InputNumber
+                                                                                style={{ width: "100%" }}
+                                                                                prefix="R$"
+                                                                                formatter={(val) => {
+                                                                                    if (!val) return 0;
+                                                                                    return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
+                                                                                }}
+                                                                                parser={(val) => {
+                                                                                    if (!val) return 0;
+                                                                                    return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
+                                                                                }}
+                                                                                changeOnWheel
+                                                                                defaultValue={fieldData.field_value}
+                                                                                onChange={(e) => handleFieldChange(index, e)}
+                                                                            />
                                                                         )
                                                                     } else {
                                                                         return (

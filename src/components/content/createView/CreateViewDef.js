@@ -252,19 +252,6 @@ const EditView = ({ itemId }) => {
                                                                         {(() => {
                                                                             if (fieldData.related_module != null) {
                                                                                 return (
-                                                                                    // <Select
-                                                                                    //     placeholder="Selecione"
-                                                                                    //     // loading={loading}
-                                                                                    //     onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module)}
-                                                                                    //     onSelect={(value) => handleFieldChange(index, value)}
-                                                                                    //     style={{ width: "100%" }}
-                                                                                    // >
-                                                                                    //     {relatedModuleData.map(item => (
-                                                                                    //         <Option key={item.record_id} value={item.field_value}>
-                                                                                    //             {item.field_value}
-                                                                                    //         </Option>
-                                                                                    //     ))}
-                                                                                    // </Select>
                                                                                     <Select
                                                                                         showSearch
                                                                                         optionFilterProp="children"
@@ -332,6 +319,33 @@ const EditView = ({ itemId }) => {
                                                                                     <Checkbox
                                                                                         defaultChecked={fieldData.field_value == 1 ? true : false}
                                                                                         onChange={(e) => handleFieldChange(index, e.target.checked)}
+                                                                                    />
+                                                                                )
+                                                                            } else if (fieldData.field_type == "number") {
+                                                                                return (
+                                                                                    <InputNumber
+                                                                                        style={{ width: "100%" }}
+                                                                                        changeOnWheel
+                                                                                        defaultValue={fieldData.field_value}
+                                                                                        onChange={(e) => handleFieldChange(index, e)}
+                                                                                    />
+                                                                                )
+                                                                            } else if (fieldData.field_type == "currency") {
+                                                                                return (
+                                                                                    <InputNumber
+                                                                                        style={{ width: "100%" }}
+                                                                                        prefix="R$"
+                                                                                        formatter={(val) => {
+                                                                                            if (!val) return 0;
+                                                                                            return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
+                                                                                        }}
+                                                                                        parser={(val) => {
+                                                                                            if (!val) return 0;
+                                                                                            return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
+                                                                                        }}
+                                                                                        changeOnWheel
+                                                                                        defaultValue={fieldData.field_value}
+                                                                                        onChange={(e) => handleFieldChange(index, e)}
                                                                                     />
                                                                                 )
                                                                             } else {

@@ -69,33 +69,48 @@ const DetailView = ({ itemId }) => {
                 };
             });
 
-            console.log("combinedData",combinedData)
+            console.log("combinedData", combinedData)
 
-            // const relatedModulePromises = combinedData.map(async field => {
-            //     if (field.related_module != null) {
-            //         const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}`, config);
-            //         // const matchingResponse = response.data.map(item => {
-            //         //     return {
-            //         //         field_value: item[api_name],
-            //         //         related_id: item.id
-            //         //     };
-            //         // });
-            //         const matchingResponse = response.data.find(item => item[field.api_name]);
-            //         console.log("matching", matchingResponse[field.api_name])
-            //         return {
-            //             ...field,
-            //             field_value: matchingResponse ? matchingResponse[field.api_name] : ''
-            //         };
-            //     }
-            // })
+            const relatedModulePromises = combinedData.map(async field => {
+                if (field.related_module != null) {
+                    console.log("field.related_module", field)
 
-            // const relatedModuleResponses = await Promise.all(relatedModulePromises);
-            //setRelatedModuleData(relatedModuleResponses);
+                    const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
+                    console.log("response", response)
+                    return {
+                        api_name: field.api_name,
+                        related_id: response.data[0].related_id
+                    };
+                }
+            })
 
-            if (Array.isArray(combinedData)) {
-                setData(combinedData);
+            const relatedModuleResponses = await Promise.all(relatedModulePromises);
+            console.log("relatedModuleResponses", relatedModuleResponses)
+            const updatedCombinedData = combinedData.map(field => {
+                if (field.related_module != null) {
+                    console.log("field", field);
+                    const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name);
+                    console.log("relatedData", relatedData);
+                    if (relatedData) {
+                        return {
+                            ...field,
+                            related_id: relatedData.related_id
+                        };
+                    } else {
+                        return field;
+                    }
+                } else {
+                    return field;
+                }
+            });
+            console.log("updatedCombinedData", updatedCombinedData);
+            
+
+
+            if (Array.isArray(updatedCombinedData)) {
+                setData(updatedCombinedData);
             } else {
-                setData([combinedData]);
+                setData([updatedCombinedData]);
             }
         } catch (error) {
             console.error("Erro ao buscar os dados:", error);
@@ -372,6 +387,38 @@ const DetailView = ({ itemId }) => {
                                                                                 onChange={(e) => handleFieldChange(index, e.target.checked)}
                                                                             >
                                                                             </Checkbox>
+                                                                        )
+                                                                    } else if (fieldData.field_type == "number") {
+                                                                        return (
+                                                                            // <InputNumber
+                                                                            //     style={{ width: "100%" }}
+                                                                            //     changeOnWheel
+                                                                            //     defaultValue={fieldData.field_value}
+                                                                            //     onChange={(e) => handleFieldChange(index, e)}
+                                                                            // />
+                                                                            <EditableCell
+                                                                                value={fieldData.field_value}
+                                                                                onChange={(newValue) => handleFieldChange(index, newValue)}
+                                                                                type={'number'}
+                                                                            />
+                                                                        )
+                                                                    } else if (fieldData.field_type == "currency") {
+                                                                        return (
+                                                                            <InputNumber
+                                                                                style={{ width: "100%" }}
+                                                                                prefix="R$"
+                                                                                formatter={(val) => {
+                                                                                    if (!val) return 0;
+                                                                                    return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")
+                                                                                }}
+                                                                                parser={(val) => {
+                                                                                    if (!val) return 0;
+                                                                                    return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
+                                                                                }}
+                                                                                changeOnWheel
+                                                                                defaultValue={fieldData.field_value}
+                                                                                onChange={(e) => handleFieldChange(index, e)}
+                                                                            />
                                                                         )
                                                                     } else {
                                                                         return (
