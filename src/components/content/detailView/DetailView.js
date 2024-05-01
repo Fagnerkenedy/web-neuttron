@@ -35,6 +35,9 @@ const DetailView = ({ itemId }) => {
         return pluralize.singular(plural)
     }
     const confirm = async (e) => {
+        const currentPath = window.location.pathname;
+        const pathParts = currentPath.split('/');
+        const record_id = pathParts[3];
         await deleteRecord(org, moduleName, record_id)
         message.success('Registro Excluido!');
         navigate(`/${org}/${moduleName}`)

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 const { TextArea } = Input;
@@ -258,6 +259,7 @@ const EditView = ({ itemId }) => {
                                                                                         filterOption={(input, option) =>
                                                                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                                                         }
+                                                                                        placeholder="SelecioneSelecione"
                                                                                         style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                                                                                         // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
                                                                                         // value={selectedValue ? selectedValue.value : null}
@@ -347,6 +349,29 @@ const EditView = ({ itemId }) => {
                                                                                         defaultValue={fieldData.field_value}
                                                                                         onChange={(e) => handleFieldChange(index, e)}
                                                                                     />
+                                                                                )
+                                                                            } else if (fieldData.field_type == "file") {
+                                                                                const props = {
+                                                                                    name: 'file',
+                                                                                    action: `${linkApi}/crm/${org}/${moduleName}/relatedField`,
+                                                                                    headers: {
+                                                                                        authorization: 'authorization-text',
+                                                                                    },
+                                                                                    onChange(info) {
+                                                                                        if (info.file.status !== 'uploading') {
+                                                                                            console.log(info.file, info.fileList);
+                                                                                        }
+                                                                                        if (info.file.status === 'done') {
+                                                                                            message.success(`${info.file.name} file uploaded successfully`);
+                                                                                        } else if (info.file.status === 'error') {
+                                                                                            message.error(`${info.file.name} file upload failed.`);
+                                                                                        }
+                                                                                    },
+                                                                                };
+                                                                                return (
+                                                                                    <Upload {...props}>
+                                                                                        <Button style={{ width: "100%" }} icon={<UploadOutlined />}>Selecione o Arquivo</Button>
+                                                                                    </Upload>
                                                                                 )
                                                                             } else {
                                                                                 return (

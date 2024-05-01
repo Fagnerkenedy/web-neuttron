@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Layout, Row, Col, Button, Form, Input, Typography, Divider } from 'antd';
+import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Image } from 'antd';
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './styles.css'
@@ -7,7 +7,7 @@ import './styles.css'
 import FooterText from '../utils/FooterText';
 import AuthContext from '../../contexts/auth';
 import Loading from '../utils/Loading';
-import Logo from '../utils/Logo';
+import Logo from './logo-neuttron-jpg.jpg';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -48,9 +48,12 @@ const Login = () => {
                                                 <img alt='Logo' className='user-cadastro-logo' src={logo} />
                                             </Col>
                                         </Row> */}
-                                        <Row>
-                                            <Logo color="black" text="" />
-
+                                        <Row span={12}>
+                                            {/* <Logo color="black" text="" /> */}
+                                           
+                                            <Link to="">  {/* Colocar o link da página inicial do site, para quando o usuário quiser retornar para o site basta clicar na logo */}
+                                                <Image src={Logo} preview={false} style={{ width: '120px', paddingTop: '8px' }} />
+                                            </Link>
                                         </Row>
                                         <Title level={4} className='user-cadastro-title'>Informe os dados de acesso</Title>
 
