@@ -14,6 +14,7 @@ import PageBase from '../components/pageBase/PageBase';
 import Settings from '../components/content/settings/Settings';
 import Modules from '../components/content/settings/modules/Modules';
 import Layout from '../components/content/settings/modules/layout/Layout';
+import Payment from '../components/checkout/Payment';
 
 function RoutesPage() {
 
@@ -35,7 +36,7 @@ function RoutesPage() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+          {/* <Route path="/" element={<Navigate to="/login" />} /> */}
 
           <Route path="/:org" element={<Private><PageBase /></Private>}>
             <Route path="/:org/home" element={<Home />} />
@@ -46,6 +47,7 @@ function RoutesPage() {
             <Route path="/:org/settings" element={<Settings />} />
             <Route path="/:org/settings/modules" element={<Modules />} />
             <Route path="/:org/settings/modules/:module" element={<Layout />} />
+            <Route path="/:org/checkout" element={<Payment />} />
           </Route>
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/login" element={<Login />} />
