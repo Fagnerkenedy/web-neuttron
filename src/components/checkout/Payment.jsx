@@ -1,35 +1,29 @@
 import React, { useEffect, useState } from "react";
-// import './index.css';
 import axios from 'axios';
-import classnames from 'classnames'
 import { initMercadoPago } from "@mercadopago/sdk-react";
-import { Wallet } from "@mercadopago/sdk-react";
-import { Context } from "./ContextProvider";
-import { Button } from "antd";
+import { Button, Col, Divider, Layout, Typography, theme } from "antd";
+import './style.css';
+const { Title, Text } = Typography;
 
-// REPLACE WITH YOUR PUBLIC KEY AVAILABLE IN: https://developers.mercadopago.com/panel
 initMercadoPago(process.env.REACT_APP_PUBLIC_KEY_MERCADO_PAGO);
 
 const Payment = () => {
-  // const { preferenceId, orderData } = React.useContext(Context);
-  const token = process.env.REACT_APP_USER_API_TOKEN
+  const token = process.env.REACT_APP_USER_API_TOKEN;
   const [preferenceId, setPreferenceId] = useState(null);
-  const [isReady, setIsReady] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [orderData, setOrderData] = useState({ quantity: "1", price: "718.80", amount: 10, description: "Plano Profissional" });
-  const paymentClass = classnames('payment-form dark', {
-    'payment-form--hidden': !isReady,
-  });
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   useEffect(() => {
-    setIsLoading(true);
     axios.post(`${process.env.REACT_APP_LINK_API}/payment/create_preference`, orderData, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
     })
       .then((response) => {
-        console.log("response data",response.data)
+        console.log("response data", response.data)
         setPreferenceId(response.data.id);
       })
       .catch((error) => {
@@ -38,50 +32,49 @@ const Payment = () => {
       .finally(() => {
         setIsLoading(false);
       });
-
-  }, [])
-
-  const handleOnReady = () => {
-    setIsReady(true);
-  }
+  }, []);
 
   const renderCheckoutButton = (preferenceId) => {
     if (!preferenceId || isLoading) return null;
-    console.log("wallety",preferenceId)
     return (
-      <Button type="primary" href={`https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${preferenceId}`}>Pagar</Button>
-    )
-  }
+      <Button className="payment-button" type="primary" href={`https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${preferenceId}`}>Pagar</Button>
+    );
+  };
 
   return (
-    <div className={paymentClass}>
-      <div className="container_payment">
-        <div className="block-heading">
-          <h2>Checkout Payment</h2>
-          <p>This is an example of a Mercado Pago integration</p>
-        </div>
-        <div className="form-payment">
-          <div className="products">
-            <h2 className="title">Summary</h2>
-            <div className="item">
-              <span className="price" id="summary-price">R$ 718,80</span>
-              <p className="item-name">
-                Plano Profissional <span id="summary-quantity">1</span>
-              </p>
-            </div>
-            <div className="total">
-              Total
-              <span className="price" id="summary-total">R$ 718,80</span>
-            </div>
-          </div>
+    <Layout className="payment-container">
+      <Col style={{
+        background: colorBgContainer
+      }} 
+      className="payment-content">
+        <Col className="payment-heading">
+          <Title className="titleH2" level={2}>Checkout de Pagamento</Title>
+          {/* <Title className="titleH3" level={3}>Este é um exemplo de integração do Mercado Pago</Title> */}
+        </Col>
+        <Col className="payment-form">
+          <Col className="payment-summary">
+            <Title level={3} className="summary-title">Resumo</Title>
+            <Divider />
+            <Col className="item">
+              <Text className="price1">R$ 718,80</Text>
+              <Text className="item-name">
+                Plano Profissional <span className="quantity">x 1 Usuário</span>
+              </Text>
+            </Col>
+            <Divider />
+            <Col className="total">
+              <Text>Total</Text>
+              <Text className="price">R$ 718,80</Text>
+            </Col>
+          </Col>
           <div className="payment-details">
-            <div className="form-group col-sm-12">
+            <div>
               {renderCheckoutButton(preferenceId)}
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Col>
+    </Layout>
   );
 };
 

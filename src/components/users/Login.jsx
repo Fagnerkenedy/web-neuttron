@@ -51,7 +51,7 @@ const Login = () => {
                                         <Row span={12}>
                                             {/* <Logo color="black" text="" /> */}
                                            
-                                            <Link href={'http://neuttron.com.br'}>  {/* Colocar o link da página inicial do site, para quando o usuário quiser retornar para o site basta clicar na logo */}
+                                            <Link to="http://neuttron.com.br">  {/* Colocar o link da página inicial do site, para quando o usuário quiser retornar para o site basta clicar na logo */}
                                                 <Image src={Logo} preview={false} style={{ width: '120px', paddingTop: '8px' }} />
                                             </Link>
                                         </Row>
