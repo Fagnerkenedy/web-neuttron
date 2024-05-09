@@ -66,12 +66,17 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           ))}
         </Col>
         <div style={{ marginLeft: 'auto', minWidth: '150px' }}>
-          <Row>
+          <Row span={12}> 
             {/* <Col offset={11}>
               <Button href={`/${org}/settings`} icon={<SettingOutlined />} />
             </Col> 
             <Col offset={2}>*/}
-            <Col offset={18}>
+            <Col style={{alignItems:'center', alignContent:'center'}} span={18} >
+              <Link href={`/${org}/checkout`}>
+              Fazer Upgrade
+              </Link>
+            </Col> 
+            <Col>
               <Popover content={Content} trigger="click">
                 <Button icon={<UserOutlined />} />
               </Popover>
