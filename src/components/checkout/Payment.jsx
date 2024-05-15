@@ -58,7 +58,7 @@ const Payment = () => {
             <Col className="item">
               <Text className="price1">R$ 718,80</Text>
               <Text className="item-name">
-                Plano Profissional <span className="quantity">x 1 Usuário</span>
+                Plano Profissional <span className="quantity">x 1 Usuário cobrado anualmente</span>
               </Text>
             </Col>
             <Divider />

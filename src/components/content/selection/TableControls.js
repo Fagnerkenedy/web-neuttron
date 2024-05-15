@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { Option } from 'antd/es/mentions';
 import apiURI from '../../../Utility/recordApiURI.js';
+import { fetchModules } from './fetchModules.js';
 const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
 
@@ -12,6 +13,8 @@ const org = pathParts[1]
 const moduleName = pathParts[2]
 
 const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSize, onPageChange, onPageSizeChange, currentPage }) => {
+  const [activeModule, setActiveModule] = useState("");
+
   const confirm = async (e) => {
     await deleteRecord(org, moduleName, selectedRowKeys)
     window.location.reload()
@@ -20,6 +23,18 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   const toSingular = (plural) => {
     return pluralize.singular(plural)
   }
+  
+  useEffect(() => {
+    async function fetchModulesData() {
+      const fetchedModules = await fetchModules(org);
+      fetchedModules.result.forEach(module => {
+        if(module.api_name == moduleName || module.name == moduleName) {
+          setActiveModule(module.name)
+        }
+      });
+    }
+    fetchModulesData();
+  }, []);
 
   return (
     <Flex justify={'space-between'} style={{height: '50px'}}>
@@ -47,7 +62,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
       </Flex>
       <Flex justify={'flex-end'} align={'center'}>
         <Flex style={{paddingRight: '15px'}}>
-          <Button href={`/${org}/${moduleName}/create`}>Criar {toSingular(moduleName)}</Button>
+          <Button href={`/${org}/${moduleName}/create`}>Criar {toSingular(activeModule)}</Button>
         </Flex>
 
         <Flex align={'center'}>

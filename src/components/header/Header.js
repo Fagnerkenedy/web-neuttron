@@ -54,9 +54,9 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           {modules.map((module, index) => (
             <React.Fragment key={index}>
               <Link
-                className={`modules ${activeModule === module.name ? 'active' : ''}`}
+                className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
                 style={{ color: 'white' }}
-                href={`/${org}/${module.name}`}
+                href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
                 onClick={() => setActiveModule(module.name)}
               >
                 {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
