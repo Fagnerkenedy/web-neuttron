@@ -29,7 +29,7 @@ function Home() {
             <Row gutter={16}>
                 {modules.map((module, index) => (
                     <Col key={index}>
-                        <Link href={`/${org}/${module.name}`}>
+                        <Link href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}>
                             <Card
                                 key={index}
                                 style={{ marginTop: '25px', width: '250px', height: '150px', cursor: 'pointer' }}

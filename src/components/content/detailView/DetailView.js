@@ -29,6 +29,7 @@ const DetailView = ({ itemId }) => {
     const [selectedValue, setSelectedValue] = useState(null);
     const [isChecked, setIsChecked] = useState(false);
     const [relatedList, setRelatedModuleList] = useState('');
+    const [options, setOptions] = useState([]);
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -80,7 +81,7 @@ const DetailView = ({ itemId }) => {
 
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
                     console.log("response", response)
-                    if(response.data != ""){
+                    if (response.data != "") {
                         return {
                             api_name: field.api_name,
                             related_id: response.data[0].related_id
@@ -112,7 +113,7 @@ const DetailView = ({ itemId }) => {
                 }
             });
             console.log("updatedCombinedData", updatedCombinedData);
-            
+
 
 
             if (Array.isArray(updatedCombinedData)) {
@@ -145,6 +146,20 @@ const DetailView = ({ itemId }) => {
         }
     }
 
+    const fetchOptions = async (open, moduleName, api_name) => {
+        if (open) {
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/field/${api_name}`, config);
+            console.log("etstetes", response)
+            setOptions(response.data);
+        }
+    }
+
     const handleSelectChange = (value, option) => {
         setSelectedValue({ value: value, id: option.key });
     };
@@ -162,6 +177,22 @@ const DetailView = ({ itemId }) => {
         const record_id = pathParts[3];
         const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField/${record_id}`, config);
         setRelatedModuleList(response.data)
+    }
+
+    const separateOptions = async (stringOptions, field_id) => {
+        if (!stringOptions.trim()) {
+            return [];
+        }
+        const stringComAspas = stringOptions.replace(/([^;]+ )/g, '"$1"');
+        const lista = stringComAspas.split(';');
+        const listaFinal = lista.map(item => item.trim().replace(/^"|"$/g, ''));
+        console.log("optionss", listaFinal)
+        const fieldOptions = {
+            field_id: field_id,
+            list: listaFinal
+        }
+        console.log("options222", fieldOptions)
+        setOptions([fieldOptions])
     }
 
     useEffect(() => {
@@ -357,6 +388,32 @@ const DetailView = ({ itemId }) => {
                                                                                 {relatedModuleData.map(item => (
                                                                                     <Option key={item.related_id} value={item.field_value}>
                                                                                         {item.field_value}
+                                                                                    </Option>
+                                                                                ))}
+                                                                            </Select>
+                                                                        );
+                                                                    } else if (fieldData.field_type == "select") {
+                                                                        return (
+                                                                            <Select
+                                                                                showSearch
+                                                                                optionFilterProp="children"
+                                                                                filterOption={(input, option) =>
+                                                                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                                                }
+                                                                                style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                                                                                onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                                                                                // value={selectedValue ? selectedValue.value : null}
+                                                                                defaultValue={fieldData.field_value}
+                                                                                placeholder="Selecione"
+                                                                                // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+                                                                                // loading={loading}
+                                                                                onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+                                                                                onSelect={(newValue) => handleFieldChange(index, newValue)}
+                                                                            >
+                                                                                <Option value=''>-Nenhum-</Option>
+                                                                                {options.map(item => (
+                                                                                    <Option key={item.id} value={item.name}>
+                                                                                        {item.name}
                                                                                     </Option>
                                                                                 ))}
                                                                             </Select>

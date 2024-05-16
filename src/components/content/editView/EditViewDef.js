@@ -26,6 +26,7 @@ const EditView = ({ itemId }) => {
     const [inputValue, setInputValue] = useState("")
     const [editedFields, setEditedFields] = useState({})
     const [relatedFieldData, setRelatedFieldData] = useState([]);
+    const [options, setOptions] = useState([]);
 
     const toSingular = (plural) => {
         return pluralize.singular(plural)
@@ -130,6 +131,20 @@ const EditView = ({ itemId }) => {
             });
             setRelatedModuleData(matchingResponse);
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
+        }
+    }
+
+    const fetchOptions = async (open, moduleName, api_name) => {
+        if (open) {
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/field/${api_name}`, config);
+            console.log("etstetes", response)
+            setOptions(response.data);
         }
     }
 
@@ -330,6 +345,31 @@ const EditView = ({ itemId }) => {
                                                                                     ))}
                                                                                 </Select>
                                                                             </Form.Item>
+                                                                        );
+                                                                    } else if (fieldData.field_type == "select") {
+                                                                        return (
+                                                                            <Select
+                                                                                showSearch
+                                                                                optionFilterProp="children"
+                                                                                filterOption={(input, option) =>
+                                                                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                                                }
+                                                                                style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                                                                                onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                                                                                // value={selectedValue ? selectedValue.value : null}
+                                                                                defaultValue={fieldData.field_value}
+                                                                                placeholder="Selecione"
+                                                                                onChange={(value) => handleFieldChange(index, fieldData.field_api_name, value)}
+                                                                                // loading={loading}
+                                                                                onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+                                                                            >
+                                                                                <Option value=''>-Nenhum-</Option>
+                                                                                {options.map(item => (
+                                                                                    <Option key={item.id} value={item.name}>
+                                                                                        {item.name}
+                                                                                    </Option>
+                                                                                ))}
+                                                                            </Select>
                                                                         );
                                                                     } else if (fieldData.field_type == "date") {
                                                                         return (
