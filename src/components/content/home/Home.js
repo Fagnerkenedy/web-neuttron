@@ -26,15 +26,15 @@ function Home() {
 
     return (
         <Layout style={{ padding: '15px 25px' }}>
-            <Text style={{ fontSize: '20px',  paddingBottom: '15px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
-            <Row  style={{ paddingBottom: '15px' }} gutter={16}>
+            <Text style={{ fontSize: '20px',  marginBottom: '15px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
+            <Row style={{ marginBottom: '15px' }} gutter={16}>
                 {modules.map((module, index) => (
                     <Col key={index}>
                         <Link href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}>
                             <Card
                                 key={index}
-                                style={{ marginTop: '25px', width: '250px', height: '150px', cursor: 'pointer' }}
-                                cover={<AppstoreOutlined style={{ fontSize: '34px', padding: 25 }} />}
+                                style={{ width: '250px', height: '150px', cursor: 'pointer' }}
+                                cover={<AppstoreOutlined style={{ fontSize: '34px' }} />}
                                 title={module.name}
                                 hoverable
                             >

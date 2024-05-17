@@ -4,6 +4,7 @@ import { Typography } from 'antd';
 import { fetchCharts } from './fetchCharts'
 import { Column } from '@ant-design/plots';
 import Barra from './Barra'
+import Linha from './Line'
 
 const { Text } = Typography;
 
@@ -30,24 +31,33 @@ function Charts() {
 
     return (
         <>
-            {charts.map((chart, index) => (
-                <Layout
-                    style={{
-                        background: colorBgContainer,
-                        marginBottom: '15px'
-                    }}
-                >
-                    <Row gutter={[16, 16]} key={index}>
-                        <Col span={24}>
-                            {/* <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '15px' }}> */}
+            <Row>
+                {charts.map((chart, index) => (
+                    <Col span={12} key={index}>
+                        <Layout
+                            style={{
+                                background: colorBgContainer,
+                                margin: '10px'
+                            }}
+                        >
+                            <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '15px' }}>
                                 {chart.query.type === 'barra' && (
-                                    <Barra xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    <>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Barra xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </>
                                 )}
-                            {/* </div> */}
-                        </Col>
-                    </Row>
-                </Layout>
-            ))}
+                                {chart.query.type === 'linha' && (
+                                    <>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Linha xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </>
+                                )}
+                            </div>
+                        </Layout>
+                    </Col>
+                ))}
+            </Row>
         </>
     )
 }
