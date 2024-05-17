@@ -45,7 +45,7 @@ const DetailView = ({ itemId }) => {
     }
     const {
         token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
+    } = theme.useToken()
     const [data, setData] = useState(null);
     const linkApi = process.env.REACT_APP_LINK_API;
 

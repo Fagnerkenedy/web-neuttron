@@ -4,6 +4,7 @@ import { fetchModules } from '../../../components/header/fetchModules'
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
 import { AppstoreOutlined } from "@ant-design/icons";
+import Charts from '../charts/Charts'
 // import Meta from "antd/es/card/Meta";
 const { Text } = Typography;
 
@@ -24,9 +25,9 @@ function Home() {
     }, []);
 
     return (
-        <Layout style={{ padding: '20px 25px' }}>
-            <Text style={{ fontSize: '20px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
-            <Row gutter={16}>
+        <Layout style={{ padding: '15px 25px' }}>
+            <Text style={{ fontSize: '20px',  paddingBottom: '15px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
+            <Row  style={{ paddingBottom: '15px' }} gutter={16}>
                 {modules.map((module, index) => (
                     <Col key={index}>
                         <Link href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}>
@@ -37,15 +38,13 @@ function Home() {
                                 title={module.name}
                                 hoverable
                             >
-                                {/* <Meta
-                                    title="Título do Card"
-                                    description="Descrição do Card"
-                                    avatar={<AppstoreOutlined />}
-                                /> */}
                             </Card>
                         </Link>
                     </Col>
                 ))}
+            </Row>
+            <Row>
+                <Charts />
             </Row>
         </Layout>
     )
