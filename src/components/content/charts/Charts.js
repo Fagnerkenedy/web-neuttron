@@ -21,34 +21,34 @@ function Charts() {
     useEffect(() => {
         async function fetchChartsData() {
             const fetchedCharts = await fetchCharts(org)
-            console.log("chartttt", fetchedCharts)
-            setCharts(fetchedCharts.result.query)
-            setData(fetchedCharts.result.data)
+            console.log("chartttt", fetchedCharts.result)
+            setCharts(fetchedCharts.result)
+            // setData(fetchedCharts.result.data)
         }
         fetchChartsData()
     }, [])
 
     return (
-        <Layout
-            style={{
-                background: colorBgContainer
-            }}
-        >
-            <Col>
-                {charts.map((chart) => {
-                    switch (chart.type) {
-                        case 'barra':
-                            return <Barra xField={chart.xField} yField={chart.yField} data={data}  />
-                        case 'teste2':
-                            console.log('testd2')
-                            return ''
-                        default:
-                            console.log('abestado')
-                            return ''
-                    }
-                })}
-            </Col>
-        </Layout>
+        <>
+            {charts.map((chart, index) => (
+                <Layout
+                    style={{
+                        background: colorBgContainer,
+                        marginBottom: '15px'
+                    }}
+                >
+                    <Row gutter={[16, 16]} key={index}>
+                        <Col span={24}>
+                            {/* <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '15px' }}> */}
+                                {chart.query.type === 'barra' && (
+                                    <Barra xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                )}
+                            {/* </div> */}
+                        </Col>
+                    </Row>
+                </Layout>
+            ))}
+        </>
     )
 }
 

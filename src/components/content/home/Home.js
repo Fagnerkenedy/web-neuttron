@@ -43,9 +43,7 @@ function Home() {
                     </Col>
                 ))}
             </Row>
-            <Row>
-                <Charts />
-            </Row>
+            <Charts />
         </Layout>
     )
 }
