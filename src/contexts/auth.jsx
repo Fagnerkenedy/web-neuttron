@@ -44,6 +44,7 @@ export const AuthProvider = ({children}) => {
 
             setUser(loggedUser);
             navigate(`/${response.data.org}/home`);
+            window.location.reload(true)
         }
         
         setLoading(false);
