@@ -5,6 +5,7 @@ import '../styles.css'
 import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
+import CodeEditor from '../functionEditor/index.js';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -69,7 +70,8 @@ const EditView = ({ itemId }) => {
                 };
             });
             const relatedModulePromises = combinedData.map(async field => {
-                if (field.related_module != null) {
+                console.log("fields", field)
+                if (field.related_module != null && field.field_value != "") {
                     console.log("field.related_module", field)
 
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
@@ -81,27 +83,27 @@ const EditView = ({ itemId }) => {
                 }
             })
 
-            const relatedModuleResponses = await Promise.all(relatedModulePromises);
+            const relatedModuleResponses = await Promise.all(relatedModulePromises)
             console.log("relatedModuleResponses", relatedModuleResponses)
             const updatedCombinedData = combinedData.map(field => {
                 if (field.related_module != null) {
-                    console.log("field", field);
-                    const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name);
-                    console.log("relatedData", relatedData);
+                    console.log("field", field)
+                    const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name)
+                    console.log("relatedData", relatedData)
                     if (relatedData) {
                         return {
                             ...field,
                             related_id: relatedData.related_id
                         };
                     } else {
-                        return field;
+                        return field
                     }
                 } else {
-                    return field;
+                    return field
                 }
             });
             console.log("updatedCombinedData", updatedCombinedData);
-            
+
 
 
             if (Array.isArray(updatedCombinedData)) {
@@ -110,7 +112,7 @@ const EditView = ({ itemId }) => {
                 setData([updatedCombinedData]);
             }
         } catch (error) {
-            console.error("Erro ao buscar os dados:", error);
+            console.error("Erro ao buscar os dados:", error)
         }
     };
 
@@ -122,14 +124,26 @@ const EditView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-            const matchingResponse = response.data.map(item => {
-                return {
-                    field_value: item[api_name],
-                    related_id: item.id
-                };
-            });
-            setRelatedModuleData(matchingResponse);
+            if (relatedModuleName == "modules") {
+                const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                const matchingResponse = response.data.result.map(item => {
+                    return {
+                        field_value: item[api_name],
+                        related_id: item.api_name
+                    };
+                });
+                setRelatedModuleData(matchingResponse);
+            } else {
+                const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                const matchingResponse = response.data.map(item => {
+                    return {
+                        field_value: item[api_name],
+                        related_id: item.id
+                    };
+                });
+                setRelatedModuleData(matchingResponse);
+            }
+            
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
     }
@@ -156,9 +170,10 @@ const EditView = ({ itemId }) => {
         return //<div>Carregando...</div>;
     }
 
-    const handleFieldChange = (index, field_api_name, value) => {
+    const handleFieldChange = (index, value) => {
         const updatedData = [...data];
         updatedData[index].field_value = value;
+        console.log("tetertere", updatedData)
         setFieldsToUpdate(updatedData);
 
         // const updatedData = [...data];
@@ -188,10 +203,23 @@ const EditView = ({ itemId }) => {
         try {
             const fieldToUpdate3 = {};
             if (fieldToUpdate) {
+                console.log("fieldToUpdatefieldToUpdate",fieldToUpdate)
+                const records = relatedFieldData.filter(record => !!record);
+                fieldToUpdate3['related_record'] = records.reduce((acc, record) => {
+                    if (record != null) {
+                        acc[record.api_name] = {
+                            name: record.name,
+                            id: record.related_id,
+                            module: record.related_module
+                        }
+                    }
+                    return acc;
+                }, {});
                 fieldToUpdate.map(field => {
                     const { api_name, field_value } = field;
                     fieldToUpdate3[api_name] = field_value;
                 });
+                console.log("hahahah",fieldToUpdate3)
 
                 const token = localStorage.getItem('token');
                 const config = {
@@ -201,7 +229,6 @@ const EditView = ({ itemId }) => {
                 }
                 await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
                 console.log("RECORD ID:", record_id)
-                const records = relatedFieldData.filter(record => !!record);
                 const newRelatedFieldData = records.map((item) => {
                     return {
                         ...item,
@@ -297,15 +324,15 @@ const EditView = ({ itemId }) => {
                                     <Col span={24}>
                                         <Row gutter={16}>
                                             {data.map((fieldData, index) => (
-                                                <Col key={index} span={10}>
+                                                <Col key={index} span={(moduleName == "functions" ? 24 : 10)}>
                                                     <div style={{ padding: '5px 0', minHeight: '66px' }}>
                                                         <Row>
-                                                            <Col span={10} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                            <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>
                                                                     {fieldData.name}:
                                                                 </Text>
                                                             </Col>
-                                                            <Col span={14}>
+                                                            <Col span={(moduleName == "functions" ? 19 : 14)}>
                                                                 {(() => {
                                                                     if (fieldData.related_module != null) {
                                                                         return (
@@ -427,6 +454,16 @@ const EditView = ({ itemId }) => {
                                                                                 changeOnWheel
                                                                                 defaultValue={fieldData.field_value}
                                                                                 onChange={(e) => handleFieldChange(index, e)}
+                                                                            />
+                                                                        )
+                                                                    } else if (fieldData.field_type == "function") {
+                                                                        return (
+                                                                            <CodeEditor 
+                                                                                height={'50vh'} 
+                                                                                language={'javascript'} 
+                                                                                value={fieldData.field_value} 
+                                                                                theme={'vs-dark'}
+                                                                                handleFieldChange={(e) => handleFieldChange(index, e)}
                                                                             />
                                                                         )
                                                                     } else {

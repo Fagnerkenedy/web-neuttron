@@ -17,7 +17,7 @@ const AppContent = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const { columns, tableData } = useDataTable();
+    const { columns, tableData, loading } = useDataTable();
     const { rowSelection, hasSelected, start, selectedRowKeys } = useSelection();
     const { currentPage, pageSize, onPageChange, onPageSizeChange, startIndex, endIndex } = usePagination();
     const currentData = tableData.slice(startIndex, endIndex);
@@ -58,6 +58,7 @@ const AppContent = () => {
                         rowSelection={rowSelection}
                         currentData={currentData}
                         totalTableWidth={totalTableWidth}
+                        loading={loading}
                     />
                 </Content>
             </Layout >

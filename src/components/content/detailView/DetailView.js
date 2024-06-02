@@ -9,6 +9,10 @@ import apiURI from '../../../Utility/recordApiURI.js';
 import { LeftOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/es/typography/Paragraph.js';
 import RelatedList from './RelatedList.js';
+import PermissionsPage from './PermissionsPage.js';
+import { Can } from "../../../contexts/AbilityContext.js";
+import { useAbility } from '../../../contexts/AbilityContext.js'
+import CodeEditor from '../functionEditor/index.js';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -18,18 +22,20 @@ dayjs().format()
 
 const { Option } = Select;
 const { Title, Text } = Typography;
-const currentPath = window.location.pathname;
-const pathParts = currentPath.split('/');
-const org = pathParts[1];
-const moduleName = pathParts[2];
-const record_id = pathParts[3];
+
 
 const DetailView = ({ itemId }) => {
+    const { ability, loading } = useAbility();
     const [relatedModuleData, setRelatedModuleData] = useState([]);
     const [selectedValue, setSelectedValue] = useState(null);
     const [isChecked, setIsChecked] = useState(false);
     const [relatedList, setRelatedModuleList] = useState('');
     const [options, setOptions] = useState([]);
+    const currentPath = window.location.pathname;
+    const pathParts = currentPath.split('/');
+    const org = pathParts[1];
+    const moduleName = pathParts[2];
+    const record_id = pathParts[3];
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -134,14 +140,29 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-            const matchingResponse = response.data.map(item => {
-                return {
-                    field_value: item[api_name],
-                    related_id: item.id
-                };
-            });
-            setRelatedModuleData(matchingResponse);
+
+            if (relatedModuleName == "modules") {
+                const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                console.log("o que retornou? ", response)
+                const matchingResponse = response.data.result.map(item => {
+                    return {
+                        field_value: item[api_name],
+                        related_id: item.api_name
+                    };
+                });
+                setRelatedModuleData(matchingResponse);
+            } else {
+                const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                console.log("o que retornou? ", response)
+                const matchingResponse = response.data.map(item => {
+                    return {
+                        field_value: item[api_name],
+                        related_id: item.id
+                    };
+                });
+                setRelatedModuleData(matchingResponse);
+            }
+            
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
     }
@@ -238,8 +259,10 @@ const DetailView = ({ itemId }) => {
             console.log("index", index)
             console.log("newValue", newValue)
             console.log("id", id)
-
+            console.log("databatata", data)
+            
             const updatedData = [...data];
+            console.log("updatedDatabatata", data)
             const fieldToUpdate = updatedData[index];
 
             fieldToUpdate.field_value = newValue;
@@ -250,8 +273,24 @@ const DetailView = ({ itemId }) => {
             const org = pathParts[1];
             const moduleName = pathParts[2];
             const record_id = pathParts[3];
-
+            console.log("fieldToUpdate",fieldToUpdate)
             const fieldToUpdate3 = {};
+            fieldToUpdate3['related_record'] = [fieldToUpdate].reduce((acc, record) => {
+                if (record != null) {
+                    acc[record.api_name] = {
+                        name: record.related_id.children,
+                        id: record.related_id.key,
+                        module: record.related_module
+                    }
+                }
+                return acc;
+            }, {});
+            // console.log("data",data)
+            data.forEach(field => {
+                fieldToUpdate3[field.api_name] = field.field_value ? field.field_value : "";
+            });
+            
+
             [fieldToUpdate].map(field => {
                 const { name, api_name, field_value, related_id } = field;
                 fieldToUpdate3[api_name] = id.value
@@ -283,7 +322,7 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            // console.log("4",fieldToUpdate4)
+            console.log("fieldToUpdate3",fieldToUpdate3)
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
@@ -298,7 +337,7 @@ const DetailView = ({ itemId }) => {
     return (
         <div>
             {data && (
-                <div>
+                <div style={{ overflowY: 'auto' }}>
                     <div>
                         <Layout
                             style={{
@@ -315,16 +354,20 @@ const DetailView = ({ itemId }) => {
                                 </Col>
                                 <Col style={{ margin: '0 15px 0 0' }}>
                                     <Button icon={<LeftOutlined />} style={{ margin: '0 15px' }} href={`/${org}/${moduleName}`}>Voltar</Button>
-                                    <Button href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
-                                    <Popconfirm
-                                        title="Excluir"
-                                        description="Deseja excluir este(s) registro(s)?"
-                                        onConfirm={() => confirm()}
-                                        okText="Sim"
-                                        cancelText="Cancelar"
-                                    >
-                                        <Button style={{ margin: '0 15px' }} danger>Excluir</Button>
-                                    </Popconfirm>
+                                    <Can I='update' a={moduleName} ability={ability}>
+                                        <Button href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
+                                    </Can>
+                                    <Can I='delete' a={moduleName} ability={ability}>
+                                        <Popconfirm
+                                            title="Excluir"
+                                            description="Deseja excluir este(s) registro(s)?"
+                                            onConfirm={() => confirm()}
+                                            okText="Sim"
+                                            cancelText="Cancelar"
+                                        >
+                                            <Button style={{ margin: '0 15px' }} danger>Excluir</Button>
+                                        </Popconfirm>
+                                    </Can>
                                 </Col>
                             </Row>
                         </Layout>
@@ -340,21 +383,36 @@ const DetailView = ({ itemId }) => {
                                     padding: '20px'
                                 }}
                             >
-                                <Text style={{ padding: '0px 25px 10px', fontSize: '18px', color: '#ffff' }}>{toSingular(moduleName)} Informações</Text>
+                                {(() => {
+                                    if (moduleName == 'users') {
+                                        return (
+                                            <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Usuário Informações</Text>
+                                        )
+                                    } else if (moduleName == 'profiles') {
+                                        return (
+                                            <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Perfil Informações</Text>
+                                        )
+                                    } else {
+                                        return (
+                                            <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text>
+                                        )
+                                    }
+                                })()}
+
                                 <Row>
                                     <Col span={24}>
                                         <Row gutter={16}>
                                             {data.map((fieldData, index) => (
-                                                <Col key={index} span={10}>
+                                                <Col key={index} span={(moduleName == "functions" ? 24 : 10)}>
                                                     <div style={{ padding: '5px 0', minHeight: '66px' }}>
                                                         <Row>
-                                                            <Col span={10} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                            <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>
                                                                     {/* {JSON.stringify(fieldData)} */}
                                                                     {fieldData.name}
                                                                 </Text>
                                                             </Col>
-                                                            <Col span={14}>
+                                                            <Col span={(moduleName == "functions" ? 19 : 14)}>
                                                                 {(() => {
                                                                     if (fieldData.related_module != null) {
                                                                         return (
@@ -445,6 +503,15 @@ const DetailView = ({ itemId }) => {
                                                                             />
 
                                                                         )
+                                                                    } else if (fieldData.field_type == "checkbox" && fieldData.module == "users" && fieldData.api_name == "notification") {
+                                                                        return (
+                                                                            <Checkbox
+                                                                                defaultChecked={fieldData.field_value == 1 ? true : false}
+                                                                                // onChange={(e) => handleFieldChange(index, e.target.checked)}
+                                                                                disabled
+                                                                            >teste
+                                                                            </Checkbox>
+                                                                        )
                                                                     } else if (fieldData.field_type == "checkbox") {
                                                                         return (
                                                                             <Checkbox
@@ -473,16 +540,26 @@ const DetailView = ({ itemId }) => {
                                                                                 style={{ width: "100%" }}
                                                                                 prefix="R$"
                                                                                 formatter={(val) => {
-                                                                                    if (!val) return 0;
+                                                                                    if (!val) return;
                                                                                     return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")
                                                                                 }}
                                                                                 parser={(val) => {
-                                                                                    if (!val) return 0;
+                                                                                    if (!val) return;
                                                                                     return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
                                                                                 }}
                                                                                 changeOnWheel
                                                                                 defaultValue={fieldData.field_value}
                                                                                 onChange={(e) => handleFieldChange(index, e)}
+                                                                            />
+                                                                        )
+                                                                    } else if (fieldData.field_type == "function") {
+                                                                        return (
+                                                                            <CodeEditor
+                                                                                height={'45vh'} 
+                                                                                language={'javascript'} 
+                                                                                value={fieldData.field_value} 
+                                                                                theme={'vs-dark'}
+                                                                                readOnly={true}
                                                                             />
                                                                         )
                                                                     } else {
@@ -501,6 +578,11 @@ const DetailView = ({ itemId }) => {
                                                 </Col>
                                             ))}
                                         </Row>
+                                        {moduleName === 'profiles' && (
+                                            <div style={{ marginTop: '20px' }}>
+                                                <PermissionsPage />
+                                            </div>
+                                        )}
                                     </Col>
                                 </Row>
                             </Layout>

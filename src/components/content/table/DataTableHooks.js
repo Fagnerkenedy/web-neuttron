@@ -5,6 +5,7 @@ import { fetchColumns, fetchData } from '../DataFetcher';
 export const useDataTable = () => {
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchDataAndColumns = async () => {
@@ -23,6 +24,7 @@ export const useDataTable = () => {
 
         setColumns(columnsResult);
         setTableData(dataResult);
+        setLoading(false)
       } catch (err) {
         console.error("Erro:", err);
       }
@@ -31,5 +33,5 @@ export const useDataTable = () => {
     fetchDataAndColumns();
   }, []);
 
-  return { columns, tableData };
+  return { columns, tableData, loading };
 };

@@ -96,14 +96,28 @@ const EditView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-            const matchingResponse = response.data.map(item => {
-                return {
-                    field_value: item[api_name],
-                    related_id: item.id
-                };
-            });
-            setRelatedModuleData(matchingResponse);
+            if (relatedModuleName == "modules") {
+                const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                console.log("response", response)
+                const matchingResponse = response.data.result.map(item => {
+                    return {
+                        field_value: item[api_name],
+                        related_id: item.api_name
+                    };
+                });
+                setRelatedModuleData(matchingResponse);
+            } else {
+                const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                console.log("response", response)
+                const matchingResponse = response.data.map(item => {
+                    return {
+                        field_value: item[api_name],
+                        related_id: item.id
+                    };
+                });
+                setRelatedModuleData(matchingResponse);
+            }
+
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
     }
@@ -139,11 +153,26 @@ const EditView = ({ itemId }) => {
 
     const handleSave = async () => {
         try {
-            const fieldToUpdate3 = {};
+            let fieldToUpdate3 = {}
             if (fieldToUpdate) {
+                const records = relatedFieldData.filter(record => !!record);
+
+
+                console.log("relatedFieldDatabatata", records)
+
+                fieldToUpdate3['related_record'] = records.reduce((acc, record) => {
+                    if (record != null) {
+                        acc[record.api_name] = {
+                            name: record.name,
+                            id: record.related_id,
+                            module: record.related_module
+                        }
+                    }
+                    return acc;
+                }, {});
                 fieldToUpdate.map(field => {
-                    const { api_name, field_value } = field;
-                    fieldToUpdate3[api_name] = field_value;
+                    const { api_name, field_value } = field
+                    fieldToUpdate3[api_name] = field_value
                 });
 
                 const token = localStorage.getItem('token');
@@ -155,8 +184,6 @@ const EditView = ({ itemId }) => {
                 console.log("create: ", fieldToUpdate3)
                 const create = await axios.post(`${linkApi}/crm/${org}/${moduleName}/record`, fieldToUpdate3, config);
                 const record_id = create.data.record_id
-
-                const records = relatedFieldData.filter(record => !!record);
 
                 const newRelatedFieldData = records.map((item) => {
                     return {
@@ -173,7 +200,7 @@ const EditView = ({ itemId }) => {
                 });
                 const results = await Promise.all(promises);
 
-                console.log("results", results);
+                console.log("results Registro Criado", results);
                 message.success('Registro Criado!');
                 navigate(`/${org}/${moduleName}/${record_id}`)
             }
@@ -198,7 +225,8 @@ const EditView = ({ itemId }) => {
                 related_id: newValue.key,
                 module_id: null,
                 id: fieldToUpdate1.id,
-                api_name: fieldToUpdate1.api_name
+                api_name: fieldToUpdate1.api_name,
+                name: fieldToUpdate1.field_value
             };
 
             console.log("Batatinha quando nasce", fieldToUpdate5)
@@ -378,11 +406,11 @@ const EditView = ({ itemId }) => {
                                                                                         style={{ width: "100%" }}
                                                                                         prefix="R$"
                                                                                         formatter={(val) => {
-                                                                                            if (!val) return 0;
+                                                                                            if (!val) return;
                                                                                             return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
                                                                                         }}
                                                                                         parser={(val) => {
-                                                                                            if (!val) return 0;
+                                                                                            if (!val) return;
                                                                                             return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
                                                                                         }}
                                                                                         changeOnWheel
@@ -425,6 +453,7 @@ const EditView = ({ itemId }) => {
                                                                     </Form.Item>
                                                                 }
                                                             </Col>
+                                                            {/* // Enviar e-mail de notificação */}
                                                         </Row>
                                                     </div>
                                                 </Col>

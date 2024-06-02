@@ -15,8 +15,15 @@ import Settings from '../components/content/settings/Settings';
 import Modules from '../components/content/settings/modules/Modules';
 import Layout from '../components/content/settings/modules/layout/Layout';
 import Payment from '../components/checkout/Payment';
+import { useAbility } from '../contexts/AbilityContext.js'
+import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
 function RoutesPage() {
+
+  const currentPath = window.location.pathname;
+  const pathParts = currentPath.split('/')
+  const org = pathParts[1]
+  const moduleName = pathParts[2]
 
   const Private = ({ children }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -32,27 +39,45 @@ function RoutesPage() {
     return children;
   }
 
+  const AuthorizedRoute = ({ action, subject, children }) => {
+    const { ability, loading } = useAbility();
+    if (loading) {
+      return ;
+    }
+    console.log(`ability.can(${action}, ${subject})`, ability.can(action, subject))
+    ability.can(action, subject)
+
+    if (!ability.can(action, subject)) {
+      return <Navigate to={`/${org}/not-authorized`} />;
+    }
+
+    return children;
+  };
+
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* <Route path="/" element={<Navigate to="/login" />} /> */}
+        {/* <AbilityProvider> */}
+          <Routes>
+            {/* <Route path="/" element={<Navigate to="/login" />} /> */}
 
-          <Route path="/:org" element={<Private><PageBase /></Private>}>
-            <Route path="/:org/home" element={<Home />} />
-            <Route path="/:org/:module" element={<AppContent />} />
-            <Route path="/:org/:module/:recordId" element={<DetailView />} />
-            <Route path="/:org/:module/create" element={<CreateView />} />
-            <Route path="/:org/:module/:recordId/edit" element={<EditView />} />
-            <Route path="/:org/settings" element={<Settings />} />
-            <Route path="/:org/settings/modules" element={<Modules />} />
-            <Route path="/:org/settings/modules/:module" element={<Layout />} />
-            <Route path="/:org/checkout" element={<Payment />} />
-          </Route>
-          <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
+            <Route path="/:org" element={<Private><PageBase /></Private>}>
+              <Route path="/:org/home" element={<Home />} />
+              <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
+              <Route path="/:org/:module/:recordId" element={<AuthorizedRoute action="read" subject={moduleName}><DetailView /></AuthorizedRoute>} />
+              <Route path="/:org/:module/create" element={<AuthorizedRoute action="create" subject={moduleName}><CreateView /></AuthorizedRoute>} />
+              <Route path="/:org/:module/:recordId/edit" element={<AuthorizedRoute action="update" subject={moduleName}><EditView /></AuthorizedRoute>} />
+              <Route path="/:org/settings" element={<Settings />} />
+              <Route path="/:org/settings/modules" element={<Modules />} />
+              {/* <Route path="/:org/settings/roles" element={<PermissionsPage />} /> */}
+              <Route path="/:org/settings/modules/:module" element={<Layout />} />
+              <Route path="/:org/checkout" element={<Payment />} />
+            </Route>
+            <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        {/* </AbilityProvider> */}
       </AuthProvider>
     </BrowserRouter>
   )

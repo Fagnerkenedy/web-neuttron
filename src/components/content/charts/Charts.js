@@ -4,7 +4,7 @@ import { Typography } from 'antd';
 import { fetchCharts } from './fetchCharts'
 import { Column } from '@ant-design/plots';
 import Barra from './Barra'
-import Linha from './Line'
+import Linha from './Linha'
 
 const { Text } = Typography;
 

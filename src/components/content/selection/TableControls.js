@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message } from 'antd';
+import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message, Typography } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { Option } from 'antd/es/mentions';
 import apiURI from '../../../Utility/recordApiURI.js';
 import { fetchModules } from './fetchModules.js';
+import { Can } from "../../../contexts/AbilityContext.js";
+import { useAbility } from '../../../contexts/AbilityContext.js'
 const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
 
+const { Title, Text } = Typography;
 const currentPath = window.location.pathname;
 const pathParts = currentPath.split('/');
 const org = pathParts[1]
 const moduleName = pathParts[2]
 
 const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSize, onPageChange, onPageSizeChange, currentPage }) => {
+  const { ability, loading } = useAbility();
   const [activeModule, setActiveModule] = useState("");
 
   const confirm = async (e) => {
@@ -23,12 +27,12 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   const toSingular = (plural) => {
     return pluralize.singular(plural)
   }
-  
+
   useEffect(() => {
     async function fetchModulesData() {
       const fetchedModules = await fetchModules(org);
       fetchedModules.result.forEach(module => {
-        if(module.api_name == moduleName || module.name == moduleName) {
+        if (module.api_name == moduleName || module.name == moduleName) {
           setActiveModule(module.name)
         }
       });
@@ -37,15 +41,21 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   }, []);
 
   return (
-    <Flex justify={'space-between'} style={{height: '50px'}}>
+    <Flex justify={'space-between'} style={{ height: '50px' }}>
       <Flex justify={'flex-start'} align={'center'}>
+        {moduleName == "users" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Usuários</Text>) :
+          moduleName == "profiles" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Perfis</Text>) :
+            moduleName == "functions" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Funções</Text>) :
+              moduleName == "charts" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Painéis</Text>) :
+                (<Text></Text>)}
         <Breadcrumb>
           {hasSelected ? (
             <Breadcrumb.Item>
               {`${selectedRowKeys.length} Registro(s) selecionado(s) `}
-              <Link onClick={start} disabled={!hasSelected} style={{margin: '15px'}}>
+              <Link onClick={start} disabled={!hasSelected} style={{ margin: '15px' }}>
                 Limpar
               </Link>
+              <Can I='delete' a={moduleName} ability={ability}>
               <Popconfirm
                 title="Excluir"
                 description="Tem certeza de que deseja excluir o(s) registro(s) selecionado(s)?"
@@ -55,15 +65,23 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
               >
                 <Button type="text" danger>Excluir</Button>
               </Popconfirm>
+              </Can>
             </Breadcrumb.Item>
           ) : null}
           {!hasSelected && <Breadcrumb.Item>{`Total de registros ${totalItems}`}</Breadcrumb.Item>}
         </Breadcrumb>
       </Flex>
       <Flex justify={'flex-end'} align={'center'}>
-        <Flex style={{paddingRight: '15px'}}>
-          <Button href={`/${org}/${moduleName}/create`}>Criar {toSingular(activeModule)}</Button>
-        </Flex>
+        <Can I='create' a={moduleName} ability={ability}>
+          <Flex style={{ paddingRight: '15px' }}>
+            <Button href={`/${org}/${moduleName}/create`}>Criar {
+              moduleName == "users" ? ("Usuário") :
+                moduleName == "profiles" ? ("Perfil") :
+                  moduleName == "functions" ? ("Função") :
+                    moduleName == "charts" ? ("Painel") :
+                      (toSingular(activeModule))}</Button>
+          </Flex>
+        </Can>
 
         <Flex align={'center'}>
           <Select defaultValue={pageSize} onChange={onPageSizeChange} style={{ marginRight: '8px' }}>

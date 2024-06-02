@@ -1,11 +1,12 @@
 // DataTable.js
 import React, { useRef, useState } from 'react';
-import { Table, ConfigProvider, Button, Input, Space } from 'antd';
+import { Table, ConfigProvider, Button, Input, Space, Spin } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
+import Loading from '../utils/Loading'
 
-const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth }) => {
+const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, loading }) => {
   const currentPath = window.location.pathname;
   const pathParts = currentPath.split('/');
   const org = pathParts[1]
@@ -115,6 +116,12 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth }
     ...col,
     ...getColumnSearchProps(col.dataIndex, col.title),
   }));
+
+  if (loading) {
+    return (
+      <Loading />
+    )
+  }
 
   return (
     <ConfigProvider

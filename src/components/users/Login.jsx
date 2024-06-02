@@ -7,7 +7,7 @@ import './styles.css'
 import FooterText from '../utils/FooterText';
 import AuthContext from '../../contexts/auth';
 import Loading from '../utils/Loading';
-import Logo from './logo-neuttron-jpg.jpg';
+import Logo from './neuttron_preto_sem_fundo.png';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -52,7 +52,7 @@ const Login = () => {
                                             {/* <Logo color="black" text="" /> */}
                                            
                                             <Link to="http://neuttron.com.br">  {/* Colocar o link da página inicial do site, para quando o usuário quiser retornar para o site basta clicar na logo */}
-                                                <Image src={Logo} preview={false} style={{ width: '120px', paddingTop: '8px' }} />
+                                                <Image src={Logo} preview={false} style={{ width: '120px' }} />
                                             </Link>
                                         </Row>
                                         <Title level={4} className='user-cadastro-title'>Informe os dados de acesso</Title>

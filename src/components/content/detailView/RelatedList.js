@@ -1,10 +1,15 @@
 import React from "react";
-import { Layout, Card, Table } from 'antd';
+import { Layout, Card, Table, Typography, Button } from 'antd';
 import '../styles.css'
 import { Content } from "antd/es/layout/layout";
 import { useDataTable } from '../tableRelatedList/DataTableHooksRelatedList';
+import { PlusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Can } from "../../../contexts/AbilityContext.js";
+import { useAbility } from '../../../contexts/AbilityContext.js'
+const { Text } = Typography;
 
 function RelatedList({ related_module, related_id }) {
+    const { ability, loading } = useAbility();
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
@@ -15,7 +20,7 @@ function RelatedList({ related_module, related_id }) {
     return (
         <Content className='content' style={{ paddingTop: '20px' }}>
             <Layout>
-                <Card size="small" title={related_module}>
+                <Card style={{ paddingLeft: '10px'}} size="small" title={related_module == 'users' ? "Usuários" : related_module} extra={<Can I='create' a={related_module} ability={ability}><Button style={{ margin: '10px'}} icon={<PlusOutlined />} href={`/${org}/${related_module}/create`}>Novo</Button></Can>}>
                     <Table
                         size="small"
                         columns={(tableData.length > 0 ? columns : '')}

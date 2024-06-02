@@ -7,6 +7,8 @@ import { SettingOutlined, UserOutlined } from '@ant-design/icons';
 import ButtonDarkMode from './ButtonDarkMode';
 import './styles.css'
 import Logo from '../utils/Logo';
+import { Can } from "../../contexts/AbilityContext.js";
+import { useAbility } from '../../contexts/AbilityContext.js'
 
 const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const currentPath = window.location.pathname;
@@ -16,6 +18,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const { logout } = useContext(AuthContext);
   const [modules, setModules] = useState([]);
   const [activeModule, setActiveModule] = useState(null);
+  const { ability, loading } = useAbility();
 
   const Content = (
     <div>
@@ -29,9 +32,11 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
       const fetchedModules = await fetchModules(org);
       setModules(fetchedModules.result);
     }
-    setActiveModule(module)
-    fetchModulesData();
-  }, []);
+    if (!loading) {
+      setActiveModule(module)
+      fetchModulesData();
+    }
+  }, [loading]);
 
   return (
     <>
@@ -52,31 +57,32 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
           </React.Fragment>
           {modules.map((module, index) => (
-            <React.Fragment key={index}>
-              <Link
-                className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
-                style={{ color: 'white' }}
-                href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
-                onClick={() => setActiveModule(module.name)}
-              >
-                {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
-              </Link>
-              {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
-            </React.Fragment>
+            <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>
+              <React.Fragment key={index}>
+                <Link
+                  className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
+                  style={{ color: 'white' }}
+                  href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
+                  onClick={() => setActiveModule(module.name)}
+                >
+                  {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
+                </Link>
+                {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
+              </React.Fragment>
+            </Can>
           ))}
         </Col>
-        <div style={{ marginLeft: 'auto', minWidth: '150px' }}>
-          <Row span={12}> 
-            {/* <Col offset={11}>
-              <Button href={`/${org}/settings`} icon={<SettingOutlined />} />
-            </Col> 
-            <Col offset={2}>*/}
-            <Col style={{alignItems:'center', alignContent:'center'}} span={18} >
+        <div style={{ marginLeft: 'auto', minWidth: '200px' }}>
+          <Row span={24}>
+            <Col style={{ alignItems: 'center', alignContent: 'center' }} span={14} >
               <Link href={`/${org}/checkout`}>
-              Fazer Upgrade
+                Fazer Upgrade
               </Link>
-            </Col> 
+            </Col>
             <Col>
+              <Button href={`/${org}/settings`} icon={<SettingOutlined />} />
+            </Col>
+            <Col offset={1}>
               <Popover content={Content} trigger="click">
                 <Button icon={<UserOutlined />} />
               </Popover>
