@@ -66,6 +66,10 @@ function PermissionRow({ module, permissions, setPermissions, profileId, handleP
                         return (
                             <Text><b>Funções</b></Text>
                         )
+                    } else if (module.name == 'charts') {
+                        return (
+                            <Text><b>Gráficos</b></Text>
+                        )
                     } else {
                         return (
                             <Text><b>{module.name}</b></Text>
@@ -151,6 +155,14 @@ function PermissionsPage() {
             }
             if (!initialPermissions['functions']) {
                 initialPermissions['functions'] = {
+                    read: { checked: false, id: null },
+                    create: { checked: false, id: null },
+                    update: { checked: false, id: null },
+                    delete: { checked: false, id: null }
+                };
+            }
+            if (!initialPermissions['charts']) {
+                initialPermissions['charts'] = {
                     read: { checked: false, id: null },
                     create: { checked: false, id: null },
                     update: { checked: false, id: null },
@@ -269,6 +281,14 @@ function PermissionsPage() {
             <PermissionRow
                 key="functions"
                 module={{ name: 'functions', api_name: 'functions' }}
+                permissions={permissions}
+                setPermissions={setPermissions}
+                profileId={profileId}
+                handlePermissionUpdate={handlePermissionUpdate}
+            />
+            <PermissionRow
+                key="charts"
+                module={{ name: 'charts', api_name: 'charts' }}
                 permissions={permissions}
                 setPermissions={setPermissions}
                 profileId={profileId}
