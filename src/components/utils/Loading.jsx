@@ -7,7 +7,8 @@ const { Content } = Layout;
 
 const Loading = () => {
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        // token: { colorBgContainer, borderRadiusLG },
+        token: { colorBgContainer },
     } = theme.useToken()
     return (
         <Layout

@@ -25,6 +25,7 @@ const { Title, Text } = Typography;
 
 
 const DetailView = ({ itemId }) => {
+    const [sections, setSections] = useState([])
     const { ability, loading } = useAbility();
     const [relatedModuleData, setRelatedModuleData] = useState([]);
     const [selectedValue, setSelectedValue] = useState(null);
@@ -69,7 +70,6 @@ const DetailView = ({ itemId }) => {
                 }
             };
             const responseFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);
-            console.log("responseFields", responseFields)
             const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, config);
             const combinedData = responseFields.data.map(field => {
                 const matchingResponse = response.data.find(item => item[field.api_name]);
@@ -79,14 +79,9 @@ const DetailView = ({ itemId }) => {
                 };
             });
 
-            console.log("combinedData", combinedData)
-
             const relatedModulePromises = combinedData.map(async field => {
                 if (field.related_module != null) {
-                    console.log("field.related_module", field)
-
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("response", response)
                     if (response.data != "") {
                         return {
                             api_name: field.api_name,
@@ -100,12 +95,9 @@ const DetailView = ({ itemId }) => {
             })
 
             const relatedModuleResponses = await Promise.all(relatedModulePromises);
-            console.log("relatedModuleResponses", relatedModuleResponses)
             const updatedCombinedData = combinedData.map(field => {
                 if (field.related_module != null) {
-                    console.log("field", field);
                     const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name);
-                    console.log("relatedData", relatedData);
                     if (relatedData) {
                         return {
                             ...field,
@@ -118,9 +110,40 @@ const DetailView = ({ itemId }) => {
                     return field;
                 }
             });
-            console.log("updatedCombinedData", updatedCombinedData);
 
+            const responseSections = await axios.get(`${linkApi}/sections/${org}/${moduleName}`, config);
+            // console.log("responseSections.data.sections.fields: ",responseSections.data.sections[0].fields)
+            // setSections(responseSections.data.sections);
 
+            const responseSectionsFields = responseSections.data.sections
+            // Atualizar os campos das seções com os valores dos campos em combinedData
+            const updatedSections = responseSectionsFields.map(section => {
+                // Atualizar campos à esquerda
+                const updatedLeft = section.fields.left.map(item => {
+                const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
+                return {
+                    ...item,
+                    field_value: matchingField ? matchingField.field_value : item.field_value
+                };
+                });
+
+                // Atualizar campos à direita
+                const updatedRight = section.fields.right.map(item => {
+                const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
+                return {
+                    ...item,
+                    field_value: matchingField ? matchingField.field_value : item.field_value
+                };
+                });
+
+                return {
+                ...section,
+                left: updatedLeft,
+                right: updatedRight
+                };
+            });
+            
+            setSections(updatedSections)
 
             if (Array.isArray(updatedCombinedData)) {
                 setData(updatedCombinedData);
@@ -143,7 +166,6 @@ const DetailView = ({ itemId }) => {
 
             if (relatedModuleName == "modules") {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-                console.log("o que retornou? ", response)
                 const matchingResponse = response.data.result.map(item => {
                     return {
                         field_value: item[api_name],
@@ -153,7 +175,6 @@ const DetailView = ({ itemId }) => {
                 setRelatedModuleData(matchingResponse);
             } else {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-                console.log("o que retornou? ", response)
                 const matchingResponse = response.data.map(item => {
                     return {
                         field_value: item[api_name],
@@ -162,7 +183,7 @@ const DetailView = ({ itemId }) => {
                 });
                 setRelatedModuleData(matchingResponse);
             }
-            
+
             // setSelectedValue({ value: matchingResponse[0].field_value, id: matchingResponse[0].related_id });
         }
     }
@@ -176,7 +197,6 @@ const DetailView = ({ itemId }) => {
                 }
             };
             const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/field/${api_name}`, config);
-            console.log("etstetes", response)
             setOptions(response.data);
         }
     }
@@ -191,7 +211,8 @@ const DetailView = ({ itemId }) => {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-        }; const currentPath = window.location.pathname;
+        }; 
+        const currentPath = window.location.pathname;
         const pathParts = currentPath.split('/');
         const org = pathParts[1];
         const moduleName = pathParts[2];
@@ -207,12 +228,10 @@ const DetailView = ({ itemId }) => {
         const stringComAspas = stringOptions.replace(/([^;]+ )/g, '"$1"');
         const lista = stringComAspas.split(';');
         const listaFinal = lista.map(item => item.trim().replace(/^"|"$/g, ''));
-        console.log("optionss", listaFinal)
         const fieldOptions = {
             field_id: field_id,
             list: listaFinal
         }
-        console.log("options222", fieldOptions)
         setOptions([fieldOptions])
     }
 
@@ -225,17 +244,19 @@ const DetailView = ({ itemId }) => {
         return //<div>Carregando...</div>;
     }
 
-    const handleFieldChange = async (index, newValue, id) => {
+    const handleFieldChange = async (index, newValue, id, api_name) => {
         try {
             const updatedData = [...data];
             const fieldToUpdate = updatedData[index];
             fieldToUpdate.field_value = newValue;
             fieldToUpdate.related_id = id;
             const fieldToUpdate3 = {};
-            [fieldToUpdate].map(field => {
-                const { api_name, field_value } = field;
-                fieldToUpdate3[api_name] = field_value
-            });
+            fieldToUpdate3[api_name] = newValue
+
+            // [fieldToUpdate].map(field => {
+            //     const { api_name, field_value } = field;
+            //     fieldToUpdate3[api_name] = field_value
+            // });
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
             const org = pathParts[1];
@@ -260,7 +281,7 @@ const DetailView = ({ itemId }) => {
             console.log("newValue", newValue)
             console.log("id", id)
             console.log("databatata", data)
-            
+
             const updatedData = [...data];
             console.log("updatedDatabatata", data)
             const fieldToUpdate = updatedData[index];
@@ -273,7 +294,7 @@ const DetailView = ({ itemId }) => {
             const org = pathParts[1];
             const moduleName = pathParts[2];
             const record_id = pathParts[3];
-            console.log("fieldToUpdate",fieldToUpdate)
+            console.log("fieldToUpdate", fieldToUpdate)
             const fieldToUpdate3 = {};
             fieldToUpdate3['related_record'] = [fieldToUpdate].reduce((acc, record) => {
                 if (record != null) {
@@ -285,11 +306,10 @@ const DetailView = ({ itemId }) => {
                 }
                 return acc;
             }, {});
-            // console.log("data",data)
             data.forEach(field => {
                 fieldToUpdate3[field.api_name] = field.field_value ? field.field_value : "";
             });
-            
+
 
             [fieldToUpdate].map(field => {
                 const { name, api_name, field_value, related_id } = field;
@@ -322,7 +342,6 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            console.log("fieldToUpdate3",fieldToUpdate3)
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
@@ -333,6 +352,150 @@ const DetailView = ({ itemId }) => {
         }
     };
     const teste = true
+
+    const extractNumbers = (inputString) => {
+        const numbers = inputString.match(/\d+/g);
+        return numbers ? numbers.join('') : '';
+    }
+    
+    const renderField = (fieldData, index, onChange) => {
+        console.log("fieldData",fieldData)
+        if (fieldData.related_module != null) {
+            return (
+                <Select
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                    defaultValue={fieldData.field_value}
+                    placeholder="Selecione"
+                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
+                    // onSelect={(key, value) => onChange(value)}
+                    // onSelect={(key, value) => onChangeRelatedModule(value)}
+                    onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                    dropdownRender={(menu) => (
+                        <div>
+                            {menu}
+                            <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
+                                    {fieldData.field_value ? `Ir para ${fieldData.field_value}` : ''}
+                                </a>
+                            </div>
+                        </div>
+                    )}
+                >
+                    <Option value=''>-Nenhum-</Option>
+                    {relatedModuleData.map(item => (
+                        <Option key={item.related_id} value={item.field_value}>
+                            {item.field_value}
+                        </Option>
+                    ))}
+                </Select>
+            );
+        } else if (fieldData.field_type === "select") {
+            return (
+                <Select
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                    defaultValue={fieldData.field_value}
+                    placeholder="Selecione"
+                    onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+                    onSelect={(newValue) => onChange(newValue)}
+                >
+                    <Option value=''>-Nenhum-</Option>
+                    {options.map(item => (
+                        <Option key={item.id} value={item.name}>
+                            {item.name}
+                        </Option>
+                    ))}
+                </Select>
+            );
+        } else if (fieldData.field_type === "date") {
+            return (
+                <DatePicker
+                    style={{height: '100%', width: "100%"}}
+                    // style={{ height: '100%', width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                    onChange={(value) => onChange(value)}
+                    value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
+                    placeholder="Selecione uma data"
+                    format="DD/MM/YYYY"
+                />
+            );
+        } else if (fieldData.field_type === "multi_line") {
+            return (
+                <TextArea
+                    // style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                    rows={1}
+                    defaultValue={fieldData.field_value}
+                    onChange={(e) => onChange(e.target.value)}
+                    maxLength={extractNumbers(fieldData.type)}
+                    // showCount
+                />
+            );
+        } else if (fieldData.field_type === "checkbox") {
+            return (
+                <Checkbox
+                    defaultChecked={fieldData.field_value == 1}
+                    onChange={(e) => onChange(e.target.checked ? 1 : 0)}
+                />
+            );
+        } else if (fieldData.field_type === "number") {
+            return (
+                <InputNumber
+                    style={{ width: "100%" }}
+                    defaultValue={fieldData.field_value}
+                    onChange={(value) => onChange(value)}
+                    maxLength={extractNumbers(fieldData.type)}
+                />
+            );
+        } else if (fieldData.field_type === "currency") {
+            return (
+                <InputNumber
+                    style={{ width: "100%" }}
+                    prefix="R$"
+                    formatter={value => `R$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                    }
+                    parser={value => value.replace(/\R$\s?|(,)/g, '').replace(/(.)/g, "").replace(/(,*)/g, ".")}
+                    defaultValue={fieldData.field_value}
+                    onChange={(value) => onChange(value)}
+                    maxLength={extractNumbers(fieldData.type)}
+                />
+            );
+        } else if (fieldData.field_type === "function") {
+            return (
+                // <CodeEditor
+                //     height={'50vh'}
+                //     language={'javascript'}
+                //     value={fieldData.field_value}
+                //     theme={'vs-dark'}
+                //     readOnly
+                // />
+                <TextArea
+                    // style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                    rows={18}
+                    defaultValue={fieldData.field_value}
+                    maxLength={extractNumbers(fieldData.type)}
+                    showCount
+                    readOnly
+                />
+            );
+        } else {
+            return (
+                <Input
+                    defaultValue={fieldData.field_value}
+                    onChange={(e) => onChange(e.target.value)}
+                    maxLength={extractNumbers(fieldData.type)}
+                    // showCount
+                />
+            );
+        }
+    };
 
     return (
         <div>
@@ -374,7 +537,6 @@ const DetailView = ({ itemId }) => {
                     </div>
                     <div style={{ padding: '15px 0' }}>
                         <Content className='content'>
-
                             <Layout
                                 style={{
                                     background: colorBgContainer,
@@ -383,198 +545,43 @@ const DetailView = ({ itemId }) => {
                                     padding: '20px'
                                 }}
                             >
-                                {(() => {
-                                    if (moduleName == 'users') {
-                                        return (
-                                            <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Usuário Informações</Text>
-                                        )
-                                    } else if (moduleName == 'profiles') {
-                                        return (
-                                            <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Perfil Informações</Text>
-                                        )
-                                    } else {
-                                        return (
-                                            <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text>
-                                        )
-                                    }
-                                })()}
-
+                                {/* <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}
                                 <Row>
                                     <Col span={24}>
                                         <Row gutter={16}>
-                                            {data.map((fieldData, index) => (
-                                                <Col key={index} span={(moduleName == "functions" ? 24 : 10)}>
-                                                    <div style={{ padding: '5px 0', minHeight: '66px' }}>
-                                                        <Row>
-                                                            <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-                                                                <Text style={{ fontSize: '16px', color: '#838da1' }}>
-                                                                    {/* {JSON.stringify(fieldData)} */}
-                                                                    {fieldData.name}
-                                                                </Text>
-                                                            </Col>
-                                                            <Col span={(moduleName == "functions" ? 19 : 14)}>
-                                                                {(() => {
-                                                                    if (fieldData.related_module != null) {
-                                                                        return (
-                                                                            <Select
-                                                                                showSearch
-                                                                                optionFilterProp="children"
-                                                                                filterOption={(input, option) =>
-                                                                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                                                }
-                                                                                style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                                                                                onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                                                                                // value={selectedValue ? selectedValue.value : null}
-                                                                                defaultValue={fieldData.field_value}
-                                                                                placeholder="Selecione"
-                                                                                // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-                                                                                // loading={loading}
-                                                                                onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
-                                                                                onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
-                                                                                dropdownRender={(menu) => (
-                                                                                    <div>
-                                                                                        {menu}
-                                                                                        <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                                                                                            <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
-                                                                                                {(fieldData.field_value ? `Ir para ${fieldData.field_value}` : '')}
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                )}
-                                                                            >
-                                                                                <Option value=''>-Nenhum-</Option>
-                                                                                {relatedModuleData.map(item => (
-                                                                                    <Option key={item.related_id} value={item.field_value}>
-                                                                                        {item.field_value}
-                                                                                    </Option>
-                                                                                ))}
-                                                                            </Select>
-                                                                        );
-                                                                    } else if (fieldData.field_type == "select") {
-                                                                        return (
-                                                                            <Select
-                                                                                showSearch
-                                                                                optionFilterProp="children"
-                                                                                filterOption={(input, option) =>
-                                                                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                                                }
-                                                                                style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                                                                                onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                                                                                // value={selectedValue ? selectedValue.value : null}
-                                                                                defaultValue={fieldData.field_value}
-                                                                                placeholder="Selecione"
-                                                                                // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-                                                                                // loading={loading}
-                                                                                onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
-                                                                                onSelect={(newValue) => handleFieldChange(index, newValue)}
-                                                                            >
-                                                                                <Option value=''>-Nenhum-</Option>
-                                                                                {options.map(item => (
-                                                                                    <Option key={item.id} value={item.name}>
-                                                                                        {item.name}
-                                                                                    </Option>
-                                                                                ))}
-                                                                            </Select>
-                                                                        );
-                                                                    } else if (fieldData.field_type == "date") {
-                                                                        return (
-                                                                            <DatePicker
-                                                                                style={{ height: '100%', width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                                                                                onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
-                                                                                onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                                                                                onChange={(value) => handleFieldChange(index, value)}
-                                                                                value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
-                                                                                placeholder="Selecione uma data"
-                                                                                format="DD/MM/YYYY"
-                                                                            />
-                                                                        );
-                                                                    } else if (fieldData.field_type == "multi_line") {
-                                                                        return (
-                                                                            <TextArea
-                                                                                style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                                                                                onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
-                                                                                onBlur={(e) => handleFieldChange(index, e.target.value)}
-                                                                                onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
-                                                                                onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                                                                                rows={4}
-                                                                                defaultValue={fieldData.field_value}
-                                                                                onChange={(newValue) => handleFieldChange(index, newValue)}
-                                                                                maxLength={16000}
-                                                                            />
-
-                                                                        )
-                                                                    } else if (fieldData.field_type == "checkbox" && fieldData.module == "users" && fieldData.api_name == "notification") {
-                                                                        return (
-                                                                            <Checkbox
-                                                                                defaultChecked={fieldData.field_value == 1 ? true : false}
-                                                                                // onChange={(e) => handleFieldChange(index, e.target.checked)}
-                                                                                disabled
-                                                                            >teste
-                                                                            </Checkbox>
-                                                                        )
-                                                                    } else if (fieldData.field_type == "checkbox") {
-                                                                        return (
-                                                                            <Checkbox
-                                                                                defaultChecked={fieldData.field_value == 1 ? true : false}
-                                                                                onChange={(e) => handleFieldChange(index, e.target.checked)}
-                                                                            >
-                                                                            </Checkbox>
-                                                                        )
-                                                                    } else if (fieldData.field_type == "number") {
-                                                                        return (
-                                                                            // <InputNumber
-                                                                            //     style={{ width: "100%" }}
-                                                                            //     changeOnWheel
-                                                                            //     defaultValue={fieldData.field_value}
-                                                                            //     onChange={(e) => handleFieldChange(index, e)}
-                                                                            // />
-                                                                            <EditableCell
-                                                                                value={fieldData.field_value}
-                                                                                onChange={(newValue) => handleFieldChange(index, newValue)}
-                                                                                type={'number'}
-                                                                            />
-                                                                        )
-                                                                    } else if (fieldData.field_type == "currency") {
-                                                                        return (
-                                                                            <InputNumber
-                                                                                style={{ width: "100%" }}
-                                                                                prefix="R$"
-                                                                                formatter={(val) => {
-                                                                                    if (!val) return;
-                                                                                    return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")
-                                                                                }}
-                                                                                parser={(val) => {
-                                                                                    if (!val) return;
-                                                                                    return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
-                                                                                }}
-                                                                                changeOnWheel
-                                                                                defaultValue={fieldData.field_value}
-                                                                                onChange={(e) => handleFieldChange(index, e)}
-                                                                            />
-                                                                        )
-                                                                    } else if (fieldData.field_type == "function") {
-                                                                        return (
-                                                                            <CodeEditor
-                                                                                height={'45vh'} 
-                                                                                language={'javascript'} 
-                                                                                value={fieldData.field_value} 
-                                                                                theme={'vs-dark'}
-                                                                                readOnly={true}
-                                                                            />
-                                                                        )
-                                                                    } else {
-                                                                        return (
-                                                                            <EditableCell
-                                                                                value={fieldData.field_value}
-                                                                                onChange={(newValue) => handleFieldChange(index, newValue)}
-                                                                                type={typeof fieldData.field_value === 'number' ? 'number' : 'text'}
-                                                                            />
-                                                                        );
-                                                                    }
-                                                                })()}
-                                                            </Col>
-                                                        </Row>
-                                                    </div>
+                                            {sections.map((section, sectionIndex) => (
+                                                <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
+                                                    <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
+                                                    <Row gutter={16}>
+                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                            {section.left.map((field, fieldIndex) => (
+                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
+                                                                    <Row>
+                                                                        <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                            <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                        </Col>
+                                                                        <Col span={(moduleName == "functions" ? 20 : 14)}>
+                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))}
+                                                                        </Col>
+                                                                    </Row>
+                                                                </div>
+                                                            ))}
+                                                        </Col>
+                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                            {section.right.map((field, fieldIndex) => (
+                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
+                                                                    <Row>
+                                                                        <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                            <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                        </Col>
+                                                                        <Col span={(moduleName == "functions" ? 22 : 14)} offset={(moduleName == "functions" ? 1 : 0)}>
+                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))}
+                                                                        </Col>
+                                                                    </Row>
+                                                                </div>
+                                                            ))}
+                                                        </Col>
+                                                    </Row>
                                                 </Col>
                                             ))}
                                         </Row>
@@ -586,10 +593,8 @@ const DetailView = ({ itemId }) => {
                                     </Col>
                                 </Row>
                             </Layout>
-
                         </Content>
-                        {(console.log("relatedList", relatedList))}
-                        {Array.isArray(relatedList) && relatedList.map((item, index) => (
+                        {relatedList && relatedList.map((item, index) => (
                             <RelatedList key={index} related_module={item.module_name} related_id={record_id} />
                         ))}
                     </div>
@@ -597,7 +602,279 @@ const DetailView = ({ itemId }) => {
             )}
         </div>
     );
-
 };
 
+
+
 export default DetailView;
+        // return (
+        //     <div>
+        //         {data && (
+        //             <div style={{ overflowY: 'auto' }}>
+        //                 <div>
+        //                     <Layout
+        //                         style={{
+        //                             background: colorBgContainer
+        //                         }}
+        //                     >
+        //                         <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
+        //                             <Col>
+        //                                 <Title
+        //                                     style={{ paddingLeft: '30px', fontSize: '22px' }}
+        //                                 >
+        //                                     {data[0].field_value}
+        //                                 </Title>
+        //                             </Col>
+        //                             <Col style={{ margin: '0 15px 0 0' }}>
+        //                                 <Button icon={<LeftOutlined />} style={{ margin: '0 15px' }} href={`/${org}/${moduleName}`}>Voltar</Button>
+        //                                 <Can I='update' a={moduleName} ability={ability}>
+        //                                     <Button href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
+        //                                 </Can>
+        //                                 <Can I='delete' a={moduleName} ability={ability}>
+        //                                     <Popconfirm
+        //                                         title="Excluir"
+        //                                         description="Deseja excluir este(s) registro(s)?"
+        //                                         onConfirm={() => confirm()}
+        //                                         okText="Sim"
+        //                                         cancelText="Cancelar"
+        //                                     >
+        //                                         <Button style={{ margin: '0 15px' }} danger>Excluir</Button>
+        //                                     </Popconfirm>
+        //                                 </Can>
+        //                             </Col>
+        //                         </Row>
+        //                     </Layout>
+        //                 </div>
+        //                 <div style={{ padding: '15px 0' }}>
+        //                     <Content className='content'>
+
+        //                         <Layout
+        //                             style={{
+        //                                 background: colorBgContainer,
+        //                                 borderRadius: borderRadiusLG,
+        //                                 minHeight: (relatedList.length === 0 ? 'calc(100vh - 161px)' : ''),
+        //                                 padding: '20px'
+        //                             }}
+        //                         >
+        //                             {(() => {
+        //                                 if (moduleName == 'users') {
+        //                                     return (
+        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Usuário Informações</Text>
+        //                                     )
+        //                                 } else if (moduleName == 'profiles') {
+        //                                     return (
+        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Perfil Informações</Text>
+        //                                     )
+        //                                 } else if (moduleName == 'charts') {
+        //                                     return (
+        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Gráfico Informações</Text>
+        //                                     )
+        //                                 } else {
+        //                                     return (
+        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text>
+        //                                     )
+        //                                 }
+        //                             })()}
+
+        //                             <Row>
+        //                                 <Col span={24}>
+        //                                     <Row gutter={16}>
+        //                                         {data.map((fieldData, index) => (
+        //                                             <Col key={index} span={(moduleName == "functions" ? 24 : 10)}>
+        //                                                 <div style={{ padding: '5px 0', minHeight: '66px' }}>
+        //                                                     <Row>
+        //                                                         <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+        //                                                             <Text style={{ fontSize: '16px', color: '#838da1' }}>
+        //                                                                 {/* {JSON.stringify(fieldData)} */}
+        //                                                                 {fieldData.name}
+        //                                                             </Text>
+        //                                                         </Col>
+        //                                                         <Col span={(moduleName == "functions" ? 19 : 14)}>
+        //                                                             {(() => {
+        //                                                                 if (fieldData.related_module != null) {
+        //                                                                     return (
+        //                                                                         <Select
+        //                                                                             showSearch
+        //                                                                             optionFilterProp="children"
+        //                                                                             filterOption={(input, option) =>
+        //                                                                                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        //                                                                             }
+        //                                                                             style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+        //                                                                             // value={selectedValue ? selectedValue.value : null}
+        //                                                                             defaultValue={fieldData.field_value}
+        //                                                                             placeholder="Selecione"
+        //                                                                             // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+        //                                                                             // loading={loading}
+        //                                                                             onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
+        //                                                                             onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+        //                                                                             dropdownRender={(menu) => (
+        //                                                                                 <div>
+        //                                                                                     {menu}
+        //                                                                                     <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+        //                                                                                         <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
+        //                                                                                             {(fieldData.field_value ? `Ir para ${fieldData.field_value}` : '')}
+        //                                                                                         </a>
+        //                                                                                     </div>
+        //                                                                                 </div>
+        //                                                                             )}
+        //                                                                         >
+        //                                                                             <Option value=''>-Nenhum-</Option>
+        //                                                                             {relatedModuleData.map(item => (
+        //                                                                                 <Option key={item.related_id} value={item.field_value}>
+        //                                                                                     {item.field_value}
+        //                                                                                 </Option>
+        //                                                                             ))}
+        //                                                                         </Select>
+        //                                                                     );
+        //                                                                 } else if (fieldData.field_type == "select") {
+        //                                                                     return (
+        //                                                                         <Select
+        //                                                                             showSearch
+        //                                                                             optionFilterProp="children"
+        //                                                                             filterOption={(input, option) =>
+        //                                                                                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        //                                                                             }
+        //                                                                             style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+        //                                                                             // value={selectedValue ? selectedValue.value : null}
+        //                                                                             defaultValue={fieldData.field_value}
+        //                                                                             placeholder="Selecione"
+        //                                                                             // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+        //                                                                             // loading={loading}
+        //                                                                             onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+        //                                                                             onSelect={(newValue) => handleFieldChange(index, newValue)}
+        //                                                                         >
+        //                                                                             <Option value=''>-Nenhum-</Option>
+        //                                                                             {options.map(item => (
+        //                                                                                 <Option key={item.id} value={item.name}>
+        //                                                                                     {item.name}
+        //                                                                                 </Option>
+        //                                                                             ))}
+        //                                                                         </Select>
+        //                                                                     );
+        //                                                                 } else if (fieldData.field_type == "date") {
+        //                                                                     return (
+        //                                                                         <DatePicker
+        //                                                                             style={{ height: '100%', width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+        //                                                                             onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
+        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+        //                                                                             onChange={(value) => handleFieldChange(index, value)}
+        //                                                                             value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
+        //                                                                             placeholder="Selecione uma data"
+        //                                                                             format="DD/MM/YYYY"
+        //                                                                         />
+        //                                                                     );
+        //                                                                 } else if (fieldData.field_type == "multi_line") {
+        //                                                                     return (
+        //                                                                         <TextArea
+        //                                                                             style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+        //                                                                             onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
+        //                                                                             onBlur={(e) => handleFieldChange(index, e.target.value)}
+        //                                                                             onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
+        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+        //                                                                             rows={4}
+        //                                                                             defaultValue={fieldData.field_value}
+        //                                                                             onChange={(newValue) => handleFieldChange(index, newValue)}
+        //                                                                             maxLength={16000}
+        //                                                                         />
+
+        //                                                                     )
+        //                                                                 } else if (fieldData.field_type == "checkbox" && fieldData.module == "users" && fieldData.api_name == "notification") {
+        //                                                                     return (
+        //                                                                         <Checkbox
+        //                                                                             defaultChecked={fieldData.field_value == 1 ? true : false}
+        //                                                                             // onChange={(e) => handleFieldChange(index, e.target.checked)}
+        //                                                                             disabled
+        //                                                                         >teste
+        //                                                                         </Checkbox>
+        //                                                                     )
+        //                                                                 } else if (fieldData.field_type == "checkbox") {
+        //                                                                     return (
+        //                                                                         <Checkbox
+        //                                                                             defaultChecked={fieldData.field_value == 1 ? true : false}
+        //                                                                             onChange={(e) => handleFieldChange(index, e.target.checked)}
+        //                                                                         >
+        //                                                                         </Checkbox>
+        //                                                                     )
+        //                                                                 } else if (fieldData.field_type == "number") {
+        //                                                                     return (
+        //                                                                         // <InputNumber
+        //                                                                         //     style={{ width: "100%" }}
+        //                                                                         //     changeOnWheel
+        //                                                                         //     defaultValue={fieldData.field_value}
+        //                                                                         //     onChange={(e) => handleFieldChange(index, e)}
+        //                                                                         // />
+        //                                                                         <EditableCell
+        //                                                                             value={fieldData.field_value}
+        //                                                                             onChange={(newValue) => handleFieldChange(index, newValue)}
+        //                                                                             type={'number'}
+        //                                                                         />
+        //                                                                     )
+        //                                                                 } else if (fieldData.field_type == "currency") {
+        //                                                                     return (
+        //                                                                         <InputNumber
+        //                                                                             style={{ width: "100%" }}
+        //                                                                             prefix="R$"
+        //                                                                             formatter={(val) => {
+        //                                                                                 if (!val) return;
+        //                                                                                 return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")
+        //                                                                             }}
+        //                                                                             parser={(val) => {
+        //                                                                                 if (!val) return;
+        //                                                                                 return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
+        //                                                                             }}
+        //                                                                             changeOnWheel
+        //                                                                             defaultValue={fieldData.field_value}
+        //                                                                             onChange={(e) => handleFieldChange(index, e)}
+        //                                                                         />
+        //                                                                     )
+        //                                                                 } else if (fieldData.field_type == "function") {
+        //                                                                     return (
+        //                                                                         <CodeEditor
+        //                                                                             height={'45vh'} 
+        //                                                                             language={'javascript'} 
+        //                                                                             value={fieldData.field_value} 
+        //                                                                             theme={'vs-dark'}
+        //                                                                             readOnly={true}
+        //                                                                         />
+        //                                                                     )
+        //                                                                 } else {
+        //                                                                     return (
+        //                                                                         <EditableCell
+        //                                                                             value={fieldData.field_value}
+        //                                                                             onChange={(newValue) => handleFieldChange(index, newValue)}
+        //                                                                             type={typeof fieldData.field_value === 'number' ? 'number' : 'text'}
+        //                                                                         />
+        //                                                                     );
+        //                                                                 }
+        //                                                             })()}
+        //                                                         </Col>
+        //                                                     </Row>
+        //                                                 </div>
+        //                                             </Col>
+        //                                         ))}
+        //                                     </Row>
+        //                                     {moduleName === 'profiles' && (
+        //                                         <div style={{ marginTop: '20px' }}>
+        //                                             <PermissionsPage />
+        //                                         </div>
+        //                                     )}
+        //                                 </Col>
+        //                             </Row>
+        //                         </Layout>
+
+        //                     </Content>
+        //                     {(console.log("relatedList", relatedList))}
+        //                     {Array.isArray(relatedList) && relatedList.map((item, index) => (
+        //                         <RelatedList key={index} related_module={item.module_name} related_id={record_id} />
+        //                     ))}
+        //                 </div>
+        //             </div>
+        //         )}
+        //     </div>
+        // );
+
+//     };
+
+// export default DetailView;

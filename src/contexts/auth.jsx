@@ -21,8 +21,11 @@ export const AuthProvider = ({children}) => {
 
     const login = async (data) => {
         setLoading(true);
+        localStorage.removeItem("user");
         
         const response = await userApiURI.login(data)
+        console.log("response response: ",response)
+
         if(response.status === 200 && !response.data.success){
             if(response.data.message === "user_not_found")
                 setAlertMessage(<Alert message="OPS! Houve um erro no login!" description="O E-mail informado não está cadastrado" type="error" showIcon />)
@@ -30,11 +33,14 @@ export const AuthProvider = ({children}) => {
             if(response.data.message === "invalid_password")
                 setAlertMessage(<Alert message="OPS! Houve um erro no login!" description="Senha Incorreta" type="error" showIcon />)
             
+            setLoading(false);
+
             // if(response.data.message == "user_not_verified")
             //     setAlertMessage(<Alert message="OPS! Usuário não verificado!" description="Verifique a caixa de entrada de seu E-mail" type="error" showIcon />)
-        }else{
+        } else {
 
             const loggedUser = response.data.user;
+            console.log("loggedUser: ",loggedUser)
             const org = response.data.org;
             const token = response.data.token;
 
@@ -44,10 +50,9 @@ export const AuthProvider = ({children}) => {
 
             setUser(loggedUser);
             navigate(`/${response.data.org}/home`);
-            window.location.reload(true)
+            // window.location.reload(true)
+            setLoading(false);
         }
-        
-        setLoading(false);
         
     };
 
@@ -55,6 +60,7 @@ export const AuthProvider = ({children}) => {
 
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+        localStorage.removeItem("org");
 
         // api.defaults.headers.Authorization = null;
 

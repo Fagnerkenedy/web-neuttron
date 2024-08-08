@@ -5,14 +5,12 @@ import { fetchCharts } from './fetchCharts'
 import { Column } from '@ant-design/plots';
 import Barra from './Barra'
 import Linha from './Linha'
-
 const { Text } = Typography;
 
-const currentPath = window.location.pathname;
-const pathParts = currentPath.split('/');
-const org = pathParts[1]
-
 function Charts() {
+    const currentPath = window.location.pathname;
+    const pathParts = currentPath.split('/');
+    const org = pathParts[1]
     const [charts, setCharts] = useState([])
     const [data, setData] = useState([])
     const {

@@ -1,6 +1,5 @@
-import { MoonFilled, SunFilled, SunOutlined } from "@ant-design/icons";
+import { MoonFilled, SunFilled } from "@ant-design/icons";
 import { Button, Row } from "antd";
-import { useState } from "react";
 
 const ButtonDarkMode = ({ darkMode, toggleDarkMode }) => {
 

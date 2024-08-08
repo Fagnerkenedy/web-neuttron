@@ -45,7 +45,17 @@ function Modules() {
         <Content className='content' style={{ paddingTop: '20px' }}>
             <Layout style={{ minHeight: 'calc(100vh - 160px)' }}>
                 <Card title="Módulos">
-                    <Table columns={columns} dataSource={data} />
+                    <Table 
+                        columns={columns} 
+                        dataSource={data}  
+                        onRow={(record) => {
+                            return {
+                                onClick: () => {
+                                    window.location.href = `/${org}/settings/modules/${record.name}`;
+                                },
+                            };
+                        }}
+                    />
                 </Card>
             </Layout>
         </Content>

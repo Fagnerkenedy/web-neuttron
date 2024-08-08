@@ -42,7 +42,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
     <>
       <Col style={{ display: 'flex', alignItems: 'center', height: '49px', backgroundColor: '#1d1d1d', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000' }}>
 
-        <Logo color="white" />
+        <Logo fontSize={12} color="white" />
 
         <Col style={{ margin: "20px" }}>
           <React.Fragment>

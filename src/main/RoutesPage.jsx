@@ -16,10 +16,9 @@ import Modules from '../components/content/settings/modules/Modules';
 import Layout from '../components/content/settings/modules/layout/Layout';
 import Payment from '../components/checkout/Payment';
 import { useAbility } from '../contexts/AbilityContext.js'
-import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
+// import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
 function RoutesPage() {
-
   const currentPath = window.location.pathname;
   const pathParts = currentPath.split('/')
   const org = pathParts[1]
@@ -44,7 +43,7 @@ function RoutesPage() {
     if (loading) {
       return ;
     }
-    console.log(`ability.can(${action}, ${subject})`, ability.can(action, subject))
+    // console.log(`ability.can(${action}, ${subject})`, ability.can(action, subject))
     ability.can(action, subject)
 
     if (!ability.can(action, subject)) {

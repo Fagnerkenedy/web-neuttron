@@ -8,14 +8,13 @@ import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
 const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
-
 const { Title, Text } = Typography;
-const currentPath = window.location.pathname;
-const pathParts = currentPath.split('/');
-const org = pathParts[1]
-const moduleName = pathParts[2]
 
 const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSize, onPageChange, onPageSizeChange, currentPage }) => {
+  const currentPath = window.location.pathname;
+  const pathParts = currentPath.split('/');
+  const org = pathParts[1]
+  const moduleName = pathParts[2]
   const { ability, loading } = useAbility();
   const [activeModule, setActiveModule] = useState("");
 

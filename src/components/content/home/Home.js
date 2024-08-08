@@ -32,7 +32,6 @@ function Home() {
         <Layout style={{ padding: '15px 25px' }}>
             <Text style={{ fontSize: '20px', marginBottom: '15px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
             <Row gutter={16}>
-                {console.log("aaaa", ability)}
                 {modules.map((module, index) => (
                     <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>
                         <Col key={index}>
