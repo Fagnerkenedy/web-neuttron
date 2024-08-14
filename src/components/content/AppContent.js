@@ -8,6 +8,7 @@ import { useDataTable } from './table/DataTableHooks';
 import { useSelection } from './selection/SelectionHooks';
 import { usePagination } from './selection/PaginationHooks';
 import DataTableWithSearch from './DataTableWithSearch';
+import { useOutletContext } from 'react-router-dom';
 
 const { Content, Sider } = Layout;
 
@@ -22,6 +23,7 @@ const AppContent = () => {
     const { currentPage, pageSize, onPageChange, onPageSizeChange, startIndex, endIndex } = usePagination();
     const currentData = tableData.slice(startIndex, endIndex);
     const totalTableWidth = columns.reduce((acc, col) => acc + col.width, 0);
+    const { darkMode } = useOutletContext();
 
     return (
         <Content className='content'>
@@ -51,7 +53,7 @@ const AppContent = () => {
                     <SearchInputField onSearch={onSearch} />
                 </Sider> */}
 
-                <Content className='dataTable'>
+                <Content style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} className='dataTable'>
                     <DataTableWithSearch
                         columns={columns}
                         data={tableData}

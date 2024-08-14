@@ -6,6 +6,7 @@ import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, 
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 import CodeEditor from '../functionEditor/index.js';
+import locale from 'antd/es/date-picker/locale/pt_BR'
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -397,6 +398,11 @@ const EditView = ({ itemId }) => {
                                 </div> */}
                             </div>
                         )}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSave();
+                            }
+                        }}
                     >
                         <Option value=''>-Nenhum-</Option>
                         {relatedModuleData.map(item => (
@@ -423,6 +429,11 @@ const EditView = ({ itemId }) => {
                     onChange={(value) => onChange(value)}
                     // loading={loading}
                     onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 >
                     <Option value=''>-Nenhum-</Option>
                     {options.map(item => (
@@ -436,10 +447,34 @@ const EditView = ({ itemId }) => {
             return (
                 <Form.Item>
                     <DatePicker
+                        locale={locale}
                         onChange={(value) => onChange(value)}
                         value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
                         format="DD/MM/YYYY"
                         style={{ width: "100%" }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSave();
+                            }
+                        }}
+                    />
+                </Form.Item>
+            );
+        } else if (fieldData.field_type == "date-time") {
+            return (
+                <Form.Item>
+                    <DatePicker
+                        showTime
+                        locale={locale}
+                        onChange={(value) => onChange(value)}
+                        value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
+                        format="DD/MM/YYYY HH:mm:ss"
+                        style={{ width: "100%" }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSave();
+                            }
+                        }}
                     />
                 </Form.Item>
             );
@@ -472,6 +507,11 @@ const EditView = ({ itemId }) => {
                     defaultValue={fieldData.field_value}
                     onChange={(value) => onChange(value)}
                     maxLength={extractNumbers(fieldData.type)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 />
             )
         } else if (fieldData.field_type == "currency") {
@@ -481,7 +521,7 @@ const EditView = ({ itemId }) => {
                     prefix="R$"
                     formatter={(val) => {
                         if (!val) return 0;
-                        return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
+                        return val.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
                     }}
                     parser={(val) => {
                         if (!val) return 0;
@@ -491,6 +531,11 @@ const EditView = ({ itemId }) => {
                     defaultValue={fieldData.field_value}
                     onChange={(value) => onChange(value)}
                     maxLength={extractNumbers(fieldData.type)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 />
             )
         } else if (fieldData.field_type == "function") {
@@ -510,6 +555,11 @@ const EditView = ({ itemId }) => {
                         value={editedFields[fieldData.field_name] || fieldData.field_value}
                         onChange={e => onChange(e.target.value)}
                         maxLength={extractNumbers(fieldData.type)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSave();
+                            }
+                        }}
                     />
                 </Form.Item>
             );

@@ -5,6 +5,10 @@
     word-break: break-all;
 }
 
+.antd-table {
+    /* border: #4a4a4a 1px solid; */
+}
+
 .ant-table-body {
     height: 100vh;
     overflow: auto !important;

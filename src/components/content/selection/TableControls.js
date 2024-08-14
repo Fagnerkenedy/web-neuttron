@@ -73,12 +73,15 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
       <Flex justify={'flex-end'} align={'center'}>
         <Can I='create' a={moduleName} ability={ability}>
           <Flex style={{ paddingRight: '15px' }}>
-            <Button href={`/${org}/${moduleName}/create`}>Criar {
-              moduleName == "users" ? ("Usuário") :
+            <Button 
+              type='primary' 
+              href={`/${org}/${moduleName}/create`}>Criar {
+                moduleName == "users" ? ("Usuário") :
                 moduleName == "profiles" ? ("Perfil") :
-                  moduleName == "functions" ? ("Função") :
-                    moduleName == "charts" ? ("Painel") :
-                      (toSingular(activeModule))}</Button>
+                moduleName == "functions" ? ("Função") :
+                moduleName == "charts" ? ("Painel") :
+                (toSingular(activeModule))}
+            </Button>
           </Flex>
         </Can>
 

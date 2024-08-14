@@ -1,13 +1,15 @@
 import React from 'react';
+import { Typography } from "antd";
+const { Title, Text } = Typography;
 
 const Logo = ({fontSize, color, text}) => {
     return (
         <>
-            <span style={{ color: "#0267C1", fontFamily: "Poppins", fontSize: fontSize }}>
-                <h2>N</h2>
+            <span>
+                <Title style={{ fontWeight: 'bold', color: "#0267C1", fontFamily: "Poppins", fontSize: fontSize }}>N</Title>
             </span>
-            <span style={{ color: color, fontFamily: "Poppins", fontSize: fontSize }}>
-                <h2>euttron {text}</h2>
+            <span>
+                <Title style={{ fontWeight: 'bold', color: color, fontFamily: "Poppins", fontSize: fontSize }}>euttron {text}</Title>
             </span>
         </>
     )

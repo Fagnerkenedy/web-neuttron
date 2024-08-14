@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip } from 'antd';
 import EditableCell from './EditableCell.js';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -13,6 +13,8 @@ import PermissionsPage from './PermissionsPage.js';
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
 import CodeEditor from '../functionEditor/index.js';
+import locale from 'antd/es/date-picker/locale/pt_BR'
+import { useOutletContext } from 'react-router-dom';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -37,6 +39,7 @@ const DetailView = ({ itemId }) => {
     const org = pathParts[1];
     const moduleName = pathParts[2];
     const record_id = pathParts[3];
+    const { darkMode } = useOutletContext();
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -419,12 +422,24 @@ const DetailView = ({ itemId }) => {
         } else if (fieldData.field_type === "date") {
             return (
                 <DatePicker
+                    locale={locale}
                     style={{height: '100%', width: "100%"}}
-                    // style={{ height: '100%', width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                     onChange={(value) => onChange(value)}
                     value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
                     placeholder="Selecione uma data"
                     format="DD/MM/YYYY"
+                />
+            );
+        } else if (fieldData.field_type === "date-time") {
+            return (
+                <DatePicker
+                    showTime
+                    locale={locale}
+                    style={{height: '100%', width: "100%"}}
+                    onChange={(value) => onChange(value)}
+                    value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
+                    placeholder="Selecione uma data"
+                    format="DD/MM/YYYY HH:mm:ss"
                 />
             );
         } else if (fieldData.field_type === "multi_line") {
@@ -459,7 +474,7 @@ const DetailView = ({ itemId }) => {
                 <InputNumber
                     style={{ width: "100%" }}
                     prefix="R$"
-                    formatter={value => `R$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                    formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                     }
                     parser={value => value.replace(/\R$\s?|(,)/g, '').replace(/(.)/g, "").replace(/(,*)/g, ".")}
                     defaultValue={fieldData.field_value}
@@ -507,18 +522,21 @@ const DetailView = ({ itemId }) => {
                                 background: colorBgContainer
                             }}
                         >
-                            <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
-                                <Col>
+                            <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
+                                <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Tooltip title="Voltar">
+                                        <Button type='text' icon={<LeftOutlined />} style={{ margin: '0 15px' }} href={`/${org}/${moduleName}`}></Button>
+                                    </Tooltip>
                                     <Title
-                                        style={{ paddingLeft: '30px', fontSize: '22px' }}
+                                        style={{ fontSize: '22px', margin: '0' }}
                                     >
-                                        {data[0].field_value}
+                                        {/* {data[0].field_value} */}
+                                        Detalhes
                                     </Title>
-                                </Col>
+                                </Row>
                                 <Col style={{ margin: '0 15px 0 0' }}>
-                                    <Button icon={<LeftOutlined />} style={{ margin: '0 15px' }} href={`/${org}/${moduleName}`}>Voltar</Button>
                                     <Can I='update' a={moduleName} ability={ability}>
-                                        <Button href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
+                                        <Button type='primary' href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
                                     </Can>
                                     <Can I='delete' a={moduleName} ability={ability}>
                                         <Popconfirm
@@ -542,7 +560,8 @@ const DetailView = ({ itemId }) => {
                                     background: colorBgContainer,
                                     borderRadius: borderRadiusLG,
                                     minHeight: (relatedList.length === 0 ? 'calc(100vh - 161px)' : ''),
-                                    padding: '20px'
+                                    padding: '20px',
+                                    border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                 }}
                             >
                                 {/* <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}

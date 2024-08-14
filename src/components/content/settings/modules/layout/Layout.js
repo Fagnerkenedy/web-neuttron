@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import styled, { createGlobalStyle } from 'styled-components';
-import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select } from 'antd';
+import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { CalendarOutlined, CloseOutlined, EditOutlined, EllipsisOutlined, SearchOutlined } from '@ant-design/icons';
+import { CalendarOutlined, CloseOutlined, EditOutlined, EllipsisOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import './styles.css'
 import InputOutlined from '../../../../../../src/img/text.png'
@@ -119,7 +119,7 @@ const initialItems = [
   { id: '3650918476023874915', name: 'Caixa de seleção', type: "VARCHAR(255)", field_type: 'checkbox' },
   { id: '8492017364859271043', name: 'Moeda', type: "VARCHAR(255)", field_type: 'currency' },
   { id: '6203841957028641975', name: 'Pesquisar', type: "VARCHAR(255)", field_type: 'loockup' },
-  { id: '1054729836042817596', name: 'Lista de opções', type: "VARCHAR(255)", field_type: 'select' },
+  { id: '1054729836042817596', name: 'Lista de opções', type: "VARCHAR(255)", field_type: 'select', options: [''] },
   { id: '7510938265401728493', name: 'Data', type: "VARCHAR(255)", field_type: 'date' },
   { id: '3904851627489206173', name: 'Data/Hora', type: "VARCHAR(255)", field_type: 'date-time' },
   { id: '8642915073281649052', name: 'E-mail', type: "VARCHAR(255)", field_type: 'email' },
@@ -155,7 +155,7 @@ const DragAndDrop = () => {
   const [clickedItem, setClickedItem] = useState([])
 
   const {
-    token: { colorBgContainer },
+    token: { colorBgContainer, borderRadiusSM },
   } = theme.useToken();
 
   const fetchData = async () => {
@@ -180,7 +180,7 @@ const DragAndDrop = () => {
       const responseUnusedFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/unused_fields`, config);
 
       const unusedFields = responseUnusedFields.data
-      console.log("responseUnusedFields: ",responseUnusedFields)
+      console.log("responseUnusedFields: ", responseUnusedFields)
       sectionsData.forEach(section => {
         const sectionId = section.id;
         const sectionName = section.name;
@@ -188,16 +188,16 @@ const DragAndDrop = () => {
         const leftFields = section.fields.left || [];
         const rightFields = section.fields.right || [];
 
-      //   // Filtrar os campos não utilizados
-      //   const unusedLeftFields = leftFields.filter(field => field.unused);
-      //   const unusedRightFields = rightFields.filter(field => field.unused);
+        //   // Filtrar os campos não utilizados
+        //   const unusedLeftFields = leftFields.filter(field => field.unused);
+        //   const unusedRightFields = rightFields.filter(field => field.unused);
 
-      //   // Adicionar os campos não utilizados ao array `newUnusedItems`
-      //   newUnusedItems = [...newUnusedItems, ...unusedLeftFields, ...unusedRightFields];
+        //   // Adicionar os campos não utilizados ao array `newUnusedItems`
+        //   newUnusedItems = [...newUnusedItems, ...unusedLeftFields, ...unusedRightFields];
 
-      //   // Remover os campos não utilizados das seções
-      //   const usedLeftFields = leftFields.filter(field => !field.unused);
-      //   const usedRightFields = rightFields.filter(field => !field.unused);
+        //   // Remover os campos não utilizados das seções
+        //   const usedLeftFields = leftFields.filter(field => !field.unused);
+        //   const usedRightFields = rightFields.filter(field => !field.unused);
 
         newSections[sectionId] = {
           left: leftFields,
@@ -482,8 +482,8 @@ const DragAndDrop = () => {
         data: deletedSections,
         ...config
       });
-      if(unusedItems.length !== 0) {
-        console.log("unusedItems: ",unusedItems)
+      if (unusedItems.length !== 0) {
+        console.log("unusedItems: ", unusedItems)
         const responseUnusedItems = await axios.put(`${linkApi}/crm/${org}/${moduleName}/unused_field`, unusedItems, config);
       }
       message.success('Layout atualizado com sucesso!');
@@ -502,7 +502,20 @@ const DragAndDrop = () => {
     return numbers ? numbers.join('') : '';
   }
 
-  const showModal = (item) => {
+  const fetchOptions = async (moduleName, api_name) => {
+    console.log("fetchh", moduleName, api_name)
+
+    const token = localStorage.getItem('token');
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+    const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/field/${api_name}`, config);
+    return response.data
+  }
+
+  const showModal = async (item) => {
     console.log("item clickedItem", clickedItem)
     console.log("item item", item)
     if (item.field_type == "loockup") {
@@ -517,6 +530,25 @@ const DragAndDrop = () => {
       form.setFieldsValue({
         field_type: "section",
         label: item.sectionName,
+      })
+    } else if (item.field_type == "select") {
+      console.log("iitem select: ", item)
+      let options = ['']
+      if (item.api_name) {
+        options = []
+        const result = await fetchOptions(item.module, item.api_name)
+        console.log("result options: ",result)
+        result.forEach(option => {
+          options.push(option.name)
+        });
+      }
+      console.log("options: ", options)
+      form.setFieldsValue({
+        field_type: item.field_type,
+        api_name: item.api_name,
+        label: item.name,
+        options: options,
+        required: item.required
       })
     } else {
       form.setFieldsValue({
@@ -541,13 +573,21 @@ const DragAndDrop = () => {
 
   const handleOk = () => {
     form.validateFields().then(values => {
-      if (clickedItem.position == null) {
+      console.log("values select: ", values)
+      console.log("sections select: ", sections)
+      if (clickedItem.item.field_type == 'section') {
         sectionOrder[clickedItem.index].sectionName = values.label
         setIsModalVisible(false);
-      } else if (clickedItem.item.field_type != null) {
+      } else if (clickedItem.item.field_type == 'loockup') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = false
+        setIsModalVisible(false);
+      } else if (clickedItem.item.field_type == 'select') {
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].options = values.options
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = false
         setIsModalVisible(false);
       } else {
@@ -683,6 +723,24 @@ const DragAndDrop = () => {
       setRelatedModuleData(matchingResponse);
     }
   }
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 4 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 20 },
+    },
+  };
+
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 20, offset: 4 },
+    },
+  };
 
   return (
     <Layout>
@@ -1239,122 +1297,239 @@ const DragAndDrop = () => {
         onCancel={handleCancel}
 
       >
-        {form.getFieldValue('field_type') == 'loockup' && (
-          <Form
-            form={form}
-            layout="vertical"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleOk();
-              }
-            }}>
-            <Form.Item
-              name="label"
-              label="Rótulo do campo"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Input ref={inputRef} />
-            </Form.Item>
-            <Form.Item
-              name="module"
-              label="Módulo de pesquisa"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Select
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                // style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                // defaultValue={fieldData.field_value}
-                placeholder="Selecione"
-                onDropdownVisibleChange={(open) => fetchRelatedModule(open, form.getFieldValue('module'), form.getFieldValue('api_name'))}
-              // onSelect={(key, value) => onChange(value)}
-              // dropdownRender={(menu) => (
-              //     <div>
-              //         {menu}
-              //         <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-              //             <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
-              //                 {fieldData.field_value ? `Ir para ${fieldData.field_value}` : ''}
-              //             </a>
-              //         </div>
-              //     </div>
-              // )}
-              >
-                {relatedModuleData.map(item => (
-                  <Option key={item.related_id} value={item.field_value}>
-                    {item.field_value}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="required"
-              label="Campo Obrigatório"
-            >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
-            </Form.Item>
-          </Form>
-        )}
-        {form.getFieldValue('field_type') == 'section' && (
-          <Form
-            form={form}
-            layout="vertical"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleOk();
-              }
-            }}>
-            <Form.Item
-              name="label"
-              label="Rótulo da seção"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Input ref={inputRef} />
-            </Form.Item>
-          </Form>
-        )}
-        {form.getFieldValue('field_type') != 'section' && form.getFieldValue('field_type') != 'loockup' && (
-          <Form
-            form={form}
-            layout="vertical"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleOk();
-              }
-            }}>
-            <Form.Item
-              name="label"
-              label="Rótulo do campo"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Input ref={inputRef} />
-            </Form.Item>
-            <Form.Item
-              name="char"
-              label="Número de caracteres permitidos"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Input />
-            </Form.Item>
+        {(() => {
+          const fieldType = form.getFieldValue('field_type');
 
-            <Form.Item
-              name="required"
-              label="Campo Obrigatório"
-            >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+          if (fieldType === 'loockup') {
+            return (
+              <Form
+                form={form}
+                layout="vertical"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleOk();
+                  }
+                }}>
+                <Form.Item
+                  name="label"
+                  label="Rótulo do campo"
+                  rules={[{ required: true, message: 'Insira um valor!' }]}
+                >
+                  <Input ref={inputRef} />
+                </Form.Item>
+                <Form.Item
+                  name="module"
+                  label="Módulo de pesquisa"
+                  rules={[{ required: true, message: 'Insira um valor!' }]}
+                >
+                  <Select
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    // style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                    // defaultValue={fieldData.field_value}
+                    placeholder="Selecione"
+                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, form.getFieldValue('module'), form.getFieldValue('api_name'))}
+                  // onSelect={(key, value) => onChange(value)}
+                  // dropdownRender={(menu) => (
+                  //     <div>
+                  //         {menu}
+                  //         <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                  //             <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
+                  //                 {fieldData.field_value ? `Ir para ${fieldData.field_value}` : ''}
+                  //             </a>
+                  //         </div>
+                  //     </div>
+                  // )}
+                  >
+                    {relatedModuleData.map(item => (
+                      <Option key={item.related_id} value={item.field_value}>
+                        {item.field_value}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  name="required"
+                  label="Campo Obrigatório"
+                >
+                  <Checkbox
+                  // defaultChecked={fieldData.field_value == 1 ? true : false}
+                  // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+                  >
+                  </Checkbox>
+                </Form.Item>
+              </Form>
+
+            )
+          } else if (fieldType === 'section') {
+            return (
+              <Form
+                form={form}
+                layout="vertical"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleOk();
+                  }
+                }}>
+                <Form.Item
+                  name="label"
+                  label="Rótulo da seção"
+                  rules={[{ required: true, message: 'Insira um valor!' }]}
+                >
+                  <Input ref={inputRef} />
+                </Form.Item>
+              </Form>
+            )
+          } else if (fieldType === 'select') {
+            return (
+              <Form
+                form={form}
+                // initialValues={{  }}
+                layout="vertical"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleOk();
+                  }
+                }}>
+                <Form.Item
+                  name="label"
+                  label="Rótulo do campo"
+                  rules={[{ required: true, message: 'Insira um valor!' }]}
+                >
+                  <Input ref={inputRef} />
+                </Form.Item>
+                <Text>Opções</Text>
+
+                <Layout
+                  style={{
+                    background: colorBgContainer,
+                    borderRadius: borderRadiusSM,
+                    border: '1px solid #ccc',
+                    height: "250px",
+                    overflowY: 'auto',
+                    marginTop: '10px',
+                    marginBottom: '15px',
+                    padding: '10px'
+                  }}
+                >
+                  <Form.List
+                    name="options"
+                  // rules={[
+                  //   {
+                  //     validator: async (_, options) => {
+                  //       if (!options || options.length < 2) {
+                  //         return Promise.reject(new Error('At least 2 options'));
+                  //       }
+                  //     },
+                  //   },
+                  // ]}
+                  >
+                    {(fields, { add, remove }, { move }) => (
+                      <>
+                        {fields.map((field, index) => (
+                          <Form.Item
+                            {...(formItemLayout)}
+                            label={''}
+                            required={false}
+                            key={field.key}
+                          >
+                            <Space align="baseline">
+                              <Form.Item
+                                {...field}
+                                validateTrigger={['onChange', 'onBlur']}
+                                rules={[
+                                  {
+                                    required: true,
+                                    whitespace: false,
+                                    message: "Insira uma opção.",
+                                  },
+                                ]}
+                                noStyle
+                                span={24}
+                              >
+                                <Input
+                                  placeholder="Opção"
+                                  style={{ width: '395px' }}
+                                />
+                              </Form.Item>
+                              <PlusCircleOutlined
+                                onClick={() => add('', index + 1)}
+                              />
+                              {fields.length > 1 && (
+                                <MinusCircleOutlined
+                                  className="dynamic-delete-button"
+                                  onClick={() => remove(field.name)}
+                                />
+                              )}
+                            </Space>
+                          </Form.Item>
+                        ))}
+                        {/* <Form.Item>
+                        <Button
+                          type="dashed"
+                          onClick={() => add()}
+                          style={{ width: '60%' }}
+                          icon={<PlusOutlined />}
+                        >
+                          Adicionar opção
+                        </Button>
+                      </Form.Item> */}
+                      </>
+                    )}
+                  </Form.List>
+                </Layout>
+                <Form.Item
+                  name="required"
+                  label="Campo Obrigatório"
+                >
+                  <Checkbox
+                  // defaultChecked={fieldData.field_value == 1 ? true : false}
+                  // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+                  >
+                  </Checkbox>
+                </Form.Item>
+              </Form>
+            )
+          } else {
+            <Form
+              form={form}
+              layout="vertical"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleOk();
+                }
+              }}>
+              <Form.Item
+                name="label"
+                label="Rótulo do campo"
+                rules={[{ required: true, message: 'Insira um valor!' }]}
               >
-              </Checkbox>
-            </Form.Item>
-          </Form>
-        )}
+                <Input ref={inputRef} />
+              </Form.Item>
+              <Form.Item
+                name="char"
+                label="Número de caracteres permitidos"
+                rules={[{ required: true, message: 'Insira um valor!' }]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                name="required"
+                label="Campo Obrigatório"
+              >
+                <Checkbox
+                // defaultChecked={fieldData.field_value == 1 ? true : false}
+                // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+                >
+                </Checkbox>
+              </Form.Item>
+            </Form>
+          }
+        })()}
       </Modal>
     </Layout>
   );

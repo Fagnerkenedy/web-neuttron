@@ -5,11 +5,11 @@ a {
 }
 
 .modules{
-    color: white; 
+    /* color: white;  */
     padding: 15px;
 }
 
-.modules:hover::after {
+/* .modules:hover::after {
     content: ''; 
     position: absolute;
     left: 5%;
@@ -29,5 +29,23 @@ a {
     height: 3px; 
     margin-bottom: 2px;
     background-color: #fff;
+} */
+
+.modules:hover::after {
+    content: ''; 
+    position: absolute;
+    left: 5%;
+    width: 90%;
+    border-bottom: 3px solid;
+    bottom: -2px; 
+}
+
+.modules.active::after {
+    content: ''; 
+    position: absolute;
+    left: 5%;
+    width: 90%;
+    border-bottom: 3px solid;
+    bottom: -2px; 
 }
 

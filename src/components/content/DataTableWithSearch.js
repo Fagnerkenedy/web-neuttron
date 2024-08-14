@@ -143,7 +143,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
         size="middle"
         scroll={{
           x: totalTableWidth,
-          y: 'calc(100vh - 192px)',
+          y: 'calc(100vh - 193px)',
         }}
         locale={{ emptyText: 'Nenhum registro encontrado' }}
         onRow={(record) => ({

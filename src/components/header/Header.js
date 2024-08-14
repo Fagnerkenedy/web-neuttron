@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Button, Col, Popover, Row } from 'antd';
+import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { fetchModules } from './fetchModules';
 import AuthContext from '../../contexts/auth';
@@ -9,6 +9,7 @@ import './styles.css'
 import Logo from '../utils/Logo';
 import { Can } from "../../contexts/AbilityContext.js";
 import { useAbility } from '../../contexts/AbilityContext.js'
+import { css } from '@emotion/css';
 
 const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const currentPath = window.location.pathname;
@@ -19,12 +20,51 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const [modules, setModules] = useState([]);
   const [activeModule, setActiveModule] = useState(null);
   const { ability, loading } = useAbility();
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const [open, setOpen] = useState(false);
+  const showDrawer = () => {
+    setOpen(true);
+  };
+  const closeDrawer = () => {
+    setOpen(false);
+  };
+
+  const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
+  const rootPrefixCls = getPrefixCls();
+  const linearGradientButton = css`
+    &.${rootPrefixCls}-btn-primary:not([disabled]):not(.${rootPrefixCls}-btn-dangerous) {
+      border-width: 0;
+
+      > span {
+        position: relative;
+      }
+
+      &::before {
+        content: '';
+        background: linear-gradient(135deg, #004E99, #04befe);
+        position: absolute;
+        inset: 0;
+        opacity: 1;
+        transition: all 1s;
+        border-radius: inherit;
+      }
+
+      &:hover::before {
+        opacity: 0;
+      }
+    }
+  `;
 
   const Content = (
-    <div>
+    <Col>
+      <Row span={24} style={{ justifyContent: 'center', paddingBottom: '15px' }}>
+        <Avatar size={64} icon={<UserOutlined />} />
+      </Row>
       <ButtonDarkMode darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <Button onClick={logout}>Sair</Button>
-    </div>
+      <Button type='primary' style={{ width: '100%' }} title={'Sair da conta'} onClick={logout}>Sair</Button>
+    </Col>
   );
 
   useEffect(() => {
@@ -40,15 +80,21 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <>
-      <Col style={{ display: 'flex', alignItems: 'center', height: '49px', backgroundColor: '#1d1d1d', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000' }}>
+      <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '49px', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
 
-        <Logo fontSize={12} color="white" />
+        <Link
+          href={`/${org}/home`}
+        >
+          <Row>
+            <Logo fontSize={19} />
+          </Row>
+        </Link>
 
         <Col style={{ margin: "20px" }}>
           <React.Fragment>
             <Link
               className={`modules ${activeModule === 'home' ? 'active' : ''}`}
-              style={{ color: 'white' }}
+              style={{ color: darkMode ? '#fff' : '#000' }}
               href={`/${org}/home`}
               onClick={() => setActiveModule('home')}
             >
@@ -61,7 +107,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
               <React.Fragment key={index}>
                 <Link
                   className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
-                  style={{ color: 'white' }}
+                  style={{ color: darkMode ? '#fff' : '#000' }}
                   href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
                   onClick={() => setActiveModule(module.name)}
                 >
@@ -72,20 +118,34 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             </Can>
           ))}
         </Col>
-        <div style={{ marginLeft: 'auto', minWidth: '200px' }}>
+        <div style={{ marginLeft: 'auto', minWidth: '215px' }}>
           <Row span={24}>
-            <Col style={{ alignItems: 'center', alignContent: 'center' }} span={14} >
-              <Link href={`/${org}/checkout`}>
-                Fazer Upgrade
-              </Link>
+            <Col style={{ alignItems: 'center', alignContent: 'center', marginRight: 5 }} span={14} >
+              <ConfigProvider
+                button={{
+                  className: linearGradientButton,
+                }}
+              >
+                <Button type="primary" href={`/${org}/checkout`}>
+                  Fazer Upgrade
+                </Button>
+              </ConfigProvider>
             </Col>
             <Col>
-              <Button href={`/${org}/settings`} icon={<SettingOutlined />} />
+              <Tooltip title="Configurações">
+                <Button type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} />
+              </Tooltip>
             </Col>
             <Col offset={1}>
-              <Popover content={Content} trigger="click">
-                <Button icon={<UserOutlined />} />
-              </Popover>
+              <Tooltip title="Perfil">
+                <Link type="text" onClick={showDrawer}>
+                  <Avatar icon={<UserOutlined />} />
+                </Link>
+                {/* <Button onClick={showDrawer} icon={<UserOutlined />} /> */}
+              </Tooltip>
+              <Drawer open={open} title="Perfil" onClose={closeDrawer}>
+                {Content}
+              </Drawer>
             </Col>
           </Row>
         </div>

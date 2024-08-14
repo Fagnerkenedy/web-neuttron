@@ -7,6 +7,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 import CodeEditor from '../functionEditor/index.js';
+import locale from 'antd/es/date-picker/locale/pt_BR'
 const { TextArea } = Input;
 const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
@@ -392,6 +393,11 @@ const CreateView = ({ itemId }) => {
                     onChange={(value) => onChange(value)}
                     // loading={loading}
                     onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 >
                     <Option value=''>-Nenhum-</Option>
                     {options.map(item => (
@@ -404,10 +410,32 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "date") {
             return (
                 <DatePicker
+                    locale={locale}
                     onChange={(value) => onChange(value)}
                     format="DD/MM/YYYY"
                     placeholder="Selecione uma data"
                     style={{ width: "100%" }}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
+                />
+            );
+        } else if (fieldData.field_type === "date-time") {
+            return (
+                <DatePicker
+                    showTime
+                    locale={locale}
+                    onChange={(value) => onChange(value)}
+                    format="DD/MM/YYYY HH:mm:ss"
+                    placeholder="Selecione uma data"
+                    style={{height: '100%', width: "100%"}}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 />
             );
         } else if (fieldData.field_type == "multi_line") {
@@ -443,6 +471,11 @@ const CreateView = ({ itemId }) => {
                     defaultValue={fieldData.field_value}
                     onChange={(e) => onChange(e)}
                     maxLength={extractNumbers(fieldData.type)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 />
             )
         } else if (fieldData.field_type == "currency") {
@@ -452,7 +485,7 @@ const CreateView = ({ itemId }) => {
                     prefix="R$"
                     formatter={(val) => {
                         if (!val) return;
-                        return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
+                        return val.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
                     }}
                     parser={(val) => {
                         if (!val) return;
@@ -462,6 +495,11 @@ const CreateView = ({ itemId }) => {
                     defaultValue={fieldData.field_value}
                     onChange={(e) => onChange(e)}
                     maxLength={extractNumbers(fieldData.type)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 />
             )
         } else if (fieldData.field_type == "file") {
@@ -502,6 +540,11 @@ const CreateView = ({ itemId }) => {
                     value={editedFields[fieldData.field_name] || fieldData.field_value}
                     onChange={e => onChange(e.target.value)}
                     maxLength={extractNumbers(fieldData.type)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSave();
+                        }
+                    }}
                 />
             );
         }
@@ -520,7 +563,7 @@ const CreateView = ({ itemId }) => {
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
                                 <Col>
                                     <Title
-                                        style={{ paddingLeft: '30px', fontSize: '22px' }}
+                                        style={{ paddingLeft: '30px', fontSize: '22px', margin: 0 }}
                                     >
                                         Criar {toSingular(moduleName)}
                                     </Title>
