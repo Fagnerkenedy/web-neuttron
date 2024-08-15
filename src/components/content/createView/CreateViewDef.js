@@ -8,6 +8,8 @@ import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
+import { useOutletContext } from 'react-router-dom';
+
 const { TextArea } = Input;
 const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
@@ -40,6 +42,7 @@ const CreateView = ({ itemId }) => {
     const [relatedFieldData, setRelatedFieldData] = useState([]);
     const [options, setOptions] = useState([]);
     const [sections, setSections] = useState([])
+    const { darkMode } = useOutletContext();
 
     const linkApi = process.env.REACT_APP_LINK_API;
     const handleInputChange = (newValue) => {
@@ -557,7 +560,8 @@ const CreateView = ({ itemId }) => {
                     <div>
                         <Layout
                             style={{
-                                background: colorBgContainer
+                                background: colorBgContainer,
+                                borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
@@ -582,7 +586,8 @@ const CreateView = ({ itemId }) => {
                                 style={{
                                     background: colorBgContainer,
                                     borderRadius: borderRadiusLG,
-                                    minHeight: 'calc(100vh - 160px)'
+                                    minHeight: 'calc(100vh - 160px)',
+                                    border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                 }}
                             >
                                 {/* <Text style={{ padding: '15px 25px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}
