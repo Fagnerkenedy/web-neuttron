@@ -29,12 +29,13 @@ function PageBase() {
                 // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
                 algorithm: darkMode ? darkAlgorithm : defaultAlgorithm, // compactAlgorithm
                 token: {
-                    colorPrimary: '#004E99',
+                    colorPrimary: '#1a73e8', // #1a73e8 #004E99
                     colorLink: darkMode ? '#ffffff' : '#000000',
                     colorLinkHover: '#004E99', // Cor legal: 277AF7
                     colorSuccess: '#6aaf35'
                 },
-            }}>
+            }}
+        >
             <Layout style={{ minHeight: '100vh' }}>
                 {/* <AppHeader /> */}
                 <AppHeader darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} />

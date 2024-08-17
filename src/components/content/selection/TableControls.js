@@ -17,6 +17,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   const moduleName = pathParts[2]
   const { ability, loading } = useAbility();
   const [activeModule, setActiveModule] = useState("");
+  console.log("onPageSizeChange: ",onPageSizeChange)
 
   const confirm = async (e) => {
     await deleteRecord(org, moduleName, selectedRowKeys)
@@ -84,16 +85,17 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
             </Button>
           </Flex>
         </Can>
-
         <Flex align={'center'}>
           <Select defaultValue={pageSize} onChange={onPageSizeChange} style={{ marginRight: '8px' }}>
             {[5, 10, 20, 50, 100, 200, 500, 1000].map((option) => (
               <Option key={option} value={option}>
-                {option} por página
+                {option} Registros por página
               </Option>
             ))}
           </Select>
-          <Pagination responsive={true} size='small' current={currentPage} pageSize={pageSize} total={totalItems} onChange={onPageChange} />
+          {totalItems > pageSize && (
+            <Pagination simple={{ readOnly: true }} responsive={true} size='small' current={currentPage} pageSize={pageSize} total={totalItems} onChange={onPageChange} />
+          )}
         </Flex>
       </Flex>
     </Flex>

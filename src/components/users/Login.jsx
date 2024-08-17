@@ -123,7 +123,7 @@ const Login = () => {
                                             </Form.Item>
                                             */}
                                             <Form.Item>
-                                                <Button type="primary" htmlType="submit" className="login-form-button cad-button">
+                                                <Button type="primary" htmlType="submit" style={{ width: '100%'}}>
                                                     Entrar
                                                 </Button>
                                             </Form.Item>

@@ -17,6 +17,7 @@ import DropdownOutlined from '../../../../../../src/img/dropdown.png'
 import PhoneOutlined from '../../../../../../src/img/telephone.png'
 import EmailOutlined from '../../../../../../src/img/envelope.png'
 import DateTimeOutlined from '../../../../../../src/img/datetime.png'
+import { useOutletContext } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -55,8 +56,8 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 const ContentContainer = styled(Content)`
-  margin-left: 245px;
-  padding: 16px;
+  margin-left: 255px;
+  padding: 6px;
 `;
 
 const DragContainer = styled.div`
@@ -66,16 +67,16 @@ const DragContainer = styled.div`
 
 const Column = styled.div`
   flex: 1;
-  padding: 8px 8px 0 8px;
+  padding: 4px 4px 0 4px;
   min-width: 0;
-  border: 2px dashed #ddd;
   border-radius: 6px;
-  background-color: ${props => props.isDraggingOver ? '#f0f0f0' : '#fff'};
   margin: 8px;
   .dragging {
     opacity: 0.5;
   }
 `;
+// border: 2px dashed #ddd;
+// background-color: ${props => props.isDraggingOver ? '#f0f0f0' : '#fff'};
 
 const Notice = styled.div`
   flex-grow: 1;
@@ -113,7 +114,7 @@ const GlobalStyle = createGlobalStyle`
 // `;
 
 const initialItems = [
-  { id: '4382179501276348291', name: 'Linha única', type: "VARCHAR(255)", field_type: "" },
+  { id: '4382179501276348291', name: 'Linha única', type: "VARCHAR(255)", field_type: "single_line" },
   { id: '9821645032784591637', name: 'Multilinha', type: "TEXT(16000)", field_type: 'multi_line' },
   { id: '1748395062183729450', name: 'Número', type: "VARCHAR(255)", field_type: 'number' },
   { id: '3650918476023874915', name: 'Caixa de seleção', type: "VARCHAR(255)", field_type: 'checkbox' },
@@ -121,7 +122,7 @@ const initialItems = [
   { id: '6203841957028641975', name: 'Pesquisar', type: "VARCHAR(255)", field_type: 'loockup' },
   { id: '1054729836042817596', name: 'Lista de opções', type: "VARCHAR(255)", field_type: 'select', options: [''] },
   { id: '7510938265401728493', name: 'Data', type: "VARCHAR(255)", field_type: 'date' },
-  { id: '3904851627489206173', name: 'Data/Hora', type: "VARCHAR(255)", field_type: 'date-time' },
+  { id: '3904851627489206173', name: 'Data/Hora', type: "VARCHAR(255)", field_type: 'date_time' },
   { id: '8642915073281649052', name: 'E-mail', type: "VARCHAR(255)", field_type: 'email' },
   { id: '4297810653842096175', name: 'Telefone', type: "VARCHAR(255)", field_type: 'phone' },
   // { id: 'add-list', name: 'Nova Seção', field_type: 'section' }
@@ -144,6 +145,7 @@ const DragAndDrop = () => {
   const [deletedSections, setDeletedSections] = useState([]);
   const [smallHeight, setSmallHeight] = useState(false);
   const [relatedModuleData, setRelatedModuleData] = useState([]);
+  const [relatedFields, setRelatedFields] = useState([]);
   let navigate = useNavigate()
   const inputRef = useRef(null);
 
@@ -153,6 +155,8 @@ const DragAndDrop = () => {
   const moduleName = pathParts[4];
   const record_id = pathParts[5];
   const [clickedItem, setClickedItem] = useState([])
+  const { darkMode } = useOutletContext();
+  const [isSearchFieldDisabled, setIsSearchFieldDisabled] = useState(true);
 
   const {
     token: { colorBgContainer, borderRadiusSM },
@@ -220,20 +224,20 @@ const DragAndDrop = () => {
   }, []);
 
   // Cria um alerta que evita que o usuário saia da página sem salvar o que foi alterado.
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event) => {
-  //     if (isChanged) {
-  //       event.preventDefault();
-  //       event.returnValue = ''; // A mensagem exata não é mais suportada por todos os navegadores
-  //     }
-  //   };
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (isChanged) {
+        event.preventDefault();
+        event.returnValue = ''; // A mensagem exata não é mais suportada por todos os navegadores
+      }
+    };
 
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   };
-  // }, [isChanged]);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isChanged]);
 
   const onDragStart = (event, provided) => {
     disableTextSelection()
@@ -518,26 +522,30 @@ const DragAndDrop = () => {
   const showModal = async (item) => {
     console.log("item clickedItem", clickedItem)
     console.log("item item", item)
-    if (item.field_type == "loockup") {
+    if (item.hasOwnProperty("sectionId")) {
+      console.log("entrou section")
+      form.setFieldsValue({
+        field_type: "section",
+        label: item.sectionName,
+      })
+    } else if (item.field_type == "loockup") {
+      console.log("entrou loockup")
       form.setFieldsValue({
         field_type: item.field_type,
         api_name: item.api_name,
         label: item.name,
         module: item.related_module,
-        required: item.required
-      })
-    } else if (item.hasOwnProperty("sectionId")) {
-      form.setFieldsValue({
-        field_type: "section",
-        label: item.sectionName,
+        required: item.required,
+        search_field: item.search_field
       })
     } else if (item.field_type == "select") {
+      console.log("entrou select")
       console.log("iitem select: ", item)
       let options = ['']
       if (item.api_name) {
         options = []
         const result = await fetchOptions(item.module, item.api_name)
-        console.log("result options: ",result)
+        console.log("result options: ", result)
         result.forEach(option => {
           options.push(option.name)
         });
@@ -551,13 +559,21 @@ const DragAndDrop = () => {
         required: item.required
       })
     } else {
+      console.log("entrou outros")
+      console.log("caiu aqyui field_type", item.field_type)
+      console.log("caiu aqyui api_name", item.api_name)
+      console.log("caiu aqyui name", item.name)
+      console.log("caiu aqyui type", extractNumbers(item.type))
+      console.log("caiu aqyui required", item.required)
       form.setFieldsValue({
         field_type: item.field_type,
         api_name: item.api_name,
         label: item.name,
-        char: extractNumbers(item.type),
-        required: item.required
+        char: await extractNumbers(item.type),
+        required: false
       })
+
+
     }
 
     setTimeout(() => {
@@ -582,6 +598,7 @@ const DragAndDrop = () => {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].search_field = values.search_field
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = false
         setIsModalVisible(false);
       } else if (clickedItem.item.field_type == 'select') {
@@ -609,7 +626,9 @@ const DragAndDrop = () => {
   };
 
   const handleMenuClick = (item, position, sectionId, index) => {
+    console.log("teste", item)
     setClickedItem({ item, position, section_id: sectionId, index })
+    console.log("teste clickedItem", clickedItem)
     showModal(item);
   };
 
@@ -724,6 +743,27 @@ const DragAndDrop = () => {
     }
   }
 
+  const fetchRelatedFields = async (open, relatedModuleName, api_name) => {
+    if (open) {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
+      const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
+      console.log("o que retornou fields? ", response)
+      const matchingResponse = response.data.map(item => {
+        return {
+          field_value: item.name,
+          api_name: item.api_name
+        };
+      });
+      setRelatedFields(matchingResponse);
+    }
+  }
+
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -754,8 +794,8 @@ const DragAndDrop = () => {
             top: 0,
             left: 0,
             width: 250,
-            height: `calc(100vh - 128px)`,
-            marginTop: 100,
+            height: `calc(100vh - 130px)`,
+            marginTop: 102,
             // paddingTop: 5,
             background: colorBgContainer,
             borderRadius: 0,
@@ -782,6 +822,7 @@ const DragAndDrop = () => {
                               ...provided.draggableProps.style,
                               marginBottom: '8px'
                             }}
+                            hoverable={true}
                             className='droppable-card'
                           >
                             <Row justify="space-between" align="middle" style={{ width: '100%' }}>
@@ -817,11 +858,12 @@ const DragAndDrop = () => {
                               ...provided.draggableProps.style,
                               marginBottom: '8px'
                             }}
+                            hoverable={true}
                             className='droppable-card'
                           >
                             <Row justify="space-between" align="middle" style={{ width: '100%' }}>
                               <Col>
-                                {item.field_type == "" || item.field_type == null ? (
+                                {item.field_type === "single_line" ? (
                                   <Col style={{ display: 'flex', alignItems: 'center' }}>
                                     <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
                                     <Text style={{ marginLeft: '6px' }}>{item.name}</Text>
@@ -870,7 +912,7 @@ const DragAndDrop = () => {
                                     <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
                                     <Text style={{ marginLeft: '6px' }}>{item.name}</Text>
                                   </Col>
-                                ) : item.field_type == "date-time" ? (
+                                ) : item.field_type == "date_time" ? (
                                   <Col style={{ display: 'flex', alignItems: 'center' }}>
                                     <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
                                     <Text style={{ marginLeft: '6px' }}>{item.name}</Text>
@@ -906,11 +948,12 @@ const DragAndDrop = () => {
                               ...provided.draggableProps.style,
                               marginBottom: '8px'
                             }}
+                            hoverable={true}
                             className='droppable-card'
                           >
                             <Row justify="space-between" align="middle" style={{ width: '100%' }}>
                               <Col>
-                                {item.field_type === "" || item.field_type === null ? (
+                                {item.field_type === "single_line" ? (
                                   <Col style={{ display: 'flex', alignItems: 'center' }}>
                                     <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
                                     <Text style={{ marginLeft: '6px' }}>{item.name}</Text>
@@ -959,7 +1002,7 @@ const DragAndDrop = () => {
                                     <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
                                     <Text style={{ marginLeft: '6px' }}>{item.name}</Text>
                                   </Col>
-                                ) : item.field_type === "date-time" ? (
+                                ) : item.field_type === "date_time" ? (
                                   <Col style={{ display: 'flex', alignItems: 'center' }}>
                                     <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
                                     <Text style={{ marginLeft: '6px' }}>{item.name}</Text>
@@ -980,26 +1023,28 @@ const DragAndDrop = () => {
         </Card>
 
         <ContentContainer>
-          <Row style={{
-            marginTop: '50px',
-            position: 'fixed',
-            top: 0,
-            right: 0,
-            left: '0px',
-            backgroundColor: 'white',
-            zIndex: 1000,
-            // boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: '52px',
-            borderBottom: '1px solid #ccc'
-          }}>
+          <Row 
+            style={{
+              marginTop: '51px',
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              left: '0px',
+              zIndex: 1000,
+              // boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+              background: colorBgContainer,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              height: '52px',
+              borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
+            }}
+          >
             <Col>
-              <Title
+              <Text
                 style={{ paddingLeft: '20px', fontSize: '22px' }}
               >
                 {moduleName}
-              </Title>
+              </Text>
             </Col>
             <Col style={{ margin: '0 15px 0 0' }}>
               <Button href={`/${org}/settings/modules`}>Cancelar</Button>
@@ -1019,7 +1064,7 @@ const DragAndDrop = () => {
                   height: `calc(100vh - 145px)`,
                   marginTop: '50px',
                   overflowY: 'auto',
-                  backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
+                  // backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
                   padding: 8
                 }}
                 className='custom-scrollbar'
@@ -1037,7 +1082,8 @@ const DragAndDrop = () => {
                         >
                           <Card
                             key={sectionId}
-                            style={{ marginBottom: 16, maxHeight: smallHeight ? '251px' : '' }}
+                            style={{ marginBottom: 16, maxHeight: smallHeight ? '251px' : '', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}
+                            hoverable={true}
                             title={sectionName}
                             size="small"
                             extra={
@@ -1055,7 +1101,7 @@ const DragAndDrop = () => {
                             <DragContainer>
                               <Droppable droppableId={`left-SECTION-${sectionId}`}>
                                 {(provided, snapshot) => (
-                                  <Column ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} style={{ maxHeight: smallHeight ? '170px' : '', overflow: smallHeight ? 'hidden' : '' }}>
+                                  <Column ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} style={{ maxHeight: smallHeight ? '170px' : '', overflow: smallHeight ? 'hidden' : '', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
                                     {sections[sectionId]?.left.length
                                       ? sections[sectionId].left.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
@@ -1077,6 +1123,7 @@ const DragAndDrop = () => {
                                                 isDragging={snapshot.isDragging}
                                                 style={{ flex: 1, cursor: 'pointer', marginBottom: '8px' }}
                                                 className='draggable-card'
+                                                hoverable={true}
                                                 size="small"
                                                 onClick={(e) => {
                                                   e.stopPropagation()
@@ -1090,7 +1137,7 @@ const DragAndDrop = () => {
                                                     {/* {JSON.stringify(item)} */}
                                                   </Col>
                                                   <Col>
-                                                    {item.field_type == "" || item.field_type == null ? (
+                                                    {item.field_type === "single_line" ? (
                                                       <Col style={{ display: 'flex', alignItems: 'center' }}>
                                                         <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
                                                         <Text style={{ marginLeft: '6px' }}>Linha Única</Text>
@@ -1139,7 +1186,7 @@ const DragAndDrop = () => {
                                                         <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
                                                         <Text style={{ marginLeft: '6px' }}>E-mail</Text>
                                                       </Col>
-                                                    ) : item.field_type === "date-time" ? (
+                                                    ) : item.field_type === "date_time" ? (
                                                       <Col style={{ display: 'flex', alignItems: 'center' }}>
                                                         <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
                                                         <Text style={{ marginLeft: '6px' }}>Data/Hora</Text>
@@ -1168,7 +1215,7 @@ const DragAndDrop = () => {
                               </Droppable>
                               <Droppable droppableId={`right-SECTION-${sectionId}`}>
                                 {(provided, snapshot) => (
-                                  <Column ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} style={{ maxHeight: smallHeight ? '170px' : '', overflow: smallHeight ? 'hidden' : '' }}>
+                                  <Column ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} style={{ maxHeight: smallHeight ? '170px' : '', overflow: smallHeight ? 'hidden' : '', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
                                     {sections[sectionId]?.right.length
                                       ? sections[sectionId].right.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
@@ -1190,6 +1237,7 @@ const DragAndDrop = () => {
                                                 isDragging={snapshot.isDragging}
                                                 style={{ flex: 1, cursor: 'pointer', marginBottom: '8px' }}
                                                 className='draggable-card'
+                                                hoverable={true}
                                                 size="small"
                                                 onClick={(e) => {
                                                   e.stopPropagation()
@@ -1202,7 +1250,7 @@ const DragAndDrop = () => {
                                                     {item.name}
                                                   </Col>
                                                   <Col>
-                                                    {item.field_type == "" || item.field_type == null ? (
+                                                    {item.field_type === "single_line" ? (
                                                       <Col style={{ display: 'flex', alignItems: 'center' }}>
                                                         <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
                                                         <Text style={{ marginLeft: '6px' }}>Linha Única</Text>
@@ -1251,7 +1299,7 @@ const DragAndDrop = () => {
                                                         <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
                                                         <Text style={{ marginLeft: '6px' }}>E-mail</Text>
                                                       </Col>
-                                                    ) : item.field_type === "date-time" ? (
+                                                    ) : item.field_type === "date_time" ? (
                                                       <Col style={{ display: 'flex', alignItems: 'center' }}>
                                                         <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
                                                         <Text style={{ marginLeft: '6px' }}>Data/Hora</Text>
@@ -1297,177 +1345,362 @@ const DragAndDrop = () => {
         onCancel={handleCancel}
 
       >
-        {(() => {
-          const fieldType = form.getFieldValue('field_type');
+        {form.getFieldValue('field_type') === 'section' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo da seção"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'single_line' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
 
-          if (fieldType === 'loockup') {
-            return (
-              <Form
-                form={form}
-                layout="vertical"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleOk();
-                  }
-                }}>
-                <Form.Item
-                  name="label"
-                  label="Rótulo do campo"
-                  rules={[{ required: true, message: 'Insira um valor!' }]}
-                >
-                  <Input ref={inputRef} />
-                </Form.Item>
-                <Form.Item
-                  name="module"
-                  label="Módulo de pesquisa"
-                  rules={[{ required: true, message: 'Insira um valor!' }]}
-                >
-                  <Select
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    // style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                    // defaultValue={fieldData.field_value}
-                    placeholder="Selecione"
-                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, form.getFieldValue('module'), form.getFieldValue('api_name'))}
-                  // onSelect={(key, value) => onChange(value)}
-                  // dropdownRender={(menu) => (
-                  //     <div>
-                  //         {menu}
-                  //         <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                  //             <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
-                  //                 {fieldData.field_value ? `Ir para ${fieldData.field_value}` : ''}
-                  //             </a>
-                  //         </div>
-                  //     </div>
-                  // )}
-                  >
-                    {relatedModuleData.map(item => (
-                      <Option key={item.related_id} value={item.field_value}>
-                        {item.field_value}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  name="required"
-                  label="Campo Obrigatório"
-                >
-                  <Checkbox
-                  // defaultChecked={fieldData.field_value == 1 ? true : false}
-                  // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-                  >
-                  </Checkbox>
-                </Form.Item>
-              </Form>
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'multi_line' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
 
-            )
-          } else if (fieldType === 'section') {
-            return (
-              <Form
-                form={form}
-                layout="vertical"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleOk();
-                  }
-                }}>
-                <Form.Item
-                  name="label"
-                  label="Rótulo da seção"
-                  rules={[{ required: true, message: 'Insira um valor!' }]}
-                >
-                  <Input ref={inputRef} />
-                </Form.Item>
-              </Form>
-            )
-          } else if (fieldType === 'select') {
-            return (
-              <Form
-                form={form}
-                // initialValues={{  }}
-                layout="vertical"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleOk();
-                  }
-                }}>
-                <Form.Item
-                  name="label"
-                  label="Rótulo do campo"
-                  rules={[{ required: true, message: 'Insira um valor!' }]}
-                >
-                  <Input ref={inputRef} />
-                </Form.Item>
-                <Text>Opções</Text>
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'number' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
 
-                <Layout
-                  style={{
-                    background: colorBgContainer,
-                    borderRadius: borderRadiusSM,
-                    border: '1px solid #ccc',
-                    height: "250px",
-                    overflowY: 'auto',
-                    marginTop: '10px',
-                    marginBottom: '15px',
-                    padding: '10px'
-                  }}
-                >
-                  <Form.List
-                    name="options"
-                  // rules={[
-                  //   {
-                  //     validator: async (_, options) => {
-                  //       if (!options || options.length < 2) {
-                  //         return Promise.reject(new Error('At least 2 options'));
-                  //       }
-                  //     },
-                  //   },
-                  // ]}
-                  >
-                    {(fields, { add, remove }, { move }) => (
-                      <>
-                        {fields.map((field, index) => (
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'checkbox' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'currency' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'loockup' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="module"
+              label="Módulo de pesquisa"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                placeholder="Selecione"
+                onChange={(value) => {
+                  setIsSearchFieldDisabled(!value)
+                }}
+                onDropdownVisibleChange={(open) => fetchRelatedModule(open, form.getFieldValue('module'), form.getFieldValue('api_name'))}
+              >
+                {relatedModuleData.map(item => (
+                  <Option key={item.related_id} value={item.field_value}>
+                    {item.field_value}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="search_field"
+              label="Campo de pesquisa"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                placeholder="Selecione"
+                disabled={isSearchFieldDisabled}
+                onDropdownVisibleChange={(open) => fetchRelatedFields(open, form.getFieldValue('module'), form.getFieldValue('api_name'))}
+              >
+                {relatedFields.map(item => (
+                  <Option key={item.api_name} value={item.api_name}>
+                    {item.field_value}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'select' && (
+          <Form
+            form={form}
+            // initialValues={{  }}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Text>Opções</Text>
+
+            <Layout
+              style={{
+                background: colorBgContainer,
+                borderRadius: borderRadiusSM,
+                border: '1px solid #ccc',
+                height: "250px",
+                overflowY: 'auto',
+                marginTop: '10px',
+                marginBottom: '15px',
+                padding: '10px'
+              }}
+            >
+              <Form.List
+                name="options"
+              // rules={[
+              //   {
+              //     validator: async (_, options) => {
+              //       if (!options || options.length < 2) {
+              //         return Promise.reject(new Error('At least 2 options'));
+              //       }
+              //     },
+              //   },
+              // ]}
+              >
+                {(fields, { add, remove }, { move }) => (
+                  <>
+                    {fields.map((field, index) => (
+                      <Form.Item
+                        {...(formItemLayout)}
+                        label={''}
+                        required={false}
+                        key={field.key}
+                      >
+                        <Space align="baseline">
                           <Form.Item
-                            {...(formItemLayout)}
-                            label={''}
-                            required={false}
-                            key={field.key}
+                            {...field}
+                            validateTrigger={['onChange', 'onBlur']}
+                            rules={[
+                              {
+                                required: true,
+                                whitespace: false,
+                                message: "Insira uma opção.",
+                              },
+                            ]}
+                            noStyle
+                            span={24}
                           >
-                            <Space align="baseline">
-                              <Form.Item
-                                {...field}
-                                validateTrigger={['onChange', 'onBlur']}
-                                rules={[
-                                  {
-                                    required: true,
-                                    whitespace: false,
-                                    message: "Insira uma opção.",
-                                  },
-                                ]}
-                                noStyle
-                                span={24}
-                              >
-                                <Input
-                                  placeholder="Opção"
-                                  style={{ width: '395px' }}
-                                />
-                              </Form.Item>
-                              <PlusCircleOutlined
-                                onClick={() => add('', index + 1)}
-                              />
-                              {fields.length > 1 && (
-                                <MinusCircleOutlined
-                                  className="dynamic-delete-button"
-                                  onClick={() => remove(field.name)}
-                                />
-                              )}
-                            </Space>
+                            <Input
+                              placeholder="Opção"
+                              style={{ width: '395px' }}
+                            />
                           </Form.Item>
-                        ))}
-                        {/* <Form.Item>
+                          <PlusCircleOutlined
+                            onClick={() => add('', index + 1)}
+                          />
+                          {fields.length > 1 && (
+                            <MinusCircleOutlined
+                              className="dynamic-delete-button"
+                              onClick={() => remove(field.name)}
+                            />
+                          )}
+                        </Space>
+                      </Form.Item>
+                    ))}
+                    {/* <Form.Item>
                         <Button
                           type="dashed"
                           onClick={() => add()}
@@ -1477,59 +1710,166 @@ const DragAndDrop = () => {
                           Adicionar opção
                         </Button>
                       </Form.Item> */}
-                      </>
-                    )}
-                  </Form.List>
-                </Layout>
-                <Form.Item
-                  name="required"
-                  label="Campo Obrigatório"
-                >
-                  <Checkbox
-                  // defaultChecked={fieldData.field_value == 1 ? true : false}
-                  // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-                  >
-                  </Checkbox>
-                </Form.Item>
-              </Form>
-            )
-          } else {
-            <Form
-              form={form}
-              layout="vertical"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleOk();
-                }
-              }}>
-              <Form.Item
-                name="label"
-                label="Rótulo do campo"
-                rules={[{ required: true, message: 'Insira um valor!' }]}
+                  </>
+                )}
+              </Form.List>
+            </Layout>
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
               >
-                <Input ref={inputRef} />
-              </Form.Item>
-              <Form.Item
-                name="char"
-                label="Número de caracteres permitidos"
-                rules={[{ required: true, message: 'Insira um valor!' }]}
-              >
-                <Input />
-              </Form.Item>
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'date' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
 
-              <Form.Item
-                name="required"
-                label="Campo Obrigatório"
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
               >
-                <Checkbox
-                // defaultChecked={fieldData.field_value == 1 ? true : false}
-                // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-                >
-                </Checkbox>
-              </Form.Item>
-            </Form>
-          }
-        })()}
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'date_time' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'email' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
+        {form.getFieldValue('field_type') === 'phone' && (
+          <Form
+            form={form}
+            layout="vertical"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleOk();
+              }
+            }}>
+            <Form.Item
+              name="label"
+              label="Rótulo do campo"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="char"
+              label="Número de caracteres permitidos"
+              rules={[{ required: true, message: 'Insira um valor!' }]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="required"
+              label="Campo Obrigatório"
+            >
+              <Checkbox
+              // defaultChecked={fieldData.field_value == 1 ? true : false}
+              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
+              >
+              </Checkbox>
+            </Form.Item>
+          </Form>
+        )}
       </Modal>
     </Layout>
   );

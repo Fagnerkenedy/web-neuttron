@@ -35,8 +35,8 @@ export const AuthProvider = ({children}) => {
             
             setLoading(false);
 
-            // if(response.data.message == "user_not_verified")
-            //     setAlertMessage(<Alert message="OPS! Usuário não verificado!" description="Verifique a caixa de entrada de seu E-mail" type="error" showIcon />)
+            if(response.data.message == "user_not_verified")
+                setAlertMessage(<Alert message="E-mail não confirmado!" description="Verifique sua caixa de entrada e clique no link para confirmar seu e-mail." type="info" showIcon />)
         } else {
 
             const loggedUser = response.data.user;
@@ -50,7 +50,7 @@ export const AuthProvider = ({children}) => {
 
             setUser(loggedUser);
             navigate(`/${response.data.org}/home`);
-            // window.location.reload(true)
+            window.location.reload(true)
             setLoading(false);
         }
         

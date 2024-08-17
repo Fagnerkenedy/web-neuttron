@@ -158,7 +158,7 @@ const DetailView = ({ itemId }) => {
         }
     };
 
-    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
+    const fetchRelatedModule = async (open, relatedModuleName, search_field) => {
         if (open) {
             const token = localStorage.getItem('token');
             const config = {
@@ -171,19 +171,22 @@ const DetailView = ({ itemId }) => {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
                 const matchingResponse = response.data.result.map(item => {
                     return {
-                        field_value: item[api_name],
+                        field_value: item[search_field],
                         related_id: item.api_name
                     };
                 });
                 setRelatedModuleData(matchingResponse);
             } else {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                console.log("rataratata: ",response.data)
                 const matchingResponse = response.data.map(item => {
                     return {
-                        field_value: item[api_name],
+                        field_value: item[search_field],
                         related_id: item.id
                     };
                 });
+                console.log("rataratata matchingResponse: ",matchingResponse)
+
                 setRelatedModuleData(matchingResponse);
             }
 
@@ -247,14 +250,28 @@ const DetailView = ({ itemId }) => {
         return //<div>Carregando...</div>;
     }
 
-    const handleFieldChange = async (index, newValue, id, api_name) => {
+    // const handleFieldChange = async (index, newValue, id, api_name) => {
+    const handleFieldChange = async (sectionIndex, index, value, api_name, column, id) => {
         try {
-            const updatedData = [...data];
-            const fieldToUpdate = updatedData[index];
-            fieldToUpdate.field_value = newValue;
+
+            console.log("value sectionIndex?: ",sectionIndex)
+            console.log("value index?: ",index)
+            console.log("value value?: ",value)
+            console.log("value api_name?: ",api_name)
+            console.log("value column?: ",column)
+
+            // const updatedData = [...sections];
+            // updatedData[sectionIndex][column][index].field_value = value;
+            // console.log("datas datas cadabra: ",updatedData)
+            
+            // setSections(updatedData)
+
+            const updatedData = [...sections];
+            const fieldToUpdate = updatedData[sectionIndex][column][index]
+            fieldToUpdate.field_value = value;
             fieldToUpdate.related_id = id;
             const fieldToUpdate3 = {};
-            fieldToUpdate3[api_name] = newValue
+            fieldToUpdate3[api_name] = value
 
             // [fieldToUpdate].map(field => {
             //     const { api_name, field_value } = field;
@@ -278,19 +295,57 @@ const DetailView = ({ itemId }) => {
             console.error("Erro ao atualizar os dados:", error);
         }
     };
-    const handleFieldChangeRelatedModule = async (index, newValue, id) => {
+
+    // const handleFieldChange = async (index, newValue, id, api_name) => {
+    //     try {
+    //         const updatedData = [...data];
+    //         const fieldToUpdate = updatedData[index];
+    //         fieldToUpdate.field_value = newValue;
+    //         fieldToUpdate.related_id = id;
+    //         const fieldToUpdate3 = {};
+    //         fieldToUpdate3[api_name] = newValue
+
+    //         // [fieldToUpdate].map(field => {
+    //         //     const { api_name, field_value } = field;
+    //         //     fieldToUpdate3[api_name] = field_value
+    //         // });
+    //         const currentPath = window.location.pathname;
+    //         const pathParts = currentPath.split('/');
+    //         const org = pathParts[1];
+    //         const moduleName = pathParts[2];
+    //         const record_id = pathParts[3];
+    //         const token = localStorage.getItem('token');
+    //         const config = {
+    //             headers: {
+    //                 'Authorization': `Bearer ${token}`
+    //             }
+    //         };
+    //         await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+    //         message.success('Registro Atualizado!');
+    //         fetchData()
+    //     } catch (error) {
+    //         console.error("Erro ao atualizar os dados:", error);
+    //     }
+    // };
+
+    // const handleFieldChangeRelatedModule = async (index, newValue, id) => {
+    const handleFieldChangeRelatedModule = async (sectionIndex, index, value, api_name, column, id) => {
+
         try {
+            console.log("sectionIndex", sectionIndex)
             console.log("index", index)
-            console.log("newValue", newValue)
+            console.log("value", value)
+            console.log("api_name", api_name)
+            console.log("column", column)
             console.log("id", id)
             console.log("databatata", data)
 
-            const updatedData = [...data];
+            const updatedData = [...sections];
             console.log("updatedDatabatata", data)
-            const fieldToUpdate = updatedData[index];
+            const fieldToUpdate = updatedData[sectionIndex][column][index]
 
-            fieldToUpdate.field_value = newValue;
-            fieldToUpdate.related_id = id;
+            fieldToUpdate.field_value = value.value;
+            fieldToUpdate.related_id = value.key;
 
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
@@ -316,7 +371,7 @@ const DetailView = ({ itemId }) => {
 
             [fieldToUpdate].map(field => {
                 const { name, api_name, field_value, related_id } = field;
-                fieldToUpdate3[api_name] = id.value
+                fieldToUpdate3[api_name] = value.value
                 // fieldToUpdate3.related_id = related_id.key
             });
             const fieldToUpdate4 = {};
@@ -326,8 +381,8 @@ const DetailView = ({ itemId }) => {
                 fieldToUpdate4.api_name = api_name
                 fieldToUpdate4.name = name
                 fieldToUpdate4.related_module = related_module
-                fieldToUpdate4.related_id = related_id.key
-                fieldToUpdate4.related_value = id.value
+                fieldToUpdate4.related_id = related_id
+                // fieldToUpdate4.related_value = value.value
             });
             const fieldToUpdate5 = {};
             [fieldToUpdate].map(field => {
@@ -336,7 +391,7 @@ const DetailView = ({ itemId }) => {
                 fieldToUpdate5.api_name = api_name
                 fieldToUpdate5.name = name
                 fieldToUpdate5.related_module = related_module
-                fieldToUpdate5.related_id = related_id.key
+                fieldToUpdate5.related_id = related_id
                 fieldToUpdate5.module_id = record_id
             });
             const token = localStorage.getItem('token');
@@ -345,6 +400,9 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
+            console.log("fieldToUpdate3: ",fieldToUpdate3)
+            console.log("fieldToUpdate4: ",fieldToUpdate4)
+            console.log("fieldToUpdate5: ",fieldToUpdate5)
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
@@ -361,7 +419,7 @@ const DetailView = ({ itemId }) => {
         return numbers ? numbers.join('') : '';
     }
     
-    const renderField = (fieldData, index, onChange) => {
+    const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
         console.log("fieldData",fieldData)
         if (fieldData.related_module != null) {
             return (
@@ -374,10 +432,10 @@ const DetailView = ({ itemId }) => {
                     style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                     defaultValue={fieldData.field_value}
                     placeholder="Selecione"
-                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
+                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
                     // onSelect={(key, value) => onChange(value)}
-                    // onSelect={(key, value) => onChangeRelatedModule(value)}
-                    onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                    onSelect={(key, value) => onChangeRelatedModule(value)}
+                    // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
                     dropdownRender={(menu) => (
                         <div>
                             {menu}
@@ -519,7 +577,9 @@ const DetailView = ({ itemId }) => {
                     <div>
                         <Layout
                             style={{
-                                background: colorBgContainer
+                                background: colorBgContainer,
+                                position: 'fixed',
+                                width: '100%'
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
@@ -552,6 +612,7 @@ const DetailView = ({ itemId }) => {
                                 </Col>
                             </Row>
                         </Layout>
+                        <Row style={{ height: '52px' }}></Row>
                     </div>
                     <div style={{ padding: '15px 0' }}>
                         <Content className='content'>
@@ -559,7 +620,7 @@ const DetailView = ({ itemId }) => {
                                 style={{
                                     background: colorBgContainer,
                                     borderRadius: borderRadiusLG,
-                                    minHeight: (relatedList.length === 0 ? 'calc(100vh - 161px)' : ''),
+                                    minHeight: (relatedList.length === 0 ? 'calc(100vh - 161px)' : 'calc(80vh - 205px)'),
                                     padding: '20px',
                                     border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                 }}
@@ -580,7 +641,8 @@ const DetailView = ({ itemId }) => {
                                                                             <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                         </Col>
                                                                         <Col span={(moduleName == "functions" ? 20 : 14)}>
-                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))}
+                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
+                                                                                {/* {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))} */}
                                                                         </Col>
                                                                     </Row>
                                                                 </div>
@@ -594,7 +656,7 @@ const DetailView = ({ itemId }) => {
                                                                             <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                         </Col>
                                                                         <Col span={(moduleName == "functions" ? 22 : 14)} offset={(moduleName == "functions" ? 1 : 0)}>
-                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))}
+                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
                                                                         </Col>
                                                                     </Row>
                                                                 </div>

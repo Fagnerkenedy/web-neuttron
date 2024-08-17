@@ -1,10 +1,10 @@
 .draggable-card:hover {
-    background-color: #fcfcfc;
+    /* background-color: #fcfcfc; */
     cursor: pointer;
 }
 
 .droppable-card:hover {
-    background-color: #fcfcfc;
+    /* background-color: #fcfcfc; */
 }
 
 /* Estilos para a barra de rolagem */
@@ -17,15 +17,15 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  /* background: #f1f1f1;  */
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #acacac; 
+  /* background: #acacac;  */
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #949494; 
+  /* background: #949494;  */
 }

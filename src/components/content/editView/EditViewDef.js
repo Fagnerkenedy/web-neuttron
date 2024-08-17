@@ -78,26 +78,31 @@ const EditView = ({ itemId }) => {
 
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
                     console.log("response Batatinha", response)
-                    const fieldToUpdate5 = {
-                        related_module: field.related_module,
-                        related_id: field.related_id,
-                        module_id: null,
-                        id: field.id,
-                        api_name: field.api_name,
-                        name: field.field_value
-                    };
+                    if (response.data.length > 0 && response.data[0].hasOwnProperty('related_id')) {
+                        console.log("entrou?")
+                        const fieldToUpdate5 = {
+                            related_module: field.related_module,
+                            related_id: field.related_id,
+                            module_id: null,
+                            id: field.id,
+                            api_name: field.api_name,
+                            name: field.field_value
+                        };
 
-                    const index = combinedData.findIndex(combinedDataField => combinedDataField.id === field.id);
-                    console.log("Batatinha quando index", index)
-                    console.log("Batatinha quando nasce", fieldToUpdate5)
-                    console.log("Batatinha quando relatedFieldData", relatedFieldData)
-                    let updatedRelatedFieldData = [...relatedFieldData];
-                    updatedRelatedFieldData[index] = fieldToUpdate5;
-                    setRelatedFieldData(updatedRelatedFieldData);
-                    return {
-                        api_name: field.api_name,
-                        related_id: response.data[0].related_id
-                    };
+                        const index = combinedData.findIndex(combinedDataField => combinedDataField.id === field.id);
+                        console.log("Batatinha quando index", index)
+                        console.log("Batatinha quando nasce", fieldToUpdate5)
+                        console.log("Batatinha quando relatedFieldData", relatedFieldData)
+                        let updatedRelatedFieldData = [...relatedFieldData];
+                        updatedRelatedFieldData[index] = fieldToUpdate5;
+                        setRelatedFieldData(updatedRelatedFieldData);
+                        return {
+                            api_name: field.api_name,
+                            related_id: response.data[0].related_id
+                        };
+                        
+                    }
+
                 }
             })
 
@@ -169,7 +174,7 @@ const EditView = ({ itemId }) => {
         }
     };
 
-    const fetchRelatedModule = async (open, relatedModuleName, api_name) => {
+    const fetchRelatedModule = async (open, relatedModuleName, search_field) => {
         if (open) {
             const token = localStorage.getItem('token');
             const config = {
@@ -181,19 +186,22 @@ const EditView = ({ itemId }) => {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
                 const matchingResponse = response.data.result.map(item => {
                     return {
-                        field_value: item[api_name],
+                        field_value: item[search_field],
                         related_id: item.api_name
                     };
                 });
                 setRelatedModuleData(matchingResponse);
             } else {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
+                console.log("ai ai api_name: ",search_field)
+                console.log("ai ai response: ",response)
                 const matchingResponse = response.data.map(item => {
                     return {
-                        field_value: item[api_name],
+                        field_value: item[search_field],
                         related_id: item.id
                     };
                 });
+                console.log("ai ai: ",matchingResponse)
                 setRelatedModuleData(matchingResponse);
             }
             
@@ -267,6 +275,37 @@ const EditView = ({ itemId }) => {
         // });
     };
 
+    // const handleFieldChangeRelatedModule = async (index, id, newValue) => {
+    const handleFieldChangeRelatedModule = (sectionIndex, index, value, api_name, column) => {
+        try {
+            // console.log("newValue:", newValue.key)
+            let updatedData = [...sections];
+            updatedData[sectionIndex][column][index].field_value = value.value
+            const fieldToUpdate1 = updatedData[sectionIndex][column][index]
+            console.log("related field update", fieldToUpdate1)
+
+            const fieldToUpdate5 = {
+                index: index,
+                related_module: fieldToUpdate1.related_module,
+                related_id: value.key,
+                module_id: null,
+                id: fieldToUpdate1.id,
+                api_name: fieldToUpdate1.api_name,
+                name: fieldToUpdate1.field_value,
+                field_value: value.value
+            };
+
+            console.log("Batatinha quando nasce", fieldToUpdate5)
+            console.log("Batatinha quando relatedFieldData", relatedFieldData)
+            const updatedRelatedFieldData = [...relatedFieldData];
+            updatedRelatedFieldData[index] = fieldToUpdate5;
+            setRelatedFieldData(updatedRelatedFieldData);
+
+        } catch (error) {
+            console.error("Erro ao atualizar os dados:", error);
+        }
+    };
+
     const handleSave = async () => {
         try {
             const fieldToUpdate3 = {};
@@ -336,39 +375,12 @@ const EditView = ({ itemId }) => {
         }
     };
 
-    const handleFieldChangeRelatedModule = async (index, id, newValue) => {
-        try {
-            console.log("newValue:", newValue.key)
-            const updatedData = [...data];
-            const fieldToUpdate1 = updatedData[index];
-            console.log("related field update", fieldToUpdate1)
-
-            const fieldToUpdate5 = {
-                index: index,
-                related_module: fieldToUpdate1.related_module,
-                related_id: newValue.key,
-                module_id: null,
-                id: fieldToUpdate1.id,
-                api_name: fieldToUpdate1.api_name
-            };
-
-            console.log("Batatinha quando nasce", fieldToUpdate5)
-            console.log("Batatinha quando relatedFieldData", relatedFieldData)
-            const updatedRelatedFieldData = [...relatedFieldData];
-            updatedRelatedFieldData[index] = fieldToUpdate5;
-            setRelatedFieldData(updatedRelatedFieldData);
-
-        } catch (error) {
-            console.error("Erro ao atualizar os dados:", error);
-        }
-    };
-
     const extractNumbers = (inputString) => {
         const numbers = inputString.match(/\d+/g);
         return numbers ? numbers.join('') : '';
     }
 
-    const renderField = (fieldData, index, onChange) => {
+    const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
         console.log("abracadabra: ",fieldData)
         console.log("sections: ",sections)
         if (fieldData.related_module != null) {
@@ -386,10 +398,11 @@ const EditView = ({ itemId }) => {
                         defaultValue={fieldData.field_value}
                         placeholder="Selecione"
                         // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-                        onChange={(value) => onChange(value)}
+                        // onChange={(value) => onChange(value)}
+                        onChange={(key, value) => onChangeRelatedModule(value)}
                         // loading={loading}
-                        onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
-                        onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                        onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
+                        // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
                         dropdownRender={(menu) => (
                             <div>
                                 {menu}
@@ -576,7 +589,9 @@ const EditView = ({ itemId }) => {
                         <Layout
                             style={{
                                 background: colorBgContainer,
-                                borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
+                                borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                position: 'fixed',
+                                width: '100%'
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
@@ -597,6 +612,7 @@ const EditView = ({ itemId }) => {
                                 </Col>
                             </Row>
                         </Layout>
+                        <Row style={{ height: '52px' }}></Row>
                     </div>
                     <div style={{ padding: '15px 0' }}>
                         <Content className='content'>
@@ -605,7 +621,7 @@ const EditView = ({ itemId }) => {
                                 style={{
                                     background: colorBgContainer,
                                     borderRadius: borderRadiusLG,
-                                    minHeight: 'calc(100vh - 160px)',
+                                    minHeight: 'calc(100vh - 161px)',
                                     border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                 }}
                             >
@@ -625,7 +641,7 @@ const EditView = ({ itemId }) => {
                                                                             <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                         </Col>
                                                                         <Col span={(moduleName == "functions" ? 20 : 14)}>
-                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
+                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
                                                                         </Col>
                                                                     </Row>
                                                                 </div>
@@ -639,7 +655,7 @@ const EditView = ({ itemId }) => {
                                                                             <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                         </Col>
                                                                         <Col span={(moduleName == "functions" ? 22 : 14)} offset={(moduleName == "functions" ? 1 : 0)}>
-                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
+                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
                                                                         </Col>
                                                                     </Row>
                                                                 </div>

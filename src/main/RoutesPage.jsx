@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Cadastro from '../components/users/Cadastro'
 import Login from "../components/users/Login"
+import ConfirmedEmail from '../components/users/ConfirmEmail.jsx';
 import PageNotFound from "../components/PageNotFound"
 import AuthContext, { AuthProvider } from '../contexts/auth'
 import Loading from '../components/utils/Loading';
@@ -16,6 +17,7 @@ import Modules from '../components/content/settings/modules/Modules';
 import Layout from '../components/content/settings/modules/layout/Layout';
 import Payment from '../components/checkout/Payment';
 import { useAbility } from '../contexts/AbilityContext.js'
+import { ConfigProvider } from 'antd';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
 function RoutesPage() {
@@ -41,7 +43,7 @@ function RoutesPage() {
   const AuthorizedRoute = ({ action, subject, children }) => {
     const { ability, loading } = useAbility();
     if (loading) {
-      return ;
+      return;
     }
     // console.log(`ability.can(${action}, ${subject})`, ability.can(action, subject))
     ability.can(action, subject)
@@ -57,9 +59,17 @@ function RoutesPage() {
     <BrowserRouter>
       <AuthProvider>
         {/* <AbilityProvider> */}
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#1a73e8', // #1a73e8 #004E99
+              // colorLinkHover: '#004E99', // Cor legal: 277AF7
+              colorSuccess: '#6aaf35'
+            },
+          }}
+        >
           <Routes>
             {/* <Route path="/" element={<Navigate to="/login" />} /> */}
-
             <Route path="/:org" element={<Private><PageBase /></Private>}>
               <Route path="/:org/home" element={<Home />} />
               <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
@@ -74,8 +84,10 @@ function RoutesPage() {
             </Route>
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />}  />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
+        </ConfigProvider>
         {/* </AbilityProvider> */}
       </AuthProvider>
     </BrowserRouter>
