@@ -27,6 +27,7 @@ const EditView = ({ itemId }) => {
     const [inputValue, setInputValue] = useState("")
     const [editedFields, setEditedFields] = useState({})
     const [relatedFieldData, setRelatedFieldData] = useState([]);
+    const [combinedData, setCombinedData] = useState([]);
     const [options, setOptions] = useState([]);
     const [sections, setSections] = useState([])
     const { darkMode } = useOutletContext();
@@ -71,14 +72,15 @@ const EditView = ({ itemId }) => {
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
             });
+            setCombinedData(combinedData)
             const relatedModulePromises = combinedData.map(async field => {
                 console.log("fields", field)
                 if (field.related_module != null && field.field_value != "") {
                     console.log("field.related_module", field)
 
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("response Batatinha", response)
-                    if (response.data.length > 0 && response.data[0].hasOwnProperty('related_id')) {
+                    console.log("response Batatinha", response.data[0])
+                    if (response.data) {
                         console.log("entrou?")
                         const fieldToUpdate5 = {
                             related_module: field.related_module,
@@ -94,20 +96,27 @@ const EditView = ({ itemId }) => {
                         console.log("Batatinha quando nasce", fieldToUpdate5)
                         console.log("Batatinha quando relatedFieldData", relatedFieldData)
                         let updatedRelatedFieldData = [...relatedFieldData];
-                        updatedRelatedFieldData[index] = fieldToUpdate5;
-                        setRelatedFieldData(updatedRelatedFieldData);
+                        updatedRelatedFieldData[index] = fieldToUpdate5
+                        console.log("Batatinha quando updatedRelatedFieldData", updatedRelatedFieldData)
+                        // setRelatedFieldData(updatedRelatedFieldData);
                         return {
+                            name: field.field_value,
                             api_name: field.api_name,
-                            related_id: response.data[0].related_id
+                            related_id: response.data[0][0].related_id,
+                            related_module: field.related_module,
+                            module_id: null,
+                            id: field.id
                         };
                         
                     }
 
                 }
             })
-
             const relatedModuleResponses = await Promise.all(relatedModulePromises)
             console.log("relatedModuleResponses", relatedModuleResponses)
+            console.log("Batatinha quando relatedFieldData", relatedFieldData)
+            setRelatedFieldData(relatedModuleResponses);
+
             const updatedCombinedData = combinedData.map(field => {
                 if (field.related_module != null) {
                     console.log("field", field)
@@ -295,10 +304,13 @@ const EditView = ({ itemId }) => {
                 field_value: value.value
             };
 
+            const index2 = combinedData.findIndex(combinedDataField => combinedDataField.id === fieldToUpdate1.id);
+
             console.log("Batatinha quando nasce", fieldToUpdate5)
-            console.log("Batatinha quando relatedFieldData", relatedFieldData)
+            console.log("Batatinha quando handleFieldChangeRelatedModule", relatedFieldData)
             const updatedRelatedFieldData = [...relatedFieldData];
-            updatedRelatedFieldData[index] = fieldToUpdate5;
+            updatedRelatedFieldData[index2] = fieldToUpdate5
+            console.log("Batatinha quando updatedRelatedFieldData updatedRelatedFieldData", updatedRelatedFieldData)
             setRelatedFieldData(updatedRelatedFieldData);
 
         } catch (error) {
@@ -315,7 +327,10 @@ const EditView = ({ itemId }) => {
                 console.log("fieldToUpdatefieldToUpdate",fieldToUpdate)
                 console.log("relatedFieldDatarelatedFieldData",relatedFieldData)
                 const records = relatedFieldData.filter(record => !!record);
+                console.log("records",records)
+
                 fieldToUpdate3['related_record'] = records.reduce((acc, record) => {
+                    console.log("record record: ",record)
                     if (record != null) {
                         acc[record.api_name] = {
                             name: record.name,
@@ -325,7 +340,7 @@ const EditView = ({ itemId }) => {
                     }
                     return acc;
                 }, {});
-                console.log("fieldToUpdate array",fieldToUpdate)
+                console.log("fieldToUpdate array",fieldToUpdate3)
 
                 let toUpdate = []
                 sections.forEach(section => {

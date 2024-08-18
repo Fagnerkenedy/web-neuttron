@@ -34,6 +34,8 @@ const DetailView = ({ itemId }) => {
     const [isChecked, setIsChecked] = useState(false);
     const [relatedList, setRelatedModuleList] = useState('');
     const [options, setOptions] = useState([]);
+    const [relatedFieldData, setRelatedFieldData] = useState([]);
+    const [openField, setOpenField] = useState(false)
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
     const org = pathParts[1];
@@ -87,8 +89,12 @@ const DetailView = ({ itemId }) => {
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
                     if (response.data != "") {
                         return {
+                            name: field.field_value,
                             api_name: field.api_name,
-                            related_id: response.data[0].related_id
+                            related_id: response.data[0][0].related_id,
+                            related_module: field.related_module,
+                            module_id: null,
+                            id: field.id
                         };
 
                     }
@@ -96,8 +102,9 @@ const DetailView = ({ itemId }) => {
                     return field;
                 }
             })
-
             const relatedModuleResponses = await Promise.all(relatedModulePromises);
+            setRelatedFieldData(relatedModuleResponses);
+
             const updatedCombinedData = combinedData.map(field => {
                 if (field.related_module != null) {
                     const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name);
@@ -559,14 +566,28 @@ const DetailView = ({ itemId }) => {
                 />
             );
         } else {
-            return (
-                <Input
-                    defaultValue={fieldData.field_value}
-                    onChange={(e) => onChange(e.target.value)}
-                    maxLength={extractNumbers(fieldData.type)}
-                    // showCount
-                />
-            );
+            console.log("openfield: ",openField)
+            if (openField == true) {
+                return (
+                    <Input
+                        defaultValue={fieldData.field_value}
+                        // onChange={(e) => onChange(e.target.value)}
+                        maxLength={extractNumbers(fieldData.type)}
+                        onBlur={(e) => { 
+                            setOpenField(false)
+                            onChange(e.target.value)
+                        }}
+                        // showCount
+                    />
+                )
+            } else {
+                return (
+                    <Paragraph
+                        onClick={() => setOpenField(true)}>
+                        {fieldData.field_value}
+                    </Paragraph>
+                )
+            }
         }
     };
 
