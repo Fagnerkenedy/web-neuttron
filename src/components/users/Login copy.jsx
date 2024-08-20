@@ -1,5 +1,12 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Image, theme, ConfigProvider } from 'antd';
+import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Image, Space, Tabs, message, theme, ConfigProvider } from 'antd';
+import {
+    LoginFormPage,
+    ProConfigProvider,
+    ProFormCaptcha,
+    ProFormCheckbox,
+    ProFormText,
+} from '@ant-design/pro-components';
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './styles.css'
@@ -9,13 +16,13 @@ import AuthContext from '../../contexts/auth';
 import Loading from '../utils/Loading';
 import Logo from './neuttron_preto_sem_fundo.png';
 
-const { defaultAlgorithm, darkAlgorithm } = theme;
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
 const Login = () => {
     const { login, loading, alertMessage } = useContext(AuthContext);
-
+    const [loginType, setLoginType] = useState('account');
+    const { token } = theme.useToken();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -36,7 +43,7 @@ const Login = () => {
         <ConfigProvider
             theme={{
                 // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
-                // algorithm: darkAlgorithm, // compactAlgorithm
+                algorithm: darkAlgorithm, // compactAlgorithm
                 token: {
                     colorPrimary: '#1a73e8', // #1a73e8 #004E99
                     // colorLink: '#ffffff' : '#000000',
@@ -89,7 +96,6 @@ const Login = () => {
                                                     rules={[
                                                         {
                                                             required: true,
-                                                            message: 'Por favor insira o seu e-mail!',
                                                         },
                                                         {
                                                             type: 'email',
@@ -98,7 +104,7 @@ const Login = () => {
                                                     ]}
                                                 >
                                                     <Input
-                                                        size='large'
+                                                        // size='large'
                                                         prefix={<UserOutlined className="site-form-item-icon" />}
                                                         placeholder="E-mail"
                                                         autoFocus
@@ -112,15 +118,15 @@ const Login = () => {
                                                     rules={[
                                                         {
                                                             required: true,
-                                                            message: 'Por favor insira a sua senha!',
+                                                            message: 'Please input your Password!',
                                                         },
                                                     ]}
                                                 >
                                                     <Input
-                                                        size='large'
+                                                        // size='large'
                                                         prefix={<LockOutlined className="site-form-item-icon" />}
                                                         type="password"
-                                                        placeholder="Senha"
+                                                        placeholder="Password"
                                                         value={password}
                                                         onChange={(e) => setPassword(e.target.value)}
                                                     />

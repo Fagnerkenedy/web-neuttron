@@ -18,6 +18,7 @@ import Layout from '../components/content/settings/modules/layout/Layout';
 import Payment from '../components/checkout/Payment';
 import { useAbility } from '../contexts/AbilityContext.js'
 import { ConfigProvider } from 'antd';
+import LoginPro from '../components/users/LoginPro.js';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
 function RoutesPage() {
@@ -84,6 +85,7 @@ function RoutesPage() {
             </Route>
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/loginpro" element={<LoginPro />} />
             <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />}  />
             <Route path="*" element={<PageNotFound />} />
           </Routes>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { Button, Col, Divider, Layout, Typography, theme } from "antd";
 import './style.css';
+import MercadoPagoButton from "./MercadoPagoButton";
 const { Title, Text } = Typography;
 
 initMercadoPago(process.env.REACT_APP_PUBLIC_KEY_MERCADO_PAGO);
@@ -34,12 +35,12 @@ const Payment = () => {
       });
   }, []);
 
-  const renderCheckoutButton = (preferenceId) => {
-    if (!preferenceId || isLoading) return null;
-    return (
-      <Button className="payment-button" type="primary" href={`https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${preferenceId}`}>Pagar</Button>
-    );
-  };
+  // const renderCheckoutButton = (preferenceId) => {
+  //   if (!preferenceId || isLoading) return null;
+  //   return (
+  //     <Button className="payment-button" type="primary" href={`https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${preferenceId}`}>Pagar</Button>
+  //   );
+  // };
 
   return (
     <Layout className="payment-container">
@@ -56,7 +57,7 @@ const Payment = () => {
             <Title level={3} className="summary-title">Resumo</Title>
             <Divider />
             <Col className="item">
-              <Text className="price1">R$ 718,80</Text>
+              <Text className="price1">R$ 478,80</Text>
               <Text className="item-name">
                 Plano Profissional <span className="quantity">x 1 Usuário cobrado anualmente</span>
               </Text>
@@ -64,13 +65,14 @@ const Payment = () => {
             <Divider />
             <Col className="total">
               <Text>Total</Text>
-              <Text className="price">R$ 718,80</Text>
+              <Text className="price">R$ 478,80</Text>
             </Col>
           </Col>
           <div className="payment-details">
-            <div>
+            {/* <div>
               {renderCheckoutButton(preferenceId)}
-            </div>
+            </div> */}
+            <MercadoPagoButton />
           </div>
         </Col>
       </Col>

@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import styled, { createGlobalStyle } from 'styled-components';
-import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space } from 'antd';
+import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { CalendarOutlined, CloseOutlined, EditOutlined, EllipsisOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { CalendarOutlined, CloseOutlined, EditOutlined, EllipsisOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import './styles.css'
 import InputOutlined from '../../../../../../src/img/text.png'
@@ -18,6 +18,7 @@ import PhoneOutlined from '../../../../../../src/img/telephone.png'
 import EmailOutlined from '../../../../../../src/img/envelope.png'
 import DateTimeOutlined from '../../../../../../src/img/datetime.png'
 import { useOutletContext } from 'react-router-dom';
+import { getModulesTour, updateModulesTour } from './modulesTour';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -132,6 +133,7 @@ const sectionItems = [
 ]
 
 const DragAndDrop = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
   const [lists, setLists] = useState({ left: [], right: [] });
   const [ITEMS, setItems] = useState(initialItems);
   const [sections, setSections] = useState({});
@@ -157,10 +159,55 @@ const DragAndDrop = () => {
   const [clickedItem, setClickedItem] = useState([])
   const { darkMode } = useOutletContext();
   const [isSearchFieldDisabled, setIsSearchFieldDisabled] = useState(true);
+  const [modulesTour, setModulesTour] = useState(false);
 
   const {
     token: { colorBgContainer, borderRadiusSM },
   } = theme.useToken();
+
+  const updateTour = async () => {
+    const updateTour = await updateModulesTour(org, user.id)
+    console.log("updateTour: ", updateTour)
+
+    setModulesTour(updateTour.modulesTour)
+  }
+
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+  const steps = [
+    {
+      title: 'Seções e Campos',
+      description: 'Crie novos campos e seções arrastando os itens da lateral.',
+      target: () => ref1.current,
+      placement: 'right',
+      nextButtonProps: {
+        children: 'Próximo',
+      },
+    },
+    {
+      title: 'Layout',
+      description: 'Reorganize os campos e seções e configure as propriedades clicando nos itens.',
+      target: () => ref2.current,
+      prevButtonProps: {
+        children: 'Voltar',
+      },
+      nextButtonProps: {
+        children: 'Avançar',
+      },
+    },
+    {
+      title: 'Salvar',
+      description: 'Quando estiver tudo pronto, clique em Salvar para aplicar o novo layout e as mudanças serão refletidas ao criar ou editar um novo registro.',
+      target: () => ref3.current,
+      prevButtonProps: {
+        children: 'Voltar',
+      },
+      nextButtonProps: {
+        children: 'Concluir',
+      },
+    },
+  ];
 
   const fetchData = async () => {
     try {
@@ -207,7 +254,7 @@ const DragAndDrop = () => {
           left: leftFields,
           right: rightFields
         };
-        newSectionOrder.push({ sectionId, sectionName });
+        newSectionOrder.push({ sectionId, sectionName, field_type: "section" });
 
       });
 
@@ -219,7 +266,11 @@ const DragAndDrop = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async() => {
+    const getTour = await getModulesTour(org, user.id)
+    let modulesTour = ''
+    if (getTour.data.length > 0) modulesTour = getTour.data[0].modules_tour
+    setModulesTour(modulesTour)
     fetchData();
   }, []);
 
@@ -290,7 +341,7 @@ const DragAndDrop = () => {
         setSections(prevSections => ({ ...prevSections, [newSectionId.split('-')[0]]: { left: [], right: [] } }));
 
         const result = Array.from(sectionOrder);
-        result.splice(destination.index, 0, { sectionId: newSectionId.split('-')[0], sectionName: "Nova Seção" });
+        result.splice(destination.index, 0, { sectionId: newSectionId.split('-')[0], sectionName: "Nova Seção", field_type: "section" });
 
         setSectionOrder(result)
         return;
@@ -591,6 +642,7 @@ const DragAndDrop = () => {
     form.validateFields().then(values => {
       console.log("values select: ", values)
       console.log("sections select: ", sections)
+      console.log("sections clickedItem: ", clickedItem)
       if (clickedItem.item.field_type == 'section') {
         sectionOrder[clickedItem.index].sectionName = values.label
         setIsModalVisible(false);
@@ -784,6 +836,11 @@ const DragAndDrop = () => {
 
   return (
     <Layout>
+      <Tour
+        open={modulesTour}
+        onClose={() => updateTour()}
+        steps={steps}
+      />
       <GlobalStyle />
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <Card
@@ -803,9 +860,27 @@ const DragAndDrop = () => {
           }}
           bodyStyle={{ padding: 0 }}
           className='custom-scrollbar'
+          ref={ref1}
         >
           <Collapse defaultActiveKey={['1']} ghost accordion size="small" style={{ width: 242 }}>
-            <Panel header="Novos campos" key="1" style={{ width: 242 }}>
+            <Panel 
+              header="Novos campos" 
+              key="1" 
+              style={{ width: 242 }} 
+              extra={
+                <Tooltip title="Visualizar tour">
+                  <Button
+                    type="text"
+                    shape="circle"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setModulesTour(true)
+                    }}
+                    icon={<QuestionCircleOutlined />}
+                  />
+                </Tooltip>
+              }
+            >
               <Droppable droppableId="section-draggable" type="section">
                 {(provided, snapshot) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -1023,7 +1098,7 @@ const DragAndDrop = () => {
         </Card>
 
         <ContentContainer>
-          <Row 
+          <Row
             style={{
               marginTop: '51px',
               position: 'fixed',
@@ -1048,7 +1123,7 @@ const DragAndDrop = () => {
             </Col>
             <Col style={{ margin: '0 15px 0 0' }}>
               <Button href={`/${org}/settings/modules`}>Cancelar</Button>
-              <Button type="primary" onClick={saveChanges} style={{ marginLeft: 16 }}>
+              <Button ref={ref3} type="primary" onClick={saveChanges} style={{ marginLeft: 16 }}>
                 Salvar
               </Button>
             </Col>
@@ -1097,6 +1172,7 @@ const DragAndDrop = () => {
                               />
                             }
                             onClick={() => handleSectionClick(dados, sectionId, index)}
+                            ref={ref2}
                           >
                             <DragContainer>
                               <Droppable droppableId={`left-SECTION-${sectionId}`}>
@@ -1343,7 +1419,6 @@ const DragAndDrop = () => {
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-
       >
         {form.getFieldValue('field_type') === 'section' && (
           <Form

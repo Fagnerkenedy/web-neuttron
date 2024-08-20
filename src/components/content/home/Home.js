@@ -7,6 +7,8 @@ import { AppstoreOutlined } from "@ant-design/icons";
 import Charts from '../charts/Charts'
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
+import { useOutletContext } from 'react-router-dom';
+
 const { Text } = Typography;
 
 function Home() {
@@ -17,6 +19,7 @@ function Home() {
     const user = localStorage.getItem('user')
     const userName = JSON.parse(user)
     const { ability, loading } = useAbility();
+    const { darkMode } = useOutletContext();
 
     useEffect(() => {
         async function fetchModulesData() {
@@ -29,7 +32,7 @@ function Home() {
     }, [loading])
 
     return (
-        <Layout style={{ padding: '15px 25px' }}>
+        <Layout style={{ padding: '15px 15px 0 15px' }}>
             <Text style={{ fontSize: '20px', marginBottom: '15px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
             <Row gutter={16}>
                 {modules.map((module, index) => (
@@ -38,7 +41,7 @@ function Home() {
                             <Link href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}>
                                 <Card
                                     key={index}
-                                    style={{ marginBottom: '15px', width: '250px', height: '150px', cursor: 'pointer' }}
+                                    style={{ marginBottom: '15px', width: '48vw', height: '200px', cursor: 'pointer', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}
                                     cover={<AppstoreOutlined style={{ fontSize: '34px' }} />}
                                     title={module.name}
                                     hoverable

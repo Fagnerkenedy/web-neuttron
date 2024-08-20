@@ -70,7 +70,7 @@ const CreateView = ({ itemId }) => {
                     ...field,
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
-            }); 
+            });
 
             const relatedModulePromises = combinedData.map(async field => {
                 console.log("fields", field)
@@ -116,34 +116,34 @@ const CreateView = ({ itemId }) => {
             const updatedSections = responseSectionsFields.map(section => {
                 // Atualizar campos à esquerda
                 const updatedLeft = section.fields.left.map(item => {
-                const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
-                return {
-                    ...item,
-                    field_value: matchingField ? matchingField.field_value : item.field_value
-                };
+                    const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
+                    return {
+                        ...item,
+                        field_value: matchingField ? matchingField.field_value : item.field_value
+                    };
                 });
 
                 // Atualizar campos à direita
                 const updatedRight = section.fields.right.map(item => {
-                const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
-                return {
-                    ...item,
-                    field_value: matchingField ? matchingField.field_value : item.field_value
-                };
+                    const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
+                    return {
+                        ...item,
+                        field_value: matchingField ? matchingField.field_value : item.field_value
+                    };
                 });
 
                 return {
-                ...section,
-                left: updatedLeft,
-                right: updatedRight
+                    ...section,
+                    left: updatedLeft,
+                    right: updatedRight
                 };
             });
 
             console.log("updatedCombinedData", updatedCombinedData)
             console.log("updatedSections", updatedSections)
-            
+
             setSections(updatedSections)
-            
+
             if (Array.isArray(combinedData)) {
                 setData(combinedData);
             } else {
@@ -194,7 +194,7 @@ const CreateView = ({ itemId }) => {
                         related_id: item.id
                     };
                 });
-                console.log("ai ai: ",matchingResponse)
+                console.log("ai ai: ", matchingResponse)
                 setRelatedModuleData(matchingResponse);
             }
 
@@ -225,15 +225,15 @@ const CreateView = ({ itemId }) => {
     }
 
     const handleFieldChange = (sectionIndex, index, value, api_name, column) => {
-        
-        console.log("value checked?: ",value)
+
+        console.log("value checked?: ", value)
         const updatedData = [...sections];
         updatedData[sectionIndex][column][index].field_value = value;
-        console.log("datas datas cadabra: ",updatedData)
-        
+        console.log("datas datas cadabra: ", updatedData)
+
         setSections(updatedData)
     };
-    
+
     // const handleFieldChangeRelatedModule = async (index, id, newValue) => {
     const handleFieldChangeRelatedModule = (sectionIndex, index, value, api_name, column) => {
         try {
@@ -264,7 +264,7 @@ const CreateView = ({ itemId }) => {
             console.log("Batatinha quando relatedFieldData", relatedFieldData)
             const updatedRelatedFieldData = relatedFieldData ? [...relatedFieldData] : [];
             updatedRelatedFieldData.push(fieldToUpdate5);
-            
+
             console.log("Batatinha quando updatedRelatedFieldData", updatedRelatedFieldData)
 
             setRelatedFieldData(updatedRelatedFieldData);
@@ -296,7 +296,7 @@ const CreateView = ({ itemId }) => {
                     return acc;
                 }, {});
 
-                console.log("fieldToUpdate3: ",fieldToUpdate3)
+                console.log("fieldToUpdate3: ", fieldToUpdate3)
 
                 let toUpdate = []
                 sections.forEach(section => {
@@ -306,7 +306,7 @@ const CreateView = ({ itemId }) => {
                         ...section.right
                     ]
                 });
-                console.log("toUpdate: ",toUpdate)
+                console.log("toUpdate: ", toUpdate)
 
                 toUpdate.map(field => {
                     const { api_name, field_value } = field
@@ -445,7 +445,7 @@ const CreateView = ({ itemId }) => {
                     onChange={(value) => onChange(value)}
                     format="DD/MM/YYYY HH:mm:ss"
                     placeholder="Selecione uma data"
-                    style={{height: '100%', width: "100%"}}
+                    style={{ height: '100%', width: "100%" }}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                             handleSave();
@@ -575,6 +575,7 @@ const CreateView = ({ itemId }) => {
                                 background: colorBgContainer,
                                 borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
                                 position: 'fixed',
+                                zIndex: '900',
                                 width: '100%'
                             }}
                         >
@@ -583,7 +584,11 @@ const CreateView = ({ itemId }) => {
                                     <Title
                                         style={{ paddingLeft: '30px', fontSize: '22px', margin: 0 }}
                                     >
-                                        Criar {toSingular(moduleName)}
+                                        Criar {moduleName == "users" ? ("Usuário") :
+                                            moduleName == "profiles" ? ("Perfil") :
+                                                moduleName == "functions" ? ("Função") :
+                                                    moduleName == "charts" ? ("Painel") :
+                                                        (toSingular(moduleName))}
                                     </Title>
                                 </Col>
                                 <Col style={{ margin: '0 15px 0 0' }}>
@@ -608,11 +613,11 @@ const CreateView = ({ itemId }) => {
                                 {/* <Text style={{ padding: '15px 25px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}
                                 <Row>
                                     <Col span={24}>
-                                        <Row gutter={16} style={{ paddingTop: '15px'}}>
+                                        <Row gutter={16} style={{ paddingTop: '15px' }}>
                                             {sections.map((section, sectionIndex) => (
                                                 <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
                                                     <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
-                                                    <Row gutter={16} style={{ paddingTop: '15px'}}>
+                                                    <Row gutter={16} style={{ paddingTop: '15px' }}>
                                                         <Col span={(moduleName == "functions" ? 24 : 12)}>
                                                             {section.left.map((field, fieldIndex) => (
                                                                 <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>

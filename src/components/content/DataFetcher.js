@@ -4,7 +4,8 @@ let columns = []
 
 export const fetchColumns = async (org, moduleName) => {
   try {
-    const token = localStorage.getItem('token');    const config = {
+    const token = localStorage.getItem('token');    
+    const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }

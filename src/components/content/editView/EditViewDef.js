@@ -79,8 +79,8 @@ const EditView = ({ itemId }) => {
                     console.log("field.related_module", field)
 
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("response Batatinha", response.data[0])
-                    if (response.data) {
+                    console.log("response Batatinha", response.data)
+                    if (response.data.row.length != 0) {
                         console.log("entrou?")
                         const fieldToUpdate5 = {
                             related_module: field.related_module,
@@ -606,6 +606,7 @@ const EditView = ({ itemId }) => {
                                 background: colorBgContainer,
                                 borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
                                 position: 'fixed',
+                                zIndex: '900',
                                 width: '100%'
                             }}
                         >
@@ -614,7 +615,11 @@ const EditView = ({ itemId }) => {
                                     <Title
                                         style={{ paddingLeft: '30px', fontSize: '22px' }}
                                     >
-                                        Editar {toSingular(moduleName)}
+                                        Editar {moduleName == "users" ? ("Usuário") :
+                                                moduleName == "profiles" ? ("Perfil") :
+                                                moduleName == "functions" ? ("Função") :
+                                                    moduleName == "charts" ? ("Painel") :
+                                                    (toSingular(moduleName))}
                                     </Title>
                                 </Col>
                                 <Col>

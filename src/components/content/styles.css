@@ -16,7 +16,7 @@
 
 /* Content.js */
 .content {
-    padding: 0 15px;
+    /* padding: 0 15px; */
     overflow: hidden;
 }
 
@@ -29,7 +29,7 @@
 .dataTable {
     overflow-x: auto;
     overflow-y: auto;
-    height: calc(100vh - 145px);
+    height: calc(100vh - 129px);
 }
 
 .ant_input {

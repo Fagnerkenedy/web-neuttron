@@ -1,10 +1,13 @@
 // DataTable.js
 import React, { useRef, useState } from 'react';
-import { Table, ConfigProvider, Button, Input, Space, Spin } from 'antd';
+import { Table, ConfigProvider, Button, Input, Space, Spin, Layout, Empty, Typography } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
 import Loading from '../utils/Loading'
+const pluralize = require('pluralize')
+
+const { Title, Text } = Typography;
 
 const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, loading }) => {
   const currentPath = window.location.pathname;
@@ -14,6 +17,32 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
+
+  const toSingular = (plural) => {
+    return pluralize.singular(plural)
+  }
+
+  const emptyText = (
+    <Empty
+      image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+      imageStyle={{ height: 60 }}
+      description={
+        <Text>
+          Nenhum registro encontrado
+        </Text>
+      }
+    >
+      <Button
+        type="primary"
+        href={`/${org}/${moduleName}/create`}
+      >Criar {moduleName == "users" ? ("Usuário") :
+        moduleName == "profiles" ? ("Perfil") :
+          moduleName == "functions" ? ("Função") :
+            moduleName == "charts" ? ("Painel") :
+              (toSingular(moduleName))}
+      </Button>
+    </Empty>
+  )
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -143,9 +172,9 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
         size="middle"
         scroll={{
           x: totalTableWidth,
-          y: 'calc(100vh - 193px)',
+          y: 'calc(100vh - 177px)',
         }}
-        locale={{ emptyText: 'Nenhum registro encontrado' }}
+        locale={{ emptyText: emptyText }}
         onRow={(record) => ({
           onClick: () => window.location.href = `/${org}/${moduleName}/${record.key}`
         })}

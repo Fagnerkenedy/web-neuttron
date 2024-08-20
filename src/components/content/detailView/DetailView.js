@@ -87,7 +87,8 @@ const DetailView = ({ itemId }) => {
             const relatedModulePromises = combinedData.map(async field => {
                 if (field.related_module != null) {
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    if (response.data != "") {
+                    console.log("response relatedDataById:",response)
+                    if (response.data.row.length != 0) {
                         return {
                             name: field.field_value,
                             api_name: field.api_name,
@@ -600,6 +601,7 @@ const DetailView = ({ itemId }) => {
                             style={{
                                 background: colorBgContainer,
                                 position: 'fixed',
+                                zIndex: '900',
                                 width: '100%'
                             }}
                         >
