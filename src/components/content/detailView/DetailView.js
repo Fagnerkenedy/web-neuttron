@@ -92,7 +92,7 @@ const DetailView = ({ itemId }) => {
                         return {
                             name: field.field_value,
                             api_name: field.api_name,
-                            related_id: response.data[0][0].related_id,
+                            related_id: response.data.row[0].related_id,
                             related_module: field.related_module,
                             module_id: null,
                             id: field.id

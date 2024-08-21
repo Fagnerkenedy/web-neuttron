@@ -81,7 +81,7 @@ const CreateView = ({ itemId }) => {
                     console.log("response", response)
                     return {
                         api_name: field.api_name,
-                        related_id: response.data[0].related_id
+                        related_id: response.data.row[0].related_id
                     };
                 }
             })

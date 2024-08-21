@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import styled, { createGlobalStyle } from 'styled-components';
-import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip } from 'antd';
+import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip, ConfigProvider } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { CalendarOutlined, CloseOutlined, EditOutlined, EllipsisOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -158,7 +158,6 @@ const DragAndDrop = () => {
   const record_id = pathParts[5];
   const [clickedItem, setClickedItem] = useState([])
   const { darkMode } = useOutletContext();
-  const [isSearchFieldDisabled, setIsSearchFieldDisabled] = useState(true);
   const [modulesTour, setModulesTour] = useState(false);
 
   const {
@@ -266,7 +265,7 @@ const DragAndDrop = () => {
     }
   };
 
-  useEffect(async() => {
+  useEffect(async () => {
     const getTour = await getModulesTour(org, user.id)
     let modulesTour = ''
     if (getTour.data.length > 0) modulesTour = getTour.data[0].modules_tour
@@ -863,10 +862,10 @@ const DragAndDrop = () => {
           ref={ref1}
         >
           <Collapse defaultActiveKey={['1']} ghost accordion size="small" style={{ width: 242 }}>
-            <Panel 
-              header="Novos campos" 
-              key="1" 
-              style={{ width: 242 }} 
+            <Panel
+              header="Novos campos"
+              key="1"
+              style={{ width: 242 }}
               extra={
                 <Tooltip title="Visualizar tour">
                   <Button
@@ -1646,9 +1645,6 @@ const DragAndDrop = () => {
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
                 placeholder="Selecione"
-                onChange={(value) => {
-                  setIsSearchFieldDisabled(!value)
-                }}
                 onDropdownVisibleChange={(open) => fetchRelatedModule(open, form.getFieldValue('module'), form.getFieldValue('api_name'))}
               >
                 {relatedModuleData.map(item => (
@@ -1663,22 +1659,28 @@ const DragAndDrop = () => {
               label="Campo de pesquisa"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
-              <Select
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                placeholder="Selecione"
-                disabled={isSearchFieldDisabled}
-                onDropdownVisibleChange={(open) => fetchRelatedFields(open, form.getFieldValue('module'), form.getFieldValue('api_name'))}
-              >
-                {relatedFields.map(item => (
-                  <Option key={item.api_name} value={item.api_name}>
-                    {item.field_value}
-                  </Option>
-                ))}
-              </Select>
+              {/* <ConfigProvider renderEmpty={() => "Selecione um Módulo para pesquisa"}> */}
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  placeholder="Selecione"
+                  disabled={false}
+                  onDropdownVisibleChange={(open) => {
+                    if (form.getFieldValue('module') != null) {
+                      fetchRelatedFields(open, form.getFieldValue('module'), form.getFieldValue('api_name'))
+                    }
+                  }}
+                >
+                  {relatedFields.map(item => (
+                    <Option key={item.api_name} value={item.api_name}>
+                      {item.field_value}
+                    </Option>
+                  ))}
+                </Select>
+              {/* </ConfigProvider> */}
             </Form.Item>
             <Form.Item
               name="required"
