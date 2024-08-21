@@ -437,7 +437,7 @@ const CreateView = ({ itemId }) => {
                     }}
                 />
             );
-        } else if (fieldData.field_type === "date-time") {
+        } else if (fieldData.field_type === "date_time") {
             return (
                 <DatePicker
                     showTime

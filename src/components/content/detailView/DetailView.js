@@ -496,7 +496,7 @@ const DetailView = ({ itemId }) => {
                     format="DD/MM/YYYY"
                 />
             );
-        } else if (fieldData.field_type === "date-time") {
+        } else if (fieldData.field_type === "date_time") {
             return (
                 <DatePicker
                     showTime
