@@ -159,7 +159,7 @@ function Modules() {
                 );
                 return (
                     <>
-                        <Link href={`/${org}/settings/modules/${text}`}>{text}</Link>
+                        <Link href={`/${org}/settings/modules/${record.api_name}`}>{text}</Link>
                         <Dropdown
                             overlay={menu}
                             trigger={['click']}

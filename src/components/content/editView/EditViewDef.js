@@ -8,6 +8,7 @@ import apiURI from '../../../Utility/recordApiURI.js';
 import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
+import { fetchModules } from '../selection/fetchModules.js';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -30,7 +31,8 @@ const EditView = ({ itemId }) => {
     const [combinedData, setCombinedData] = useState([]);
     const [options, setOptions] = useState([]);
     const [sections, setSections] = useState([])
-    const { darkMode } = useOutletContext();
+    const [activeModule, setActiveModule] = useState("");
+    const { darkMode } = useOutletContext();  
 
     const toSingular = (plural) => {
         return pluralize.singular(plural)
@@ -232,8 +234,18 @@ const EditView = ({ itemId }) => {
         }
     }
 
+    const fetchModulesData= async () => {
+        const fetchedModules = await fetchModules(org);
+        fetchedModules.result.forEach(module => {
+            if (module.api_name == moduleName || module.name == moduleName) {
+                setActiveModule(module.name)
+            }
+        });
+    }
+
     useEffect(() => {
         fetchData();
+        fetchModulesData()
     }, [itemId]);
 
     if (!data) {
@@ -619,7 +631,7 @@ const EditView = ({ itemId }) => {
                                                 moduleName == "profiles" ? ("Perfil") :
                                                 moduleName == "functions" ? ("Função") :
                                                     moduleName == "charts" ? ("Painel") :
-                                                    (toSingular(moduleName))}
+                                                    (toSingular(activeModule))}
                                     </Title>
                                 </Col>
                                 <Col>

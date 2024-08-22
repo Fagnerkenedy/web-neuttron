@@ -1,10 +1,11 @@
 // DataTable.js
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Table, ConfigProvider, Button, Input, Space, Spin, Layout, Empty, Typography } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
 import Loading from '../utils/Loading'
+import { fetchModules } from '../content/selection/fetchModules.js';
 const pluralize = require('pluralize')
 
 const { Title, Text } = Typography;
@@ -16,7 +17,20 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
   const moduleName = pathParts[2]
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [activeModule, setActiveModule] = useState("");
   const searchInput = useRef(null);
+
+  useEffect(() => {
+    async function fetchModulesData() {
+      const fetchedModules = await fetchModules(org);
+      fetchedModules.result.forEach(module => {
+        if (module.api_name == moduleName || module.name == moduleName) {
+          setActiveModule(module.name)
+        }
+      });
+    }
+    fetchModulesData();
+  }, []);
 
   const toSingular = (plural) => {
     return pluralize.singular(plural)
@@ -39,7 +53,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
         moduleName == "profiles" ? ("Perfil") :
           moduleName == "functions" ? ("Função") :
             moduleName == "charts" ? ("Painel") :
-              (toSingular(moduleName))}
+              (toSingular(activeModule))}
       </Button>
     </Empty>
   )

@@ -9,6 +9,7 @@ import apiURI from '../../../Utility/recordApiURI.js';
 import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
+import { fetchModules } from '../selection/fetchModules.js';
 
 const { TextArea } = Input;
 const { deleteRecord } = apiURI;
@@ -42,6 +43,7 @@ const CreateView = ({ itemId }) => {
     const [relatedFieldData, setRelatedFieldData] = useState([]);
     const [options, setOptions] = useState([]);
     const [sections, setSections] = useState([])
+    const [activeModule, setActiveModule] = useState("");
     const { darkMode } = useOutletContext();
 
     const linkApi = process.env.REACT_APP_LINK_API;
@@ -216,8 +218,18 @@ const CreateView = ({ itemId }) => {
         }
     }
 
+    const fetchModulesData= async () => {
+      const fetchedModules = await fetchModules(org);
+      fetchedModules.result.forEach(module => {
+        if (module.api_name == moduleName || module.name == moduleName) {
+          setActiveModule(module.name)
+        }
+      });
+    }
+
     useEffect(() => {
         fetchData();
+        fetchModulesData();
     }, [itemId]);
 
     if (!data) {
@@ -588,7 +600,7 @@ const CreateView = ({ itemId }) => {
                                             moduleName == "profiles" ? ("Perfil") :
                                                 moduleName == "functions" ? ("Função") :
                                                     moduleName == "charts" ? ("Painel") :
-                                                        (toSingular(moduleName))}
+                                                        (toSingular(activeModule))}
                                     </Title>
                                 </Col>
                                 <Col style={{ margin: '0 15px 0 0' }}>
