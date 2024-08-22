@@ -45,6 +45,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
           Nenhum registro encontrado
         </Text>
       }
+      style={{ height: 'calc(100vh - 210px)', alignContent: 'center'}}
     >
       <Button
         type="primary"
