@@ -80,6 +80,7 @@ function Modules() {
     const onDelete = async (value) => {
         console.log("value delete:", value)
         const name = value.name
+        const api_name = value.api_name
         const token = localStorage.getItem('token');
         const config = {
             headers: {
@@ -90,7 +91,7 @@ function Modules() {
             // const response = await axios.delete(`${linkApi}/crm/${org}/module`, { name: clickedItem.name, new_name: values.name }, config)
             const responseDelete = await axios.delete(`${linkApi}/crm/${org}/module`, {
                 ...config,
-                data: { name }
+                data: { name, api_name }
             })
             console.log('response:', responseDelete)
             message.success('Registro Excluído!');
