@@ -540,7 +540,7 @@ const DragAndDrop = () => {
         console.log("unusedItems: ", unusedItems)
         const responseUnusedItems = await axios.put(`${linkApi}/crm/${org}/${moduleName}/unused_field`, unusedItems, config);
       }
-      message.success('Layout atualizado com sucesso!');
+      message.success('Layout atualizado!');
       console.log('Changes saved successfully:', response.data);
       console.log('Changes saved successfully sections:', responseSections.data);
 

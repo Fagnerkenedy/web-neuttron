@@ -5,7 +5,7 @@ import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
 import AuthContext from '../../contexts/auth';
-import { QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import ButtonDarkMode from './ButtonDarkMode';
 import './styles.css'
 import Logo from '../utils/Logo';
@@ -121,7 +121,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
         <Text>{user.email}</Text>
       </Row>
       <ButtonDarkMode darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <Button type='primary' style={{ width: '100%' }} title={'Sair da conta'} onClick={logout}>Sair</Button>
+      <Button icon={<LogoutOutlined />} type='primary' style={{ width: '100%' }} title={'Sair da conta'} onClick={logout}>Sair</Button>
     </Col>
   );
 
