@@ -19,6 +19,7 @@ import EmailOutlined from '../../../../../../src/img/envelope.png'
 import DateTimeOutlined from '../../../../../../src/img/datetime.png'
 import { useOutletContext } from 'react-router-dom';
 import { getModulesTour, updateModulesTour } from './modulesTour';
+import { fetchModules } from '../../../selection/fetchModules';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -148,6 +149,7 @@ const DragAndDrop = () => {
   const [smallHeight, setSmallHeight] = useState(false);
   const [relatedModuleData, setRelatedModuleData] = useState([]);
   const [relatedFields, setRelatedFields] = useState([]);
+  const [activeModule, setActiveModule] = useState("");
   let navigate = useNavigate()
   const inputRef = useRef(null);
 
@@ -265,12 +267,22 @@ const DragAndDrop = () => {
     }
   };
 
+  async function fetchModulesData() {
+    const fetchedModules = await fetchModules(org);
+    fetchedModules.result.forEach(module => {
+      if (module.api_name == moduleName || module.name == moduleName) {
+        setActiveModule(module.name)
+      }
+    });
+  }
+
   useEffect(async () => {
     const getTour = await getModulesTour(org, user.id)
     let modulesTour = ''
     if (getTour.data.length > 0) modulesTour = getTour.data[0].modules_tour
     setModulesTour(modulesTour)
     fetchData();
+    fetchModulesData();
   }, []);
 
   // Cria um alerta que evita que o usuário saia da página sem salvar o que foi alterado.
@@ -1117,7 +1129,7 @@ const DragAndDrop = () => {
               <Text
                 style={{ paddingLeft: '20px', fontSize: '22px' }}
               >
-                {moduleName}
+                {activeModule}
               </Text>
             </Col>
             <Col style={{ margin: '0 15px 0 0' }}>
