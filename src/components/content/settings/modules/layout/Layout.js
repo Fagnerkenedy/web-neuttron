@@ -1443,7 +1443,7 @@ const DragAndDrop = () => {
             <Form.Item
               name="label"
               label="Nome da seção"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
+              rules={[{ required: false, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
             </Form.Item>
