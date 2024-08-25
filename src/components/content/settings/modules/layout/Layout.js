@@ -678,6 +678,14 @@ const DragAndDrop = () => {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `TEXT(${values.char})`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+      } else if (clickedItem.item.field_type == 'date') {
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(255)`
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+      } else if (clickedItem.item.field_type == 'date_time') {
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(255)`
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
       } else if (clickedItem.item.field_type == 'checkbox') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
       } else {
