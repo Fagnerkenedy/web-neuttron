@@ -620,6 +620,15 @@ const DragAndDrop = () => {
         options: options,
         required: item.required
       })
+    } else if (item.field_type == "number") {
+      console.log("entrou loockup")
+      form.setFieldsValue({
+        field_type: item.field_type,
+        api_name: item.api_name,
+        label: item.name,
+        char: 19,
+        required: item.required,
+      })
     } else {
       console.log("entrou outros")
       console.log("caiu aqyui field_type", item.field_type)
