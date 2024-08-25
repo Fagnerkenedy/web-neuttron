@@ -6,7 +6,7 @@ import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, 
 import EditableCell from './EditableCell.js';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
-import { CheckOutlined, CloseOutlined, LeftOutlined } from '@ant-design/icons';
+import { BoxPlotOutlined, CheckOutlined, CloseOutlined, LeftOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/es/typography/Paragraph.js';
 import RelatedList from './RelatedList.js';
 import PermissionsPage from './PermissionsPage.js';
@@ -493,122 +493,219 @@ const DetailView = ({ itemId }) => {
         console.log("fieldData",fieldData)
         if (fieldData.related_module != null) {
             return (
-                <Select
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                    defaultValue={fieldData.field_value}
-                    placeholder="Selecione"
-                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
-                    // onSelect={(key, value) => onChange(value)}
-                    onSelect={(key, value) => onChangeRelatedModule(value)}
-                    // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
-                    dropdownRender={(menu) => (
-                        <div>
-                            {menu}
-                            <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                                <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
-                                    {fieldData.field_value ? `Ir para ${fieldData.field_value}` : ''}
-                                </a>
-                            </div>
-                        </div>
-                    )}
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
                 >
-                    <Option value=''>-Nenhum-</Option>
-                    {relatedModuleData.map(item => (
-                        <Option key={item.related_id} value={item.field_value}>
-                            {item.field_value}
-                        </Option>
-                    ))}
-                </Select>
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <Select
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                        defaultValue={fieldData.field_value}
+                        placeholder="Selecione"
+                        onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
+                        // onSelect={(key, value) => onChange(value)}
+                        onSelect={(key, value) => onChangeRelatedModule(value)}
+                        // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                        dropdownRender={(menu) => (
+                            <div>
+                                {menu}
+                                <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                    <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
+                                        {fieldData.field_value ? `Ir para ${fieldData.field_value}` : ''}
+                                    </a>
+                                </div>
+                            </div>
+                        )}
+                    >
+                        <Option value=''>-Nenhum-</Option>
+                        {relatedModuleData.map(item => (
+                            <Option key={item.related_id} value={item.field_value}>
+                                {item.field_value}
+                            </Option>
+                        ))}
+                    </Select> */}
+                </Form.Item>
             );
         } else if (fieldData.field_type === "select") {
             return (
-                <Select
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                    defaultValue={fieldData.field_value}
-                    placeholder="Selecione"
-                    onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
-                    onSelect={(newValue) => onChange(newValue)}
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
                 >
-                    <Option value=''>-Nenhum-</Option>
-                    {options.map(item => (
-                        <Option key={item.id} value={item.name}>
-                            {item.name}
-                        </Option>
-                    ))}
-                </Select>
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <Select
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                        defaultValue={fieldData.field_value}
+                        placeholder="Selecione"
+                        onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+                        onSelect={(newValue) => onChange(newValue)}
+                    >
+                        <Option value=''>-Nenhum-</Option>
+                        {options.map(item => (
+                            <Option key={item.id} value={item.name}>
+                                {item.name}
+                            </Option>
+                        ))}
+                    </Select> */}
+                </Form.Item>
             );
         } else if (fieldData.field_type === "date") {
             return (
-                <DatePicker
-                    locale={locale}
-                    style={{height: '100%', width: "100%"}}
-                    onChange={(value) => onChange(value)}
-                    value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
-                    placeholder="Selecione uma data"
-                    format="DD/MM/YYYY"
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <DatePicker
+                        locale={locale}
+                        style={{height: '100%', width: "100%"}}
+                        onChange={(value) => onChange(value)}
+                        // value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
+                        placeholder="Selecione uma data"
+                        format="DD/MM/YYYY"
+                    /> */}
+                </Form.Item>
             );
         } else if (fieldData.field_type === "date_time") {
             return (
-                <DatePicker
-                    showTime
-                    locale={locale}
-                    style={{height: '100%', width: "100%"}}
-                    onChange={(value) => onChange(value)}
-                    value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
-                    placeholder="Selecione uma data"
-                    format="DD/MM/YYYY HH:mm:ss"
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <DatePicker
+                        disabled
+                        showTime
+                        locale={locale}
+                        style={{height: '100%', width: "100%"}}
+                        onChange={(value) => onChange(value)}
+                        // value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
+                        placeholder="Selecione uma data"
+                        format="DD/MM/YYYY HH:mm:ss"
+                    /> */}
+                </Form.Item>
             );
         } else if (fieldData.field_type === "multi_line") {
             return (
-                <TextArea
-                    // style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                    rows={1}
-                    defaultValue={fieldData.field_value}
-                    onChange={(e) => onChange(e.target.value)}
-                    maxLength={extractNumbers(fieldData.type)}
-                    // showCount
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <TextArea
+                        // style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                        rows={1}
+                        defaultValue={fieldData.field_value}
+                        onChange={(e) => onChange(e.target.value)}
+                        maxLength={extractNumbers(fieldData.type)}
+                        // showCount
+                    /> */}
+                </Form.Item>
             );
         } else if (fieldData.field_type === "checkbox") {
             return (
-                <Checkbox
-                    defaultChecked={fieldData.field_value == 1}
-                    onChange={(e) => onChange(e.target.checked ? 1 : 0)}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Checkbox
+                        disabled
+                        defaultChecked={fieldData.field_value == 1}
+                        onChange={(e) => onChange(e.target.checked ? 1 : 0)}
+                    />
+                </Form.Item>
             );
         } else if (fieldData.field_type === "number") {
             return (
-                <InputNumber
-                    style={{ width: "100%" }}
-                    defaultValue={fieldData.field_value}
-                    onChange={(value) => onChange(value)}
-                    maxLength={extractNumbers(fieldData.type)}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <InputNumber
+                        style={{ width: "100%" }}
+                        defaultValue={fieldData.field_value}
+                        onChange={(value) => onChange(value)}
+                        maxLength={extractNumbers(fieldData.type)}
+                    /> */}
+                </Form.Item>
             );
         } else if (fieldData.field_type === "currency") {
             return (
-                <InputNumber
-                    style={{ width: "100%" }}
-                    prefix="R$"
-                    formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                    }
-                    parser={value => value.replace(/\R$\s?|(,)/g, '').replace(/(.)/g, "").replace(/(,*)/g, ".")}
-                    defaultValue={fieldData.field_value}
-                    onChange={(value) => onChange(value)}
-                    maxLength={extractNumbers(fieldData.type)}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <InputNumber
+                        style={{ width: "100%" }}
+                        prefix="R$"
+                        formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                        }
+                        parser={value => value.replace(/\R$\s?|(,)/g, '').replace(/(.)/g, "").replace(/(,*)/g, ".")}
+                        defaultValue={fieldData.field_value}
+                        onChange={(value) => onChange(value)}
+                        maxLength={extractNumbers(fieldData.type)}
+                    /> */}
+                </Form.Item>
             );
         } else if (fieldData.field_type == "email") {
             return (
@@ -626,13 +723,14 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Input
+                    <Text>{fieldData.field_value}</Text>
+                    {/* <Input
                         allowClear
                         placeholder="Insira um e-mail"
                         onChange={(e) => onChange(e.target.value)}
                         // defaultValue={fieldData.field_value}
                         maxLength={extractNumbers(fieldData.type)}
-                    />
+                    /> */}
                 </Form.Item>
             )
         } else if (fieldData.field_type == "phone") {
@@ -647,13 +745,14 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Input
+                    <Text>+55 {fieldData.field_value}</Text>
+                    {/* <Input
                         allowClear
                         addonBefore="+55"
                         onChange={(e) => onChange(e.target.value)}
                         // defaultValue={fieldData.field_value}
                         maxLength={extractNumbers(fieldData.type)}
-                    />
+                    /> */}
                 </Form.Item>
             )
         } else if (fieldData.field_type === "function") {
@@ -675,7 +774,24 @@ const DetailView = ({ itemId }) => {
                 />
             );
         } else {
-            console.log("openfield: ",openField)
+            return (
+                <Form.Item
+                        label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                        name={fieldData.api_name}
+                        rules={[
+                            {
+                                required: fieldData.required,
+                                message: 'Este campo é obrigatório',
+                            },
+                        ]}
+                >
+                    <Text>{fieldData.field_value}</Text>
+                </Form.Item>
+            )
+        }
+
+        // } else {
+            // console.log("openfield: ",openField)
             // if (openField == true) {
             //     return (
             //         <Input
@@ -690,118 +806,118 @@ const DetailView = ({ itemId }) => {
             //         />
             //     )
             // } else {
-            return (
-                <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Este campo é obrigatório',
-                        },
-                    ]}
-                >
-                    {isEditing ? (
-                        <Input
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            addonAfter={
-                                <>
-                                    <CheckOutlined
-                                        onClick={() => {
-                                            if (inputValue.trim() !== "") {
-                                                form.submit();
-                                                setIsEditing(false);
-                                            }
-                                        }}
-                                        style={{ cursor: 'pointer', color: 'green', marginRight: 8 }}
-                                    />
-                                    <CloseOutlined
-                                        onClick={() => {
-                                            setInputValue(fieldData.field_value); // Restaura o valor original
-                                            setIsEditing(false);
-                                        }}
-                                        style={{ cursor: 'pointer', color: 'red' }}
-                                    />
-                                </>
-                            }
-                            onBlur={(e) => {
-                                if (e.target.value.trim() === "") {
-                                    setInputValue(fieldData.field_value); // Restaura o valor original
-                                }
-                                setIsEditing(false);
-                            }}
-                            onPressEnter={() => {
-                                if (inputValue.trim() !== "") {
-                                    form.submit();
-                                    setIsEditing(false);
-                                }
-                            }}
-                        />
-                        // <Input
-                        //     ref={inputRef}
-                        //     variant="filled"
-                        //     value={inputValue ? inputValue : fieldData.field_value}
-                        //     onChange={(e) => {
-                        //         onChange(e.target.value)
-                        //         // setInputValue(e.target.value)
-                        //     }}
-                        //     onBlur={(e) => {
-                        //         if (e.target.value.trim() !== "" && e.target.value != fieldData.field_value) {
-                        //             form.submit()
-                        //         } else {
-                        //             form.setFieldValue({ [fieldData.api_name]: fieldData.field_value })
-                        //         }
-                        //         setIsEditing(false)
-                        //     }}
-                        //     onPressEnter={(e) => {
-                        //         if (e.target.value.trim() !== "" && e.target.value != fieldData.field_value) {
-                        //             form.submit()
-                        //         }
-                        //         setIsEditing(false)
-                        //     }}
-                        //     addonAfter={
-                        //         <>
-                        //             <Button 
-                        //                 type='text'
-                        //                 onClick={(e) => {
-                        //                     console.log("e: ",e)
-                        //                     console.log("form.getFieldValue(fieldData.api_name): ",form.getFieldValue(fieldData.api_name))
-                        //                     console.log("inputValue: ",inputValue)
-                        //                     console.log("fieldData.field_value: ",fieldData.field_value)
-                        //                     if (form.getFieldValue(fieldData.api_name) !== "" && form.getFieldValue(fieldData.api_name) != inputValue) {
-                        //                         form.submit();
-                        //                         setIsEditing(false);
-                        //                     }
-                        //                 }} 
-                        //                 icon={<CheckOutlined style={{ color: 'green' }} />}
-                        //             />
-                        //             <Button
-                        //                 type='text'
-                        //                 onClick={() => {
-                        //                     console.log("X fieldData.field_value", fieldData.field_value)
-                        //                     setInputValue(fieldData.field_value); // Restaura o valor original
-                        //                     setIsEditing(false);
-                        //                 }}
-                        //                 icon={<CloseOutlined style={{ color: 'red' }} />}
-                        //             />
-                        //         </>
-                        //     }
-                        // />
-                    ) : (
-                        <Paragraph
-                            editable={{
-                                onStart: () => setIsEditing(true),
-                                triggerType: 'text',
-                            }}
-                        >
-                            {fieldData.field_value}
-                        </Paragraph>
-                    )}
-                </Form.Item>
-            )
-            // }
-        }
+        //     return (
+        //         <Form.Item
+        //             label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+        //             name={fieldData.api_name}
+        //             rules={[
+        //                 {
+        //                     required: true,
+        //                     message: 'Este campo é obrigatório',
+        //                 },
+        //             ]}
+        //         >
+        //             {isEditing ? (
+        //                 <Input
+        //                     value={inputValue}
+        //                     onChange={(e) => setInputValue(e.target.value)}
+        //                     addonAfter={
+        //                         <>
+        //                             <CheckOutlined
+        //                                 onClick={() => {
+        //                                     if (inputValue.trim() !== "") {
+        //                                         form.submit();
+        //                                         setIsEditing(false);
+        //                                     }
+        //                                 }}
+        //                                 style={{ cursor: 'pointer', color: 'green', marginRight: 8 }}
+        //                             />
+        //                             <CloseOutlined
+        //                                 onClick={() => {
+        //                                     setInputValue(fieldData.field_value); // Restaura o valor original
+        //                                     setIsEditing(false);
+        //                                 }}
+        //                                 style={{ cursor: 'pointer', color: 'red' }}
+        //                             />
+        //                         </>
+        //                     }
+        //                     onBlur={(e) => {
+        //                         if (e.target.value.trim() === "") {
+        //                             setInputValue(fieldData.field_value); // Restaura o valor original
+        //                         }
+        //                         setIsEditing(false);
+        //                     }}
+        //                     onPressEnter={() => {
+        //                         if (inputValue.trim() !== "") {
+        //                             form.submit();
+        //                             setIsEditing(false);
+        //                         }
+        //                     }}
+        //                 />
+        //                 // <Input
+        //                 //     ref={inputRef}
+        //                 //     variant="filled"
+        //                 //     value={inputValue ? inputValue : fieldData.field_value}
+        //                 //     onChange={(e) => {
+        //                 //         onChange(e.target.value)
+        //                 //         // setInputValue(e.target.value)
+        //                 //     }}
+        //                 //     onBlur={(e) => {
+        //                 //         if (e.target.value.trim() !== "" && e.target.value != fieldData.field_value) {
+        //                 //             form.submit()
+        //                 //         } else {
+        //                 //             form.setFieldValue({ [fieldData.api_name]: fieldData.field_value })
+        //                 //         }
+        //                 //         setIsEditing(false)
+        //                 //     }}
+        //                 //     onPressEnter={(e) => {
+        //                 //         if (e.target.value.trim() !== "" && e.target.value != fieldData.field_value) {
+        //                 //             form.submit()
+        //                 //         }
+        //                 //         setIsEditing(false)
+        //                 //     }}
+        //                 //     addonAfter={
+        //                 //         <>
+        //                 //             <Button 
+        //                 //                 type='text'
+        //                 //                 onClick={(e) => {
+        //                 //                     console.log("e: ",e)
+        //                 //                     console.log("form.getFieldValue(fieldData.api_name): ",form.getFieldValue(fieldData.api_name))
+        //                 //                     console.log("inputValue: ",inputValue)
+        //                 //                     console.log("fieldData.field_value: ",fieldData.field_value)
+        //                 //                     if (form.getFieldValue(fieldData.api_name) !== "" && form.getFieldValue(fieldData.api_name) != inputValue) {
+        //                 //                         form.submit();
+        //                 //                         setIsEditing(false);
+        //                 //                     }
+        //                 //                 }} 
+        //                 //                 icon={<CheckOutlined style={{ color: 'green' }} />}
+        //                 //             />
+        //                 //             <Button
+        //                 //                 type='text'
+        //                 //                 onClick={() => {
+        //                 //                     console.log("X fieldData.field_value", fieldData.field_value)
+        //                 //                     setInputValue(fieldData.field_value); // Restaura o valor original
+        //                 //                     setIsEditing(false);
+        //                 //                 }}
+        //                 //                 icon={<CloseOutlined style={{ color: 'red' }} />}
+        //                 //             />
+        //                 //         </>
+        //                 //     }
+        //                 // />
+        //             ) : (
+        //                 <Paragraph
+        //                     editable={{
+        //                         onStart: () => setIsEditing(true),
+        //                         triggerType: 'text',
+        //                     }}
+        //                 >
+        //                     {fieldData.field_value}
+        //                 </Paragraph>
+        //             )}
+        //         </Form.Item>
+        //     )
+        //     // }
+        // }
     };
 
     return (
@@ -874,11 +990,10 @@ const DetailView = ({ itemId }) => {
                                                                         <Form
                                                                             form={form}
                                                                             name="Form"
-                                                                            initialValues={{ [field.api_name]: field.field_value }}
+                                                                            initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
                                                                             labelCol={{
                                                                                 flex: '200px',
                                                                             }}
-                                                                            labelAlign="right"
                                                                             labelWrap
                                                                             wrapperCol={{
                                                                                 flex: 1,
@@ -906,11 +1021,10 @@ const DetailView = ({ itemId }) => {
                                                                         <Form
                                                                             form={form}
                                                                             name="Form"
-                                                                            initialValues={{ [field.api_name]: field.field_value }}
+                                                                            initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
                                                                             labelCol={{
                                                                                 flex: '200px',
                                                                             }}
-                                                                            labelAlign="right"
                                                                             labelWrap
                                                                             wrapperCol={{
                                                                                 flex: 1,

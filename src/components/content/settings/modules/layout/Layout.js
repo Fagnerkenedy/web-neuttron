@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import styled, { createGlobalStyle } from 'styled-components';
-import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip, ConfigProvider } from 'antd';
+import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip, ConfigProvider, InputNumber } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { CalendarOutlined, CloseOutlined, EditOutlined, EllipsisOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -116,17 +116,17 @@ const GlobalStyle = createGlobalStyle`
 // `;
 
 const initialItems = [
-  { id: '4382179501276348291', name: 'Linha única', type: "VARCHAR(255)", field_type: "single_line" },
-  { id: '9821645032784591637', name: 'Multilinha', type: "TEXT(16000)", field_type: 'multi_line' },
-  { id: '1748395062183729450', name: 'Número', type: "VARCHAR(255)", field_type: 'number' },
-  { id: '3650918476023874915', name: 'Caixa de seleção', type: "VARCHAR(255)", field_type: 'checkbox' },
-  { id: '8492017364859271043', name: 'Moeda', type: "VARCHAR(255)", field_type: 'currency' },
-  { id: '6203841957028641975', name: 'Pesquisar', type: "VARCHAR(255)", field_type: 'loockup' },
-  { id: '1054729836042817596', name: 'Lista de opções', type: "VARCHAR(255)", field_type: 'select', options: [''] },
-  { id: '7510938265401728493', name: 'Data', type: "VARCHAR(255)", field_type: 'date' },
-  { id: '3904851627489206173', name: 'Data/Hora', type: "VARCHAR(255)", field_type: 'date_time' },
-  { id: '8642915073281649052', name: 'E-mail', type: "VARCHAR(255)", field_type: 'email' },
-  { id: '4297810653842096175', name: 'Telefone', type: "VARCHAR(255)", field_type: 'phone' },
+  { id: '4382179501276348291', name: 'Linha única', type: "VARCHAR(255)", field_type: "single_line", required: false },
+  { id: '9821645032784591637', name: 'Multilinha', type: "TEXT(16000)", field_type: 'multi_line', required: false },
+  { id: '1748395062183729450', name: 'Número', type: "VARCHAR(255)", field_type: 'number', required: false },
+  { id: '3650918476023874915', name: 'Caixa de seleção', type: "VARCHAR(255)", field_type: 'checkbox', required: false },
+  { id: '8492017364859271043', name: 'Moeda', type: "VARCHAR(255)", field_type: 'currency', required: false },
+  { id: '6203841957028641975', name: 'Pesquisar', type: "VARCHAR(255)", field_type: 'loockup', required: false },
+  { id: '1054729836042817596', name: 'Lista de opções', type: "VARCHAR(255)", field_type: 'select', options: [''], required: false },
+  { id: '7510938265401728493', name: 'Data', type: "VARCHAR(255)", field_type: 'date', required: false },
+  { id: '3904851627489206173', name: 'Data/Hora', type: "VARCHAR(255)", field_type: 'date_time', required: false },
+  { id: '8642915073281649052', name: 'E-mail', type: "VARCHAR(255)", field_type: 'email', required: false },
+  { id: '4297810653842096175', name: 'Telefone', type: "VARCHAR(255)", field_type: 'phone', required: false },
   // { id: 'add-list', name: 'Nova Seção', field_type: 'section' }
 ];
 const sectionItems = [
@@ -634,8 +634,6 @@ const DragAndDrop = () => {
         char: await extractNumbers(item.type),
         required: item.required
       })
-
-
     }
 
     setTimeout(() => {
@@ -656,26 +654,28 @@ const DragAndDrop = () => {
       console.log("sections clickedItem: ", clickedItem)
       if (clickedItem.item.field_type == 'section') {
         sectionOrder[clickedItem.index].sectionName = values.label
-        setIsModalVisible(false);
       } else if (clickedItem.item.field_type == 'loockup') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].search_field = values.search_field
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
-        setIsModalVisible(false);
       } else if (clickedItem.item.field_type == 'select') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].options = values.options
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
-        setIsModalVisible(false);
+      } else if (clickedItem.item.field_type == 'multi_line') {
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `TEXT(${values.char})`
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+      } else if (clickedItem.item.field_type == 'checkbox') {
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
       } else {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(${values.char})`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
-        setIsModalVisible(false);
       }
       setIsModalVisible(false);
       form.resetFields();
@@ -1442,7 +1442,7 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo da seção"
+              label="Nome da seção"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
@@ -1460,17 +1460,17 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
               name="char"
-              label="Número de caracteres permitidos"
+              label="Número de caracteres permitidos (Máximo 255)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
-              <Input />
+              <InputNumber changeOnWheel max={255} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1492,17 +1492,17 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
               name="char"
-              label="Número de caracteres permitidos"
+              label="Número de caracteres permitidos (Máximo 16000)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
-              <Input />
+              <InputNumber changeOnWheel max={16000} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1524,17 +1524,17 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
               name="char"
-              label="Número de caracteres permitidos"
+              label="Número de caracteres permitidos (Máximo 19)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
-              <Input />
+              <InputNumber changeOnWheel max={19} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1556,24 +1556,10 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
-            </Form.Item>
-            <Form.Item
-              name="char"
-              label="Número de caracteres permitidos"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="required"
-              label="Campo Obrigatório"
-              valuePropName="checked"
-            >
-              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1588,17 +1574,17 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
               name="char"
-              label="Número de caracteres permitidos"
+              label="Número de caracteres permitidos (Máximo 19)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
-              <Input />
+              <InputNumber max={19} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1620,7 +1606,7 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
@@ -1695,7 +1681,7 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
@@ -1800,17 +1786,10 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
-            </Form.Item>
-            <Form.Item
-              name="char"
-              label="Número de caracteres permitidos"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Input />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1832,17 +1811,10 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
-            </Form.Item>
-            <Form.Item
-              name="char"
-              label="Número de caracteres permitidos"
-              rules={[{ required: true, message: 'Insira um valor!' }]}
-            >
-              <Input />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1864,17 +1836,17 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
               name="char"
-              label="Número de caracteres permitidos"
+              label="Número de caracteres permitidos (Máximo 255)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
-              <Input />
+              <InputNumber changeOnWheel max={255} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1896,17 +1868,17 @@ const DragAndDrop = () => {
             }}>
             <Form.Item
               name="label"
-              label="Rótulo do campo"
+              label="Nome do campo"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
               name="char"
-              label="Número de caracteres permitidos"
+              label="Número de caracteres permitidos (Máximo 255)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
-              <Input />
+              <InputNumber changeOnWheel max={255} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
               name="required"

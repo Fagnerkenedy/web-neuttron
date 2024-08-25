@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tag } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
 import { fetchModules } from '../selection/fetchModules.js';
+import { CloseCircleFilled } from '@ant-design/icons';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -736,6 +737,13 @@ const EditView = ({ itemId }) => {
         }
     }
 
+    // const customizeRequiredMark = (label, { required }) => (
+    //     <>
+    //       {required ? <Tag color="error">Required</Tag> : null}
+    //       {label}
+    //     </>
+    // );
+
     return (
         <div>
             <Form
@@ -743,9 +751,11 @@ const EditView = ({ itemId }) => {
                 form={form}
                 initialValues={combinedData.reduce((acc, field) => {
                     if (field.field_type == 'date' || field.field_type == 'date_time') {
-                        acc[field.api_name] = dayjs(field.field_value);
+                        acc[field.api_name] = dayjs(field.field_value)
+                    } else if (field.field_type == 'checkbox') {
+                        acc[field.api_name] = field.field_value == 1 ? true : false
                     } else {
-                        acc[field.api_name] = field.field_value;
+                        acc[field.api_name] = field.field_value
                     }
                     return acc;
                 }, {})}
@@ -759,6 +769,7 @@ const EditView = ({ itemId }) => {
                 }}
                 colon={false}
                 layout="horizontal"
+                // requiredMark={customizeRequiredMark}
                 onFinish={handleSave}
             >
                 {data && (
