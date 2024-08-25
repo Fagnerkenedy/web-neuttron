@@ -626,13 +626,13 @@ const DragAndDrop = () => {
       console.log("caiu aqyui api_name", item.api_name)
       console.log("caiu aqyui name", item.name)
       console.log("caiu aqyui type", extractNumbers(item.type))
-      console.log("caiu aqyui required", item.required)
+      console.log("caiu aqyui required", item)
       form.setFieldsValue({
         field_type: item.field_type,
         api_name: item.api_name,
         label: item.name,
         char: await extractNumbers(item.type),
-        required: false
+        required: item.required
       })
 
 
@@ -662,19 +662,19 @@ const DragAndDrop = () => {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].search_field = values.search_field
-        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = false
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
         setIsModalVisible(false);
       } else if (clickedItem.item.field_type == 'select') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].options = values.options
-        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = false
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
         setIsModalVisible(false);
       } else {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(${values.char})`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
-        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = false
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
         setIsModalVisible(false);
       }
       setIsModalVisible(false);
@@ -1472,16 +1472,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1508,16 +1504,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1544,16 +1536,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1580,16 +1568,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1616,16 +1600,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1697,12 +1677,9 @@ const DragAndDrop = () => {
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1806,12 +1783,9 @@ const DragAndDrop = () => {
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1838,16 +1812,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1874,16 +1844,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1910,16 +1876,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1946,16 +1908,12 @@ const DragAndDrop = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
             >
-              <Checkbox
-              // defaultChecked={fieldData.field_value == 1 ? true : false}
-              // onChange={(e) => handleFieldChange(index, fieldData.field_api_name, e.target.checked)}
-              >
-              </Checkbox>
+              <Checkbox />
             </Form.Item>
           </Form>
         )}

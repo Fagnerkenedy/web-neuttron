@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
@@ -6,7 +6,7 @@ import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, 
 import EditableCell from './EditableCell.js';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
-import { LeftOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, LeftOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/es/typography/Paragraph.js';
 import RelatedList from './RelatedList.js';
 import PermissionsPage from './PermissionsPage.js';
@@ -42,6 +42,14 @@ const DetailView = ({ itemId }) => {
     const moduleName = pathParts[2];
     const record_id = pathParts[3];
     const { darkMode } = useOutletContext();
+    const [form] = Form.useForm();
+    const [fieldToUpdate, setfieldToUpdate] = useState('');
+    const [fieldToUpdate3, setFieldToUpdate3] = useState('');
+    const [fieldToUpdate4, setFieldToUpdate4] = useState('');
+    const [fieldToUpdate5, setFieldToUpdate5] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const inputRef = useRef(null);
+    const [inputValue, setInputValue] = useState('');
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -254,6 +262,12 @@ const DetailView = ({ itemId }) => {
         relatedModuleList();
     }, [itemId]);
 
+    React.useEffect(() => {
+        if (isEditing && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isEditing]);
+
     if (!data) {
         return //<div>Carregando...</div>;
     }
@@ -281,10 +295,50 @@ const DetailView = ({ itemId }) => {
             const fieldToUpdate3 = {};
             fieldToUpdate3[api_name] = value
 
+            setfieldToUpdate(fieldToUpdate3)
+
             // [fieldToUpdate].map(field => {
             //     const { api_name, field_value } = field;
             //     fieldToUpdate3[api_name] = field_value
             // });
+            // const currentPath = window.location.pathname;
+            // const pathParts = currentPath.split('/');
+            // const org = pathParts[1];
+            // const moduleName = pathParts[2];
+            // const record_id = pathParts[3];
+            // const token = localStorage.getItem('token');
+            // const config = {
+            //     headers: {
+            //         'Authorization': `Bearer ${token}`
+            //     }
+            // };
+            // await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+            // message.success('Registro Atualizado!');
+            // fetchData()
+        } catch (error) {
+            console.error("Erro ao atualizar os dados:", error);
+        }
+    };
+
+    const handleSave = async () => {
+        const currentPath = window.location.pathname;
+        const pathParts = currentPath.split('/');
+        const org = pathParts[1];
+        const moduleName = pathParts[2];
+        const record_id = pathParts[3];
+        const token = localStorage.getItem('token');
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+        await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate, config);
+        message.success('Registro Atualizado!');
+        fetchData()
+    }
+
+    const handleSaveRelatedModule = async () => {
+        try {
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
             const org = pathParts[1];
@@ -297,12 +351,14 @@ const DetailView = ({ itemId }) => {
                 }
             };
             await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
+            await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
             message.success('Registro Atualizado!');
             fetchData()
         } catch (error) {
-            console.error("Erro ao atualizar os dados:", error);
+            
         }
-    };
+    }
 
     // const handleFieldChange = async (index, newValue, id, api_name) => {
     //     try {
@@ -411,11 +467,17 @@ const DetailView = ({ itemId }) => {
             console.log("fieldToUpdate3: ",fieldToUpdate3)
             console.log("fieldToUpdate4: ",fieldToUpdate4)
             console.log("fieldToUpdate5: ",fieldToUpdate5)
-            await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
-            await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
-            await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
-            message.success('Registro Atualizado!');
-            fetchData()
+
+            setFieldToUpdate3(fieldToUpdate3)
+            setFieldToUpdate4(fieldToUpdate4)
+            setFieldToUpdate5(fieldToUpdate5)
+
+
+            // await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
+            // await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, fieldToUpdate4, config);
+            // await axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, fieldToUpdate5, config);
+            // message.success('Registro Atualizado!');
+            // fetchData()
         } catch (error) {
             console.error("Erro ao atualizar os dados:", error);
         }
@@ -548,6 +610,52 @@ const DetailView = ({ itemId }) => {
                     maxLength={extractNumbers(fieldData.type)}
                 />
             );
+        } else if (fieldData.field_type == "email") {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Por favor insira um e-mail',
+                        },
+                        {
+                            type: 'email',
+                            message: 'Por favor insira um e-mail válido',
+                        },
+                    ]}
+                >
+                    <Input
+                        allowClear
+                        placeholder="Insira um e-mail"
+                        onChange={(e) => onChange(e.target.value)}
+                        // defaultValue={fieldData.field_value}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
+            )
+        } else if (fieldData.field_type == "phone") {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Input
+                        allowClear
+                        addonBefore="+55"
+                        onChange={(e) => onChange(e.target.value)}
+                        // defaultValue={fieldData.field_value}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
+            )
         } else if (fieldData.field_type === "function") {
             return (
                 // <CodeEditor
@@ -568,27 +676,131 @@ const DetailView = ({ itemId }) => {
             );
         } else {
             console.log("openfield: ",openField)
-            if (openField == true) {
-                return (
-                    <Input
-                        defaultValue={fieldData.field_value}
-                        // onChange={(e) => onChange(e.target.value)}
-                        maxLength={extractNumbers(fieldData.type)}
-                        onBlur={(e) => { 
-                            setOpenField(false)
-                            onChange(e.target.value)
-                        }}
-                        // showCount
-                    />
-                )
-            } else {
-                return (
-                    <Paragraph
-                        onClick={() => setOpenField(true)}>
-                        {fieldData.field_value}
-                    </Paragraph>
-                )
-            }
+            // if (openField == true) {
+            //     return (
+            //         <Input
+            //             defaultValue={fieldData.field_value}
+            //             // onChange={(e) => onChange(e.target.value)}
+            //             maxLength={extractNumbers(fieldData.type)}
+            //             onBlur={(e) => { 
+            //                 setOpenField(false)
+            //                 onChange(e.target.value)
+            //             }}
+            //             // showCount
+            //         />
+            //     )
+            // } else {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    {isEditing ? (
+                        <Input
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            addonAfter={
+                                <>
+                                    <CheckOutlined
+                                        onClick={() => {
+                                            if (inputValue.trim() !== "") {
+                                                form.submit();
+                                                setIsEditing(false);
+                                            }
+                                        }}
+                                        style={{ cursor: 'pointer', color: 'green', marginRight: 8 }}
+                                    />
+                                    <CloseOutlined
+                                        onClick={() => {
+                                            setInputValue(fieldData.field_value); // Restaura o valor original
+                                            setIsEditing(false);
+                                        }}
+                                        style={{ cursor: 'pointer', color: 'red' }}
+                                    />
+                                </>
+                            }
+                            onBlur={(e) => {
+                                if (e.target.value.trim() === "") {
+                                    setInputValue(fieldData.field_value); // Restaura o valor original
+                                }
+                                setIsEditing(false);
+                            }}
+                            onPressEnter={() => {
+                                if (inputValue.trim() !== "") {
+                                    form.submit();
+                                    setIsEditing(false);
+                                }
+                            }}
+                        />
+                        // <Input
+                        //     ref={inputRef}
+                        //     variant="filled"
+                        //     value={inputValue ? inputValue : fieldData.field_value}
+                        //     onChange={(e) => {
+                        //         onChange(e.target.value)
+                        //         // setInputValue(e.target.value)
+                        //     }}
+                        //     onBlur={(e) => {
+                        //         if (e.target.value.trim() !== "" && e.target.value != fieldData.field_value) {
+                        //             form.submit()
+                        //         } else {
+                        //             form.setFieldValue({ [fieldData.api_name]: fieldData.field_value })
+                        //         }
+                        //         setIsEditing(false)
+                        //     }}
+                        //     onPressEnter={(e) => {
+                        //         if (e.target.value.trim() !== "" && e.target.value != fieldData.field_value) {
+                        //             form.submit()
+                        //         }
+                        //         setIsEditing(false)
+                        //     }}
+                        //     addonAfter={
+                        //         <>
+                        //             <Button 
+                        //                 type='text'
+                        //                 onClick={(e) => {
+                        //                     console.log("e: ",e)
+                        //                     console.log("form.getFieldValue(fieldData.api_name): ",form.getFieldValue(fieldData.api_name))
+                        //                     console.log("inputValue: ",inputValue)
+                        //                     console.log("fieldData.field_value: ",fieldData.field_value)
+                        //                     if (form.getFieldValue(fieldData.api_name) !== "" && form.getFieldValue(fieldData.api_name) != inputValue) {
+                        //                         form.submit();
+                        //                         setIsEditing(false);
+                        //                     }
+                        //                 }} 
+                        //                 icon={<CheckOutlined style={{ color: 'green' }} />}
+                        //             />
+                        //             <Button
+                        //                 type='text'
+                        //                 onClick={() => {
+                        //                     console.log("X fieldData.field_value", fieldData.field_value)
+                        //                     setInputValue(fieldData.field_value); // Restaura o valor original
+                        //                     setIsEditing(false);
+                        //                 }}
+                        //                 icon={<CloseOutlined style={{ color: 'red' }} />}
+                        //             />
+                        //         </>
+                        //     }
+                        // />
+                    ) : (
+                        <Paragraph
+                            editable={{
+                                onStart: () => setIsEditing(true),
+                                triggerType: 'text',
+                            }}
+                        >
+                            {fieldData.field_value}
+                        </Paragraph>
+                    )}
+                </Form.Item>
+            )
+            // }
         }
     };
 
@@ -655,37 +867,71 @@ const DetailView = ({ itemId }) => {
                                             {sections.map((section, sectionIndex) => (
                                                 <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
                                                     <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
-                                                    <Row gutter={16}>
-                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                            {section.left.map((field, fieldIndex) => (
-                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
-                                                                    <Row>
-                                                                        <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-                                                                            <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
-                                                                        </Col>
-                                                                        <Col span={(moduleName == "functions" ? 20 : 14)}>
-                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
-                                                                                {/* {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))} */}
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-                                                            ))}
-                                                        </Col>
-                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                            {section.right.map((field, fieldIndex) => (
-                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
-                                                                    <Row>
-                                                                        <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-                                                                            <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
-                                                                        </Col>
-                                                                        <Col span={(moduleName == "functions" ? 22 : 14)} offset={(moduleName == "functions" ? 1 : 0)}>
-                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-                                                            ))}
-                                                        </Col>
-                                                    </Row>
+                                                        <Row gutter={16}>
+                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                                {section.left.map((field, fieldIndex) => (
+                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
+                                                                        <Form
+                                                                            form={form}
+                                                                            name="Form"
+                                                                            initialValues={{ [field.api_name]: field.field_value }}
+                                                                            labelCol={{
+                                                                                flex: '200px',
+                                                                            }}
+                                                                            labelAlign="right"
+                                                                            labelWrap
+                                                                            wrapperCol={{
+                                                                                flex: 1,
+                                                                            }}
+                                                                            colon={false}
+                                                                            layout="horizontal"
+                                                                            onFinish={handleSave}
+                                                                        >
+                                                                            <Row>
+                                                                                {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                                    <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                                </Col> */}
+                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                        {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
+                                                                                        {/* {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))} */}
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Form>
+                                                                    </div>
+                                                                ))}
+                                                            </Col>
+                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                                {section.right.map((field, fieldIndex) => (
+                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
+                                                                        <Form
+                                                                            form={form}
+                                                                            name="Form"
+                                                                            initialValues={{ [field.api_name]: field.field_value }}
+                                                                            labelCol={{
+                                                                                flex: '200px',
+                                                                            }}
+                                                                            labelAlign="right"
+                                                                            labelWrap
+                                                                            wrapperCol={{
+                                                                                flex: 1,
+                                                                            }}
+                                                                            colon={false}
+                                                                            layout="horizontal"
+                                                                            onFinish={handleSave}
+                                                                        >
+                                                                            <Row>
+                                                                                {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                                    <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                                </Col> */}
+                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                    {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Form>
+                                                                    </div>
+                                                                ))}
+                                                            </Col>
+                                                        </Row>
                                                 </Col>
                                             ))}
                                         </Row>

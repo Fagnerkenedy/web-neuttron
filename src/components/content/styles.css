@@ -1,7 +1,7 @@
 .antd-table thead th, .antd-table tbody td
 {    
     white-space: nowrap;
-    word-break:break-word;
+    word-break: break-word;
     word-break: break-all;
 }
 
@@ -32,11 +32,11 @@
     height: calc(100vh - 129px);
 }
 
-.ant_input {
+/* .ant_input {
     border: none;
     outline: none;
-}
+} */
 
-.ant-input:hover {
-    border: 1px solid #ccc;
-}
+/* .ant-input:hover {
+    border: 1px solid;
+} */

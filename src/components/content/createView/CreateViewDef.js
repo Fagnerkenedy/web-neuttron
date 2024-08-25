@@ -45,6 +45,7 @@ const CreateView = ({ itemId }) => {
     const [sections, setSections] = useState([])
     const [activeModule, setActiveModule] = useState("");
     const { darkMode } = useOutletContext();
+    const [form] = Form.useForm();
 
     const linkApi = process.env.REACT_APP_LINK_API;
     const handleInputChange = (newValue) => {
@@ -218,13 +219,13 @@ const CreateView = ({ itemId }) => {
         }
     }
 
-    const fetchModulesData= async () => {
-      const fetchedModules = await fetchModules(org);
-      fetchedModules.result.forEach(module => {
-        if (module.api_name == moduleName || module.name == moduleName) {
-          setActiveModule(module.name)
-        }
-      });
+    const fetchModulesData = async () => {
+        const fetchedModules = await fetchModules(org);
+        fetchedModules.result.forEach(module => {
+            if (module.api_name == moduleName || module.name == moduleName) {
+                setActiveModule(module.name)
+            }
+        });
     }
 
     useEffect(() => {
@@ -368,166 +369,280 @@ const CreateView = ({ itemId }) => {
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
         if (fieldData.related_module != null) {
             return (
-                <Select
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    placeholder="SelecioneSelecione"
-                    style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                    // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                    // value={selectedValue ? selectedValue.value : null}
-                    defaultValue={fieldData.field_value}
-                    // placeholder="Selecione"
-                    // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-                    onChange={(key, value) => onChangeRelatedModule(value)}
-                    // loading={loading}
-                    onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
-                    // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
-                    dropdownRender={(menu) => (
-                        <div>
-                            {menu}
-                            {/* <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Select
+                        allowClear
+                        showSearch
+                        variant="filled"
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        placeholder="SelecioneSelecione"
+                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                        // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                        // value={selectedValue ? selectedValue.value : null}
+                        defaultValue={fieldData.field_value}
+                        // placeholder="Selecione"
+                        // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+                        onChange={(key, value) => onChangeRelatedModule(value)}
+                        // loading={loading}
+                        onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
+                        // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                        dropdownRender={(menu) => (
+                            <div>
+                                {menu}
+                                {/* <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
                                 <a href={`/${org}/${fieldData.related_module}/${fieldData.field_value}`} rel="noopener noreferrer">
                                     {`Ir para ${fieldData.field_value}`}
                                 </a>
                             </div> */}
-                        </div>
-                    )}
-                >
-                    {relatedModuleData.map(item => (
-                        <Option key={item.related_id} value={item.field_value}>
-                            {item.field_value}
-                        </Option>
-                    ))}
-                </Select>
-
+                            </div>
+                        )}
+                    >
+                        {relatedModuleData.map(item => (
+                            <Option key={item.related_id} value={item.field_value}>
+                                {item.field_value}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
             );
         } else if (fieldData.field_type == "select") {
             return (
-                <Select
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                    onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                    // value={selectedValue ? selectedValue.value : null}
-                    defaultValue={fieldData.field_value}
-                    placeholder="Selecione"
-                    onChange={(value) => onChange(value)}
-                    // loading={loading}
-                    onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSave();
-                        }
-                    }}
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
                 >
-                    <Option value=''>-Nenhum-</Option>
-                    {options.map(item => (
-                        <Option key={item.id} value={item.name}>
-                            {item.name}
-                        </Option>
-                    ))}
-                </Select>
+                    <Select
+                        allowClear
+                        showSearch
+                        variant="filled"
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                        onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                        // value={selectedValue ? selectedValue.value : null}
+                        defaultValue={fieldData.field_value}
+                        placeholder="Selecione"
+                        onChange={(value) => onChange(value)}
+                        // loading={loading}
+                        onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
+                    >
+                        <Option value=''>-Nenhum-</Option>
+                        {options.map(item => (
+                            <Option key={item.id} value={item.name}>
+                                {item.name}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
             );
         } else if (fieldData.field_type == "date") {
             return (
-                <DatePicker
-                    locale={locale}
-                    onChange={(value) => onChange(value)}
-                    format="DD/MM/YYYY"
-                    placeholder="Selecione uma data"
-                    style={{ width: "100%" }}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSave();
-                        }
-                    }}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <DatePicker
+                        locale={locale}
+                        variant="filled"
+                        onChange={(value) => onChange(value)}
+                        format="DD/MM/YYYY"
+                        placeholder="Selecione uma data"
+                        style={{ width: "100%" }}
+                    />
+                </Form.Item>
             );
         } else if (fieldData.field_type === "date_time") {
             return (
-                <DatePicker
-                    showTime
-                    locale={locale}
-                    onChange={(value) => onChange(value)}
-                    format="DD/MM/YYYY HH:mm:ss"
-                    placeholder="Selecione uma data"
-                    style={{ height: '100%', width: "100%" }}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSave();
-                        }
-                    }}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <DatePicker
+                        showTime
+                        locale={locale}
+                        variant="filled"
+                        onChange={(value) => onChange(value)}
+                        format="DD/MM/YYYY HH:mm:ss"
+                        placeholder="Selecione uma data"
+                        style={{ height: '100%', width: "100%" }}
+                    />
+                </Form.Item>
             );
         } else if (fieldData.field_type == "multi_line") {
             return (
-                // <TextArea
-                //     rows={4}
-                //     defaultValue={fieldData.field_value}
-                //     onChange={(newValue) => handleFieldChange(index, newValue)}
-                //     maxLength={16000}
-                // />
-                <TextArea
-                    onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
-                    onBlur={(e) => { e.target.style.overflowY = 'hidden'; e.target.scrollTop = 0; }}
-                    rows={1}
-                    defaultValue={fieldData.field_value}
-                    onChange={(e) => onChange(e.target.value)}
-                    maxLength={extractNumbers(fieldData.type)}
-                />
-
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <TextArea
+                        allowClear
+                        variant="filled"
+                        onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
+                        onBlur={(e) => { e.target.style.overflowY = 'hidden'; e.target.scrollTop = 0; }}
+                        rows={1}
+                        defaultValue={fieldData.field_value}
+                        onChange={(e) => onChange(e.target.value)}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
             )
         } else if (fieldData.field_type == "checkbox") {
             return (
-                <Checkbox
-                    defaultChecked={fieldData.field_value == 1 ? true : false}
-                    onChange={(e) => onChange(e.target.checked)}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    valuePropName="checked"
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Checkbox
+                        defaultChecked={fieldData.field_value == 1 ? true : false}
+                        onChange={(e) => onChange(e.target.checked)}
+                    />
+                </Form.Item>
             )
         } else if (fieldData.field_type == "number") {
             return (
-                <InputNumber
-                    style={{ width: "100%" }}
-                    changeOnWheel
-                    defaultValue={fieldData.field_value}
-                    onChange={(e) => onChange(e)}
-                    maxLength={extractNumbers(fieldData.type)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSave();
-                        }
-                    }}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <InputNumber
+                        variant="filled"
+                        style={{ width: "100%" }}
+                        changeOnWheel
+                        defaultValue={fieldData.field_value}
+                        onChange={(e) => onChange(e)}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
             )
         } else if (fieldData.field_type == "currency") {
             return (
-                <InputNumber
-                    style={{ width: "100%" }}
-                    prefix="R$"
-                    formatter={(val) => {
-                        if (!val) return;
-                        return val.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
-                    }}
-                    parser={(val) => {
-                        if (!val) return;
-                        return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
-                    }}
-                    changeOnWheel
-                    defaultValue={fieldData.field_value}
-                    onChange={(e) => onChange(e)}
-                    maxLength={extractNumbers(fieldData.type)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSave();
-                        }
-                    }}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <InputNumber
+                        variant="filled"
+                        style={{ width: "100%" }}
+                        prefix="R$"
+                        formatter={(val) => {
+                            if (!val) return;
+                            return val.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");
+                        }}
+                        parser={(val) => {
+                            if (!val) return;
+                            return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
+                        }}
+                        changeOnWheel
+                        defaultValue={fieldData.field_value}
+                        onChange={(e) => onChange(e)}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
+            )
+        } else if (fieldData.field_type == "email") {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Por favor insira um e-mail',
+                        },
+                        {
+                            type: 'email',
+                            message: 'Por favor insira um e-mail válido',
+                        },
+                    ]}
+                >
+                    <Input
+                        allowClear
+                        variant="filled"
+                        placeholder="Insira um e-mail"
+                        onChange={(e) => onChange(e.target.value)}
+                        defaultValue={fieldData.field_value}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
+            )
+        } else if (fieldData.field_type == "phone") {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Input
+                        allowClear
+                        variant="filled"
+                        addonBefore="+55"
+                        onChange={(e) => onChange(e.target.value)}
+                        defaultValue={fieldData.field_value}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
             )
         } else if (fieldData.field_type == "file") {
             const props = {
@@ -563,112 +678,137 @@ const CreateView = ({ itemId }) => {
             );
         } else {
             return (
-                <Input
-                    value={editedFields[fieldData.field_name] || fieldData.field_value}
-                    onChange={e => onChange(e.target.value)}
-                    maxLength={extractNumbers(fieldData.type)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSave();
-                        }
-                    }}
-                />
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Input
+                        allowClear
+                        variant="filled"
+                        value={editedFields[fieldData.field_name] || fieldData.field_value}
+                        onChange={e => onChange(e.target.value)}
+                        maxLength={extractNumbers(fieldData.type)}
+                    />
+                </Form.Item>
             );
         }
     }
 
     return (
         <div>
-            {data && (
-                <div>
+            <Form
+                name="Form"
+                labelCol={{
+                    flex: '200px',
+                }}
+                labelAlign="right"
+                labelWrap
+                wrapperCol={{
+                    flex: 1,
+                }}
+                colon={false}
+                layout="horizontal"
+                onFinish={handleSave}
+            >
+                {data && (
                     <div>
-                        <Layout
-                            style={{
-                                background: colorBgContainer,
-                                borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
-                                position: 'fixed',
-                                zIndex: '900',
-                                width: '100%'
-                            }}
-                        >
-                            <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
-                                <Col>
-                                    <Title
-                                        style={{ paddingLeft: '30px', fontSize: '22px', margin: 0 }}
-                                    >
-                                        Criar {moduleName == "users" ? ("Usuário") :
-                                            moduleName == "profiles" ? ("Perfil") :
-                                                moduleName == "functions" ? ("Função") :
-                                                    moduleName == "charts" ? ("Painel") :
-                                                        (toSingular(activeModule))}
-                                    </Title>
-                                </Col>
-                                <Col style={{ margin: '0 15px 0 0' }}>
-                                    <Button href={`/${org}/${moduleName}`}>Cancelar</Button>
-                                    <Button style={{ margin: '0 15px' }} type='primary' onClick={handleSave}>Salvar</Button>
-                                </Col>
-                            </Row>
-                        </Layout>
-                        <Row style={{ height: '52px' }}></Row>
-                    </div>
-                    <div style={{ padding: '15px 0' }}>
-                        <Content className='content'>
-
+                        <div>
                             <Layout
                                 style={{
                                     background: colorBgContainer,
-                                    borderRadius: borderRadiusLG,
-                                    minHeight: 'calc(100vh - 161px)',
-                                    border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
+                                    borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                    position: 'fixed',
+                                    zIndex: '900',
+                                    width: '100%'
                                 }}
                             >
-                                {/* <Text style={{ padding: '15px 25px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}
-                                <Row>
-                                    <Col span={24}>
-                                        <Row gutter={16} style={{ paddingTop: '15px' }}>
-                                            {sections.map((section, sectionIndex) => (
-                                                <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
-                                                    <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
-                                                    <Row gutter={16} style={{ paddingTop: '15px' }}>
-                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                            {section.left.map((field, fieldIndex) => (
-                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
-                                                                    <Row>
-                                                                        <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-                                                                            <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
-                                                                        </Col>
-                                                                        <Col span={(moduleName == "functions" ? 20 : 14)}>
-                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-                                                            ))}
-                                                        </Col>
-                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                            {section.right.map((field, fieldIndex) => (
-                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
-                                                                    <Row>
-                                                                        <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-                                                                            <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
-                                                                        </Col>
-                                                                        <Col span={(moduleName == "functions" ? 22 : 14)} offset={(moduleName == "functions" ? 1 : 0)}>
-                                                                            {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-                                                            ))}
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
-                                            ))}
-                                        </Row>
+                                <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
+                                    <Col>
+                                        <Title
+                                            style={{ paddingLeft: '30px', fontSize: '22px', margin: 0 }}
+                                        >
+                                            Criar {moduleName == "users" ? ("Usuário") :
+                                                moduleName == "profiles" ? ("Perfil") :
+                                                    moduleName == "functions" ? ("Função") :
+                                                        moduleName == "charts" ? ("Painel") :
+                                                            (toSingular(activeModule))}
+                                        </Title>
+                                    </Col>
+                                    <Col style={{ margin: '0 15px 0 0' }}>
+                                        <Button href={`/${org}/${moduleName}`}>Cancelar</Button>
+                                        <Button style={{ margin: '0 15px' }} type='primary' htmlType="submit">Salvar</Button>
                                     </Col>
                                 </Row>
                             </Layout>
-                        </Content>
+                            <Row style={{ height: '52px' }}></Row>
+                        </div>
+                        <div style={{ padding: '15px 0' }}>
+                            <Content className='content'>
+
+                                <Layout
+                                    style={{
+                                        background: colorBgContainer,
+                                        borderRadius: borderRadiusLG,
+                                        minHeight: 'calc(100vh - 161px)',
+                                        border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
+                                    }}
+                                >
+                                    {/* <Text style={{ padding: '15px 25px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}
+                                    <Row>
+                                        <Col span={24}>
+                                            <Row gutter={16} style={{ paddingTop: '15px' }}>
+                                                {sections.map((section, sectionIndex) => (
+                                                    <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
+                                                        <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
+
+                                                        <Row gutter={16} style={{ paddingTop: '15px' }}>
+                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                                {section.left.map((field, fieldIndex) => (
+                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
+                                                                        <Row>
+                                                                            {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                                <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                            </Col> */}
+                                                                            <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
+                                                                            </Col>
+                                                                        </Row>
+                                                                    </div>
+                                                                ))}
+                                                            </Col>
+                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                                {section.right.map((field, fieldIndex) => (
+                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
+                                                                        <Row>
+                                                                            {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                                <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                            </Col> */}
+                                                                            <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
+                                                                            </Col>
+                                                                        </Row>
+                                                                    </div>
+                                                                ))}
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                ))}
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                </Layout>
+                            </Content>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </Form>
+
         </div>
     );
 

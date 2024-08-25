@@ -214,6 +214,7 @@ function Modules() {
     const handleOk = () => {
         form.validateFields().then(async values => {
             console.log("! values: ", values)
+            let api_name = ''
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
@@ -222,13 +223,15 @@ function Modules() {
             };
             try {
                 const response = await axios.post(`${linkApi}/crm/${org}/module`, values, config)
-
+                if (response.status == 200) {
+                    api_name = response.data.moduleNameApi
+                }
                 console.log('response:', response)
             } catch (error) {
                 console.error('Error saving changes:', error);
             }
             setIsModalVisible(false);
-            navigate(`/${org}/settings/modules/${values.name}`)
+            navigate(`/${org}/settings/modules/${api_name}`)
             window.location.reload()
         })
 
