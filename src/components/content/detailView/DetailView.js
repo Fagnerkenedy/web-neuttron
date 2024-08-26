@@ -15,6 +15,7 @@ import { useAbility } from '../../../contexts/AbilityContext.js'
 import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
+import Link from 'antd/es/typography/Link.js';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -503,7 +504,9 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Tooltip title={`Ir para ${fieldData.field_value}`}>
+                        <Link href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`}>{fieldData.field_value}</Link>
+                    </Tooltip>
                     {/* <Select
                         showSearch
                         optionFilterProp="children"
