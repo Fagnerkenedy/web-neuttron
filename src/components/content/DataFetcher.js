@@ -14,6 +14,7 @@ export const fetchColumns = async (org, moduleName) => {
     columns = columnsData.map((column) => ({
       title: column.name,
       dataIndex: column.api_name,
+      field_type: column.field_type,
       //sorter: (a, b) => a.name.localeCompare(b.name),
       width: 200,
       ellipsis: true,

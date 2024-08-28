@@ -598,6 +598,7 @@ const DragAndDrop = () => {
         label: item.name,
         module: item.related_module,
         required: item.required,
+        disabled: item.disabled,
         search_field: item.search_field
       })
     } else if (item.field_type == "select") {
@@ -618,7 +619,8 @@ const DragAndDrop = () => {
         api_name: item.api_name,
         label: item.name,
         options: options,
-        required: item.required
+        required: item.required,
+        disabled: item.disabled
       })
     } else if (item.field_type == "number") {
       console.log("entrou loockup")
@@ -628,6 +630,7 @@ const DragAndDrop = () => {
         label: item.name,
         char: 19,
         required: item.required,
+        disabled: item.disabled
       })
     } else if (item.field_type == "currency") {
       console.log("entrou loockup")
@@ -637,6 +640,7 @@ const DragAndDrop = () => {
         label: item.name,
         char: 19,
         required: item.required,
+        disabled: item.disabled
       })
     } else {
       console.log("entrou outros")
@@ -650,7 +654,8 @@ const DragAndDrop = () => {
         api_name: item.api_name,
         label: item.name,
         char: await extractNumbers(item.type),
-        required: item.required
+        required: item.required,
+        disabled: item.disabled
       })
     }
 
@@ -678,30 +683,37 @@ const DragAndDrop = () => {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].search_field = values.search_field
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
       } else if (clickedItem.item.field_type == 'select') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = 'VARCHAR(255)'
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].options = values.options
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
       } else if (clickedItem.item.field_type == 'multi_line') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `TEXT(${values.char})`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
       } else if (clickedItem.item.field_type == 'date') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(255)`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
       } else if (clickedItem.item.field_type == 'date_time') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(255)`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
       } else if (clickedItem.item.field_type == 'checkbox') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
       } else {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(${values.char})`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].related_module = values.module
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
       }
       setIsModalVisible(false);
       form.resetFields();
@@ -1505,6 +1517,13 @@ const DragAndDrop = () => {
             >
               <Checkbox />
             </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
           </Form>
         )}
         {form.getFieldValue('field_type') === 'multi_line' && (
@@ -1533,6 +1552,13 @@ const DragAndDrop = () => {
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
               valuePropName="checked"
             >
               <Checkbox />
@@ -1569,6 +1595,13 @@ const DragAndDrop = () => {
             >
               <Checkbox />
             </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
           </Form>
         )}
         {form.getFieldValue('field_type') === 'checkbox' && (
@@ -1586,6 +1619,13 @@ const DragAndDrop = () => {
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
+              valuePropName="checked"
+            >
+              <Checkbox />
             </Form.Item>
           </Form>
         )}
@@ -1615,6 +1655,13 @@ const DragAndDrop = () => {
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
               valuePropName="checked"
             >
               <Checkbox />
@@ -1689,6 +1736,13 @@ const DragAndDrop = () => {
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
               valuePropName="checked"
             >
               <Checkbox />
@@ -1799,6 +1853,13 @@ const DragAndDrop = () => {
             >
               <Checkbox />
             </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
           </Form>
         )}
         {form.getFieldValue('field_type') === 'date' && (
@@ -1824,6 +1885,13 @@ const DragAndDrop = () => {
             >
               <Checkbox />
             </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
           </Form>
         )}
         {form.getFieldValue('field_type') === 'date_time' && (
@@ -1845,6 +1913,13 @@ const DragAndDrop = () => {
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
               valuePropName="checked"
             >
               <Checkbox />
@@ -1881,6 +1956,13 @@ const DragAndDrop = () => {
             >
               <Checkbox />
             </Form.Item>
+            <Form.Item
+              name="disabled"
+              label="Desabilitar"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
           </Form>
         )}
         {form.getFieldValue('field_type') === 'phone' && (
@@ -1909,6 +1991,14 @@ const DragAndDrop = () => {
             <Form.Item
               name="required"
               label="Campo Obrigatório"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
+            <Form.Item
+              name="
+              disabled: item.disabled"
+              label="Desabilitar"
               valuePropName="checked"
             >
               <Checkbox />

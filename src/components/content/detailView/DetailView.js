@@ -505,7 +505,7 @@ const DetailView = ({ itemId }) => {
                     ]}
                 >
                     <Tooltip title={`Ir para ${fieldData.field_value}`}>
-                        <Link href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`}>{fieldData.field_value}</Link>
+                        <Link style={{ color: '#1a73e8' }} href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`}>{fieldData.field_value}</Link>
                     </Tooltip>
                     {/* <Select
                         showSearch

@@ -76,6 +76,7 @@ const EditView = ({ itemId }) => {
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
             });
+            console.log("combinedDatacombinedData: ",combinedData)
             setCombinedData(combinedData)
             const relatedModulePromises = combinedData.map(async field => {
                 console.log("fields", field)
@@ -436,6 +437,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <Select
+                        disabled={fieldData.disabled}
                         allowClear
                         showSearch
                         variant="filled"
@@ -487,6 +489,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <Select
+                        disabled={fieldData.disabled}
                         allowClear
                         showSearch
                         variant="filled"
@@ -525,6 +528,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <DatePicker
+                        disabled={fieldData.disabled}
                         locale={locale}
                         variant="filled"
                         onChange={(value) => onChange(value)}
@@ -547,6 +551,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <DatePicker
+                        disabled={fieldData.disabled}
                         showTime
                         variant="filled"
                         locale={locale}
@@ -570,6 +575,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <TextArea
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
@@ -596,6 +602,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <Checkbox
+                        disabled={fieldData.disabled}
                         // defaultChecked={fieldData.field_value == 1 ? true : false}
                         onChange={(e) => onChange(e.target.checked)}
                     >
@@ -615,6 +622,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <InputNumber
+                        disabled={fieldData.disabled}
                         variant="filled"
                         style={{ width: "100%" }}
                         changeOnWheel
@@ -637,6 +645,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <InputNumber
+                        disabled={fieldData.disabled}
                         variant="filled"
                         style={{ width: "100%" }}
                         prefix="R$"
@@ -672,6 +681,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <Input
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         placeholder="Insira um e-mail"
@@ -694,6 +704,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <Input
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         addonBefore="+55"
@@ -726,6 +737,7 @@ const EditView = ({ itemId }) => {
                     ]}
                 >
                     <Input
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         // defaultValue={editedFields[fieldData.field_name] || fieldData.field_value}

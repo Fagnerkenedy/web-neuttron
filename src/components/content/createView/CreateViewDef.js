@@ -380,6 +380,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <Select
+                        disabled={fieldData.disabled}
                         allowClear
                         showSearch
                         variant="filled"
@@ -430,6 +431,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <Select
+                        disabled={fieldData.disabled}
                         allowClear
                         showSearch
                         variant="filled"
@@ -468,6 +470,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <DatePicker
+                        disabled={fieldData.disabled}
                         locale={locale}
                         variant="filled"
                         onChange={(value) => onChange(value)}
@@ -490,6 +493,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <DatePicker
+                        disabled={fieldData.disabled}
                         showTime
                         locale={locale}
                         variant="filled"
@@ -513,6 +517,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <TextArea
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
@@ -538,6 +543,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <Checkbox
+                        disabled={fieldData.disabled}
                         defaultChecked={fieldData.field_value == 1 ? true : false}
                         onChange={(e) => onChange(e.target.checked)}
                     />
@@ -556,6 +562,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <InputNumber
+                        disabled={fieldData.disabled}
                         variant="filled"
                         style={{ width: "100%" }}
                         changeOnWheel
@@ -578,6 +585,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <InputNumber
+                        disabled={fieldData.disabled}
                         variant="filled"
                         style={{ width: "100%" }}
                         prefix="R$"
@@ -613,6 +621,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <Input
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         placeholder="Insira um e-mail"
@@ -635,6 +644,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <Input
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         addonBefore="+55"
@@ -689,6 +699,7 @@ const CreateView = ({ itemId }) => {
                     ]}
                 >
                     <Input
+                        disabled={fieldData.disabled}
                         allowClear
                         variant="filled"
                         value={editedFields[fieldData.field_name] || fieldData.field_value}
