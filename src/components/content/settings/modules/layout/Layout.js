@@ -1258,8 +1258,18 @@ const DragAndDrop = () => {
                                               >
                                                 <Row justify="space-between" align="middle" style={{ width: '100%' }}>
                                                   <Col span={8}>
-                                                    {item.name}
-                                                    {/* {JSON.stringify(item)} */}
+                                                    <Form.Item
+                                                        label={<span>{item.name}</span>}
+                                                        name={item.name}
+                                                        rules={[
+                                                            {
+                                                                required: item.required,
+                                                                message: 'Este campo é obrigatório',
+                                                            },
+                                                        ]}
+                                                        colon={false}
+                                                        style={{ height: "10px" }}
+                                                    ></Form.Item>
                                                   </Col>
                                                   <Col>
                                                     {item.field_type === "single_line" ? (
@@ -1372,7 +1382,18 @@ const DragAndDrop = () => {
                                               >
                                                 <Row justify="space-between" align="middle" style={{ width: '100%' }}>
                                                   <Col span={8}>
-                                                    {item.name}
+                                                    <Form.Item
+                                                          label={<span>{item.name}</span>}
+                                                          name={item.name}
+                                                          rules={[
+                                                              {
+                                                                  required: item.required,
+                                                                  message: 'Este campo é obrigatório',
+                                                              },
+                                                          ]}
+                                                          colon={false}
+                                                          style={{ height: "10px" }}
+                                                    ></Form.Item>
                                                   </Col>
                                                   <Col>
                                                     {item.field_type === "single_line" ? (
@@ -1512,17 +1533,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1551,17 +1570,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1590,17 +1607,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1622,10 +1637,9 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1654,17 +1668,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1735,17 +1747,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1794,7 +1804,11 @@ const DragAndDrop = () => {
               >
                 {(fields, { add, remove }, { move }) => (
                   <>
-                    {fields.map((field, index) => (
+                    {fields.map((field, index) => {
+                      console.log("field",field)
+                      console.log("index",index)
+                      
+                      return (
                       <Form.Item
                         {...(formItemLayout)}
                         label={''}
@@ -1831,7 +1845,7 @@ const DragAndDrop = () => {
                           )}
                         </Space>
                       </Form.Item>
-                    ))}
+                    )})}
                     {/* <Form.Item>
                         <Button
                           type="dashed"
@@ -1848,17 +1862,15 @@ const DragAndDrop = () => {
             </Layout>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1880,17 +1892,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1912,17 +1922,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1951,17 +1959,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
               name="disabled"
-              label="Desabilitar"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}
@@ -1990,18 +1996,15 @@ const DragAndDrop = () => {
             </Form.Item>
             <Form.Item
               name="required"
-              label="Campo Obrigatório"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Obrigatório</Checkbox>
             </Form.Item>
             <Form.Item
-              name="
-              disabled: item.disabled"
-              label="Desabilitar"
+              name="disabled"
               valuePropName="checked"
             >
-              <Checkbox />
+              <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
           </Form>
         )}

@@ -720,7 +720,7 @@ const EditView = ({ itemId }) => {
                     height={'50vh'} 
                     language={'javascript'} 
                     value={fieldData.field_value} 
-                    theme={'vs-dark'}
+                    theme={darkMode ? 'vs-dark' : 'softContrast'}
                     handleFieldChange={(value) => onChange(value)}
                 />
             )
@@ -763,7 +763,7 @@ const EditView = ({ itemId }) => {
                 form={form}
                 initialValues={combinedData.reduce((acc, field) => {
                     if (field.field_type == 'date' || field.field_type == 'date_time') {
-                        acc[field.api_name] = dayjs(field.field_value)
+                        acc[field.api_name] = (field.field_value != "" ? dayjs(field.field_value) : "")
                     } else if (field.field_type == 'checkbox') {
                         acc[field.api_name] = field.field_value == 1 ? true : false
                     } else {

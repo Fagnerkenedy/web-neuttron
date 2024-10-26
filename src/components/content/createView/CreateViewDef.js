@@ -682,7 +682,7 @@ const CreateView = ({ itemId }) => {
                 <CodeEditor
                     height={'50vh'}
                     language={'javascript'}
-                    theme={'vs-dark'}
+                    theme={darkMode ? 'vs-dark' : 'softContrast'}
                     handleFieldChange={(value) => onChange(value)}
                 />
             );

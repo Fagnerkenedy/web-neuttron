@@ -6,12 +6,13 @@ import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, 
 import EditableCell from './EditableCell.js';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
-import { BoxPlotOutlined, CheckOutlined, CloseOutlined, LeftOutlined } from '@ant-design/icons';
+import { BoxPlotOutlined, CheckOutlined, CloseOutlined, LeftOutlined, PlusOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/es/typography/Paragraph.js';
 import RelatedList from './RelatedList.js';
 import PermissionsPage from './PermissionsPage.js';
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
+import { fetchModules } from './fetchModules.js';
 import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
@@ -51,6 +52,7 @@ const DetailView = ({ itemId }) => {
     const [isEditing, setIsEditing] = useState(false);
     const inputRef = useRef(null);
     const [inputValue, setInputValue] = useState('');
+    const [activeModule, setActiveModule] = useState("");
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -261,6 +263,15 @@ const DetailView = ({ itemId }) => {
     useEffect(() => {
         fetchData();
         relatedModuleList();
+        async function fetchModulesData() {
+            const fetchedModules = await fetchModules(org);
+            fetchedModules.result.forEach(module => {
+                if (module.api_name == moduleName || module.name == moduleName) {
+                    setActiveModule(module.name)
+                }
+            });
+        }
+        fetchModulesData();
     }, [itemId]);
 
     React.useEffect(() => {
@@ -492,7 +503,7 @@ const DetailView = ({ itemId }) => {
     
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
         console.log("fieldData",fieldData)
-        if (fieldData.related_module != null) {
+        if (fieldData.related_module != null && fieldData.related_module != "modules") {
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -949,8 +960,17 @@ const DetailView = ({ itemId }) => {
                                     </Title>
                                 </Row>
                                 <Col style={{ margin: '0 15px 0 0' }}>
+                                    <Can I='create' a={moduleName} ability={ability}>
+                                        <Button icon={<PlusOutlined />} type='primary' href={`/${org}/${moduleName}/create`}
+                                            >Novo {moduleName == "users" ? ("Usuário") :
+                                                moduleName == "profiles" ? ("Perfil") :
+                                                moduleName == "functions" ? ("Função") :
+                                                    moduleName == "charts" ? ("Painel") :
+                                                    (toSingular(activeModule))}
+                                        </Button>
+                                    </Can>
                                     <Can I='update' a={moduleName} ability={ability}>
-                                        <Button type='primary' href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
+                                        <Button style={{ marginLeft: '15px' }} type='primary' href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
                                     </Can>
                                     <Can I='delete' a={moduleName} ability={ability}>
                                         <Popconfirm

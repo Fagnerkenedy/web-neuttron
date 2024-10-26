@@ -1,7 +1,7 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Image, theme, ConfigProvider } from 'antd';
 import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './styles.css'
 // import logo from '../../img/logo.jpeg';
 import FooterText from '../utils/FooterText';
@@ -14,8 +14,9 @@ const { Content } = Layout;
 const { Title, Text } = Typography;
 
 const Login = () => {
-    const { login, loading, alertMessage } = useContext(AuthContext);
-
+    const { user, login, loading, alertMessage } = useContext(AuthContext);
+    const navigate = useNavigate();
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -23,13 +24,18 @@ const Login = () => {
     const handleSubmit = (e) => {
         const data = { email, password }
         console.log("const data = { email, password }: ", data)
-        login(data); // Integração com o Context / API
+        login(data)
     }
 
     if (loading) {
         return (
             <Loading />
         )
+    }
+
+    if (user != null) {
+        const recoveredOrg = localStorage.getItem('org');
+        navigate(`/${recoveredOrg}/home`);
     }
 
     return (
