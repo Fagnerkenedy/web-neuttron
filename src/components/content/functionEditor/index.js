@@ -1,7 +1,7 @@
 import React from 'react';
 import MonacoEditor from '@monaco-editor/react';
 
-function CodeEditor({ height, language, value, theme, handleFieldChange, readOnly }) {
+function CodeEditor({ height, language, value, darkMode, handleFieldChange, readOnly }) {
     const handleEditorWillMount = (monaco) => {
         monaco.editor.defineTheme('softContrast', {
             base: 'vs',
@@ -33,7 +33,7 @@ function CodeEditor({ height, language, value, theme, handleFieldChange, readOnl
             height={height}
             defaultLanguage={language}
             defaultValue={value}
-            theme={theme}
+            theme={darkMode ? 'vs-dark' : 'softContrast'}
             onChange={handleFieldChange}
             automaticLayout={true}
             options={{
