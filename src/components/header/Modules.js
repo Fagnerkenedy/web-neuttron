@@ -75,7 +75,7 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
     );
 
     return (
-        <Col span={8} ref={ref2} style={{ margin: "20px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
+        <Col span={16} ref={ref2} style={{ margin: "20px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
             <Link
                 className={`modules ${activeModule === 'home' ? 'active' : ''}`}
                 style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap' }}
