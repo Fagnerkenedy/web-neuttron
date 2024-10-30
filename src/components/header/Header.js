@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
 import AuthContext from '../../contexts/auth';
-import { LogoutOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ExclamationOutlined, LogoutOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import ButtonDarkMode from './ButtonDarkMode';
 import './styles.css'
 import Logo from '../utils/Logo';
 import { Can } from "../../contexts/AbilityContext.js";
 import { useAbility } from '../../contexts/AbilityContext.js'
 import { css } from '@emotion/css';
+import userApiURI from '../../Utility/userApiURI.js';
+import HeaderModules from './Modules.js';
 
 const { Title, Text } = Typography;
 
@@ -25,15 +28,16 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const [modules, setModules] = useState([]);
   const [activeModule, setActiveModule] = useState(null);
   const { ability, loading } = useAbility();
-  const {token: { colorBgContainer, borderRadiusLG }} = theme.useToken();
+  const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
   const [open, setOpen] = useState(false);
   const showDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
   const [openTour, setOpenTour] = useState(false);
+  let navigate = useNavigate()
 
   const updateTour = async () => {
     const updateTour = await updateOpenTour(org, user.id)
-    console.log("updateTour: ",updateTour)
+    console.log("updateTour: ", updateTour)
 
     setOpenTour(updateTour.openTour)
   }
@@ -113,15 +117,38 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   `;
 
   const Content = (
-    <Col>
-      <Row span={24} style={{ justifyContent: 'center', paddingBottom: '15px' }}>
-        <Avatar size={64} icon={<UserOutlined />} />
-      </Row>
-      <Row style={{ justifyContent: 'center', paddingBottom: '15px' }}>
-        <Text>{user.email}</Text>
-      </Row>
-      <ButtonDarkMode darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <Button icon={<LogoutOutlined />} type='primary' style={{ width: '100%' }} title={'Sair da conta'} onClick={logout}>Sair</Button>
+    <Col style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+      <Col>
+        <Row span={24} style={{ justifyContent: 'center', paddingBottom: '15px' }}>
+          <Avatar size={64} icon={<UserOutlined />} />
+        </Row>
+        <Row style={{ justifyContent: 'center', paddingBottom: '15px' }}>
+          <Text>{user.email}</Text>
+        </Row>
+        <ButtonDarkMode darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <Button icon={<LogoutOutlined />} type='primary' style={{ width: '100%' }} title={'Sair da conta'} onClick={logout}>Sair</Button>
+      </Col>
+      <Col style={{ bottom: 0 }}>
+        <Popconfirm
+          title="Tem certeza que deseja excluir esta conta? Essa ação excluirá todos os dados e é irreversível!"
+          okText="Sim"
+          cancelText="Não"
+          icon={
+            <ExclamationOutlined
+              style={{
+                color: 'red',
+              }}
+            />
+          }
+          onConfirm={async () => {
+            await userApiURI.deleteAccount({ email: user.email, orgId: org })
+            logout()
+            navigate('/login')
+          }}
+        >
+          <Button icon={<DeleteOutlined />} type="text" danger style={{ width: '100%' }} title={'Excluir conta'}>Excluir conta</Button>
+        </Popconfirm>
+      </Col>
     </Col>
   );
 
@@ -130,7 +157,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
       const fetchedModules = await fetchModules(org);
       const getTour = await getOpenTour(org, user.id)
       let openTour = ''
-      if( getTour.data.length > 0 ) openTour = getTour.data[0].open_tour
+      if (getTour.data.length > 0) openTour = getTour.data[0].open_tour
       setOpenTour(openTour)
       setModules(fetchedModules.result);
     }
@@ -152,34 +179,16 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           </Row>
         </Link>
 
-        <Col ref={ref2} style={{ margin: "20px" }}>
-          <React.Fragment>
-            <Link
-              className={`modules ${activeModule === 'home' ? 'active' : ''}`}
-              style={{ color: darkMode ? '#fff' : '#000' }}
-              href={`/${org}/home`}
-              onClick={() => setActiveModule('home')}
-            >
-              Página Inicial
-            </Link>
-            {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
-          </React.Fragment>
-          {modules.map((module, index) => (
-            <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>
-              <React.Fragment key={index}>
-                <Link
-                  className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
-                  style={{ color: darkMode ? '#fff' : '#000' }}
-                  href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
-                  onClick={() => setActiveModule(module.name)}
-                >
-                  {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
-                </Link>
-                {/* {index < modules.length - 1 && <Divider type="vertical" />} */}
-              </React.Fragment>
-            </Can>
-          ))}
-        </Col>
+        <HeaderModules 
+          modules={modules}
+          org={org}
+          darkMode={darkMode}
+          activeModule={activeModule}
+          setActiveModule={setActiveModule}
+          ability={ability} 
+        />
+
+        
         <div style={{ marginLeft: 'auto', minWidth: '215px' }}>
           <Row span={24}>
             <Col style={{ alignItems: 'center', alignContent: 'center', marginRight: 5 }} span={14} >
@@ -206,19 +215,19 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
                 </Link>
                 {/* <Button onClick={showDrawer} icon={<UserOutlined />} /> */}
               </Tooltip>
-              <Drawer 
-                open={open} 
-                title="Perfil" 
-                onClose={closeDrawer} 
+              <Drawer
+                open={open}
+                title="Perfil"
+                onClose={closeDrawer}
                 extra={
                   <Tooltip title="Visualizar tour">
-                    <Button 
-                      type="text" 
-                      shape="circle" 
+                    <Button
+                      type="text"
+                      shape="circle"
                       onClick={() => {
                         closeDrawer()
                         setOpenTour(true)
-                      }} 
+                      }}
                       icon={<QuestionCircleOutlined />}
                     />
                   </Tooltip>

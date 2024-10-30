@@ -58,7 +58,17 @@ const apiURI = {
     return userApiRequest(config)
 
   },
-  
+
+  deleteAccount: (data, org) => {
+    const config = {
+      method: 'post',
+      url: `${process.env.REACT_APP_USER_API_BASE_URL}/deleteaccount`,
+      data: { ...data }
+    }
+
+    return userApiRequest(config)
+
+  },
 
 }
 
