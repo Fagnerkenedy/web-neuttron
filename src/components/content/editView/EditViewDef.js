@@ -35,6 +35,9 @@ const EditView = ({ itemId }) => {
     const [activeModule, setActiveModule] = useState("");
     const { darkMode } = useOutletContext();  
     const [form] = Form.useForm();
+    const [relatedFields, setRelatedFields] = useState([]);
+    const [selectedModule, setSelectedModule] = useState(null);
+    const [secondSelectValue, setSecondSelectValue] = useState('')
 
     const toSingular = (plural) => {
         return pluralize.singular(plural)
@@ -53,6 +56,10 @@ const EditView = ({ itemId }) => {
     const handleInputChange = (newValue) => {
         setInputValue(newValue);
     };
+
+    useEffect(() => {
+        setSecondSelectValue(''); // ou null, conforme sua necessidade
+    }, [selectedModule]);
 
     const fetchData = async () => {
         try {
@@ -80,9 +87,9 @@ const EditView = ({ itemId }) => {
             setCombinedData(combinedData)
             const relatedModulePromises = combinedData.map(async field => {
                 console.log("fields", field)
-                if (field.related_module != null && field.field_value != "") {
+                if (field.related_module != null && field.field_value != "" && field.related_module != "fields") {
                     console.log("field.related_module", field)
-
+                    setSelectedModule(field.field_value)
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
                     console.log("response Batatinha", response.data)
                     if (response.data.row.length != 0) {
@@ -421,10 +428,34 @@ const EditView = ({ itemId }) => {
         return numbers ? numbers.join('') : '';
     }
 
+    const fetchRelatedFields = async (open, relatedModuleName, api_name) => {
+        if (open) {
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+
+            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
+            console.log("o que retornou fields? ", response)
+            const matchingResponse = response.data.filter(item => item.field_type === "select").map(item => {
+                return {
+                    field_value: item.name,
+                    api_name: item.api_name
+                };
+            });
+            console.log("bablasbk", matchingResponse)
+            setRelatedFields(matchingResponse);
+        }
+    }
+
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
         console.log("abracadabra: ",fieldData)
         console.log("sections: ",sections)
-        if (fieldData.related_module != null) {
+        
+
+        if (fieldData.related_module != null && fieldData.field_type == "loockup") {
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -452,7 +483,11 @@ const EditView = ({ itemId }) => {
                         placeholder="Selecione"
                         // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
                         // onChange={(value) => onChange(value)}
-                        onChange={(key, value) => onChangeRelatedModule(value)}
+                        onChange={(key, value) => {
+                            onChangeRelatedModule(value)
+                            setSelectedModule(value.value)
+                            form.setFieldsValue({field: ""})
+                        }}
                         // loading={loading}
                         onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
                         // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
@@ -471,6 +506,63 @@ const EditView = ({ itemId }) => {
                         {relatedModuleData.map(item => (
                             <Option key={item.related_id} value={item.field_value}>
                                 {item.field_value}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+            );
+        } else if (fieldData.field_type == "loockup_field") {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Select
+                        disabled={(selectedModule == null && fieldData.field_value == "" ? true : fieldData.disabled)}
+                        allowClear
+                        showSearch
+                        variant="filled"
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        placeholder="SelecioneSelecione"
+                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                        // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                        // value={selectedValue ? selectedValue.value : null}
+                        // defaultValue={fieldData.field_value}
+                        // value={secondSelectValue}
+                        // placeholder="Selecione"
+                        // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+                        onChange={(key, value) => onChangeRelatedModule(value)}
+                        // loading={loading}
+                        onDropdownVisibleChange={(open) => {
+                            console.log("fieldData.field_base: ",selectedModule)
+                            if (selectedModule) {
+                                fetchRelatedFields(open, selectedModule, fieldData.search_field)
+                            }
+                        }}
+                        // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                        dropdownRender={(menu) => (
+                            <div>
+                                {menu}
+                                {/* <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                <a href={`/${org}/${fieldData.related_module}/${fieldData.field_value}`} rel="noopener noreferrer">
+                                    {`Ir para ${fieldData.field_value}`}
+                                </a>
+                            </div> */}
+                            </div>
+                        )}
+                    >
+                        {relatedFields.map(item => (
+                            <Option key={item.api_name} value={item.api_name}>
+                            {item.field_value}
                             </Option>
                         ))}
                     </Select>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Layout, theme } from 'antd';
 import './styles.css'
 import DataTable from './table/DataTable';
@@ -9,6 +9,7 @@ import { useSelection } from './selection/SelectionHooks';
 import { usePagination } from './selection/PaginationHooks';
 import DataTableWithSearch from './DataTableWithSearch';
 import { useOutletContext } from 'react-router-dom';
+import Kanban from './Kanban'
 
 const { Content, Sider } = Layout;
 
@@ -24,6 +25,7 @@ const AppContent = () => {
     const currentData = tableData.slice(startIndex, endIndex);
     const totalTableWidth = columns.reduce((acc, col) => acc + col.width, 0);
     const { darkMode } = useOutletContext();
+    const [layoutType, setLayoutVisualization] = useState('tabela')
 
     return (
         <Content className='content'>
@@ -36,6 +38,7 @@ const AppContent = () => {
                 onPageChange={onPageChange}
                 onPageSizeChange={onPageSizeChange}
                 currentPage={currentPage}
+                setLayoutVisualization={setLayoutVisualization}
             />
             <Layout
                 style={{
@@ -54,14 +57,18 @@ const AppContent = () => {
                 </Sider> */}
 
                 <Content style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} className='dataTable'>
-                    <DataTableWithSearch
-                        columns={columns}
-                        data={tableData}
-                        rowSelection={rowSelection}
-                        currentData={currentData}
-                        totalTableWidth={totalTableWidth}
-                        loading={loading}
-                    />
+                    {layoutType == 'tabela' ? (
+                        <DataTableWithSearch
+                            columns={columns}
+                            data={tableData}
+                            rowSelection={rowSelection}
+                            currentData={currentData}
+                            totalTableWidth={totalTableWidth}
+                            loading={loading}
+                        />
+                    ) : (
+                        <Kanban />
+                    )}
                 </Content>
             </Layout >
         </Content >

@@ -61,7 +61,7 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
         <Col span={16} ref={ref2} style={{ margin: "20px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
             <Link
                 className={`modules ${activeModule === 'home' ? 'active' : ''}`}
-                style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap' }}
+                style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}
                 href={`/${org}/home`}
                 onClick={() => setActiveModule('home')}
             >
@@ -72,7 +72,7 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
                 <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>
                     <Link
                         className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
-                        style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap' }}
+                        style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}
                         href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
                         onClick={() => setActiveModule(module.name)}
                     >

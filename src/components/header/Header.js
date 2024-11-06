@@ -187,7 +187,6 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           setActiveModule={setActiveModule}
           ability={ability} 
         />
-
         
         <div style={{ marginLeft: 'auto', minWidth: '215px' }}>
           <Row span={24}>

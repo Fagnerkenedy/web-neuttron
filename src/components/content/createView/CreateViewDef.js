@@ -46,6 +46,8 @@ const CreateView = ({ itemId }) => {
     const [activeModule, setActiveModule] = useState("");
     const { darkMode } = useOutletContext();
     const [form] = Form.useForm();
+    const [relatedFields, setRelatedFields] = useState([]);
+    const [selectedModule, setSelectedModule] = useState(null);
 
     const linkApi = process.env.REACT_APP_LINK_API;
     const handleInputChange = (newValue) => {
@@ -366,8 +368,29 @@ const CreateView = ({ itemId }) => {
         return numbers ? numbers.join('') : '';
     }
 
+    const fetchRelatedFields = async (open, relatedModuleName, api_name) => {
+        if (open) {
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+
+            const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
+            console.log("o que retornou fields? ", response)
+            const matchingResponse = response.data.filter(item => item.field_type === "select").map(item => {
+                return {
+                    field_value: item.name,
+                    api_name: item.api_name
+                };
+            });
+            setRelatedFields(matchingResponse);
+        }
+    }
+
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
-        if (fieldData.related_module != null) {
+        if (fieldData.related_module != null && fieldData.field_type == "loockup") {
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -395,7 +418,10 @@ const CreateView = ({ itemId }) => {
                         defaultValue={fieldData.field_value}
                         // placeholder="Selecione"
                         // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-                        onChange={(key, value) => onChangeRelatedModule(value)}
+                        onChange={(key, value) => {
+                            onChangeRelatedModule(value)
+                            setSelectedModule(value.value)
+                        }}
                         // loading={loading}
                         onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
                         // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
@@ -413,6 +439,65 @@ const CreateView = ({ itemId }) => {
                         {relatedModuleData.map(item => (
                             <Option key={item.related_id} value={item.field_value}>
                                 {item.field_value}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+            );
+        } else if (fieldData.field_type == "loockup_field") {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Select
+                        disabled={fieldData.disabled}
+                        allowClear
+                        showSearch
+                        variant="filled"
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        placeholder="Selecione"
+                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                        // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                        // value={selectedValue ? selectedValue.value : null}
+                        defaultValue={fieldData.field_value}
+                        // placeholder="Selecione"
+                        // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+                        onChange={(key, value) => onChangeRelatedModule(value)}
+                        // loading={loading}
+                        onDropdownVisibleChange={(open) => {
+                            console.log("fieldData.field_base: ",selectedModule)
+                            if (selectedModule) {
+                                fetchRelatedFields(open, selectedModule, fieldData.search_field)
+                            }
+                            // if (form.getFieldValue(`${fieldData.field_base}`) != null) {
+                            //     fetchRelatedFields(open, form.getFieldValue(`${fieldData.field_base}`), fieldData.search_field)
+                            // }
+                        }}
+                        // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                        dropdownRender={(menu) => (
+                            <div>
+                                {menu}
+                                {/* <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                <a href={`/${org}/${fieldData.related_module}/${fieldData.field_value}`} rel="noopener noreferrer">
+                                    {`Ir para ${fieldData.field_value}`}
+                                </a>
+                            </div> */}
+                            </div>
+                        )}
+                    >
+                        {relatedFields.map(item => (
+                            <Option key={item.api_name} value={item.api_name}>
+                            {item.field_value}
                             </Option>
                         ))}
                     </Select>

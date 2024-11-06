@@ -96,7 +96,7 @@ const DetailView = ({ itemId }) => {
             });
 
             const relatedModulePromises = combinedData.map(async field => {
-                if (field.related_module != null) {
+                if (field.related_module != null && field.related_module != "fields") {
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
                     console.log("response relatedDataById:",response)
                     if (response.data.row.length != 0) {
@@ -503,7 +503,7 @@ const DetailView = ({ itemId }) => {
     
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
         console.log("fieldData",fieldData)
-        if (fieldData.related_module != null && fieldData.related_module != "modules") {
+        if (fieldData.related_module != null && fieldData.related_module != "modules" && fieldData.related_module != "fields") {
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
