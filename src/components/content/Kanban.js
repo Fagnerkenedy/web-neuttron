@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Button, Card, Col, Empty, Layout, Row, Table, Typography, theme } from 'antd';
+import { Badge, Button, Card, Col, Empty, Layout, Row, Table, Typography, theme } from 'antd';
 import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import styled, { createGlobalStyle } from 'styled-components';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const KanbanBoard = () => {
   const [columns, setColumns] = useState('');
@@ -19,6 +20,8 @@ const KanbanBoard = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  let navigate = useNavigate()
+  const { darkMode } = useOutletContext();
 
   const fetchStages = async () => {
     setLoading(true)
@@ -27,12 +30,11 @@ const KanbanBoard = () => {
     if (columns.data.hasOwnProperty("kanban")) {
       setField('')
       setColumns('')
-      setLoading(false)
     } else {
       setField(columns.data.field_api_name)
       setColumns(columns.data.resultObject)
-      setLoading(false)
     }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -70,40 +72,79 @@ const KanbanBoard = () => {
 
   const Column = styled.div`
     flex: 1;
-    padding: 4px 4px 0 4px;
     min-width: 0;
     border-radius: 6px;
-    margin: 8px;
     .dragging {
       opacity: 0.5;
     }
   `;
 
+  const colors = [
+    'pink',
+    'red',
+    'yellow',
+    'orange',
+    'cyan',
+    'green',
+    'blue',
+    'purple',
+    'geekblue',
+    'magenta',
+    'volcano',
+    'gold',
+    'lime',
+  ];
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Row gutter={16} wrap={false} style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+      <Row gutter={16} wrap={false} style={{ overflowX: 'auto', height: '100%' }}>
         {columns != '' && field != '' ? (Object.entries(columns).map(([columnId, column]) => (
           <Droppable droppableId={columnId} key={columnId}>
             {(provided, snapshot) => (
-              <Card title={column.name} size='small'>
-              <Column style={{ minWidth: 250, height: 600, display: 'inline-block' }} ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} {...provided.droppableProps}>
-                {column.items && column.items.length > 0 ? (
-                  column.items.map((item, index) => (
-                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={{
-                            transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition,
-                            ...provided.draggableProps.style,
-                            marginBottom: 8,
-                          }}
-                        >
-                          <Link href={`${moduleName}/${item.id}`}>
+              <Card
+                title={column.name
+                  // colors.map((color) => (
+                  //   <Badge key={color} color={color} text={color} />
+                  // ))
+                  // <Badge color="green" status='success' text={column.name} />
+                }
+                size='small'
+                style={{
+                  height: 'calc(100vh - 155px)',
+                  width: '100%',
+                  marginLeft: snapshot.isDraggingOver ? 4 : 5,
+                  marginRight: snapshot.isDraggingOver ? 4 : 5,
+                  marginBottom: 10,
+                  backgroundColor: snapshot.isDraggingOver
+                    ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                    : '',
+                  border: snapshot.isDraggingOver
+                    ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                    : '',
+                }}
+                bordered={false}
+              // hoverable={true}
+              >
+                <Column style={{ height: 'calc(100vh - 220px)', minWidth: 250, overflowY: 'auto' }} ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} {...provided.droppableProps}>
+                  {column.items && column.items.length > 0 ? (
+                    column.items.map((item, index) => (
+                      <Draggable key={item.id} draggableId={item.id} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={{
+                              transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition,
+                              ...provided.draggableProps.style,
+                              marginBottom: 8,
+                            }}
+                          >
                             <Card
                               size='small'
+                              hoverable={true}
+                              style={{ marginRight: 5, cursor: 'grab' }}
+                              onClick={() => navigate(`/${org}/${moduleName}/${item.id}`)}
                             >
                               {Object.entries(item.content).map(([key, value]) => {
                                 return (
@@ -115,43 +156,45 @@ const KanbanBoard = () => {
                                 )
                               })}
                             </Card>
-                          </Link>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))) : (
-                  <Text type="secondary">Nenhum item disponível</Text>
-                )}
-                {provided.placeholder}
-              </Column>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))) : (
+                    <Text type="secondary">Nenhum item disponível</Text>
+                  )}
+                  {provided.placeholder}
+                </Column>
               </Card>
             )}
           </Droppable>
         ))) : (
-          <Layout
-            style={{
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            <Empty
-              image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-              imageStyle={{ height: 60 }}
-              description={
-                <Text>
-                  Nenhum registro encontrado
-                </Text>
-              }
-              style={{ height: 'calc(100vh - 210px)', display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}
+          !loading && (
+            <Layout
+              style={{
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+                margin: '0 10px'
+              }}
             >
-              <Button
-                type="primary"
-                href={`/${org}/kanban/create`}
-              >Criar Novo Kanban
-              </Button>
-            </Empty>
-          </Layout>
-
+              <Empty
+                loading={loading}
+                image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                imageStyle={{ height: 60 }}
+                description={
+                  <Text>
+                    Nenhum registro encontrado
+                  </Text>
+                }
+                style={{ height: 'calc(100vh - 140px)', display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}
+              >
+                <Button
+                  type="primary"
+                  href={`/${org}/kanban/create`}
+                >Criar Novo Kanban
+                </Button>
+              </Empty>
+            </Layout>
+          )
         )}
       </Row>
     </DragDropContext>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -48,6 +48,8 @@ const CreateView = ({ itemId }) => {
     const [form] = Form.useForm();
     const [relatedFields, setRelatedFields] = useState([]);
     const [selectedModule, setSelectedModule] = useState(null);
+    const [quickCreate, setOpenQuickCreate] = useState(false);
+    const [selectedRelatedModule, setSelectedRelatedModule] = useState('')
 
     const linkApi = process.env.REACT_APP_LINK_API;
     const handleInputChange = (newValue) => {
@@ -389,9 +391,22 @@ const CreateView = ({ itemId }) => {
         }
     }
 
+    const handleQuickCreate = (related_module) => {
+        setSelectedRelatedModule(related_module)
+        setOpenQuickCreate(true)
+    }
+
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
         if (fieldData.related_module != null && fieldData.field_type == "loockup") {
             return (
+                <div>
+                    
+                    <Modal
+                        title={`Criar ${toSingular(selectedRelatedModule)}`}
+                        visible={quickCreate}
+                        // onOk={handleOk}
+                        onCancel={() => setOpenQuickCreate(false)}
+                    />
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
                     name={fieldData.api_name}
@@ -428,11 +443,12 @@ const CreateView = ({ itemId }) => {
                         dropdownRender={(menu) => (
                             <div>
                                 {menu}
-                                {/* <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                                <a href={`/${org}/${fieldData.related_module}/${fieldData.field_value}`} rel="noopener noreferrer">
-                                    {`Ir para ${fieldData.field_value}`}
-                                </a>
-                            </div> */}
+                                <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                    <Button type='link' onClick={() => handleQuickCreate(fieldData.related_module)}>
+                                        {`Criar ${toSingular(fieldData.related_module)}`}
+                                    </Button>
+                                </div>
+
                             </div>
                         )}
                     >
@@ -443,6 +459,7 @@ const CreateView = ({ itemId }) => {
                         ))}
                     </Select>
                 </Form.Item>
+                </div>
             );
         } else if (fieldData.field_type == "loockup_field") {
             return (
@@ -475,7 +492,7 @@ const CreateView = ({ itemId }) => {
                         onChange={(key, value) => onChangeRelatedModule(value)}
                         // loading={loading}
                         onDropdownVisibleChange={(open) => {
-                            console.log("fieldData.field_base: ",selectedModule)
+                            console.log("fieldData.field_base: ", selectedModule)
                             if (selectedModule) {
                                 fetchRelatedFields(open, selectedModule, fieldData.search_field)
                             }
@@ -497,7 +514,7 @@ const CreateView = ({ itemId }) => {
                     >
                         {relatedFields.map(item => (
                             <Option key={item.api_name} value={item.api_name}>
-                            {item.field_value}
+                                {item.field_value}
                             </Option>
                         ))}
                     </Select>

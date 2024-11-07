@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Button, Card, Checkbox, Dropdown, Input, Menu, theme, Typography } from 'antd';
+import { Button, Card, Checkbox, Dropdown, Input, Menu, theme, Tooltip, Typography } from 'antd';
 import axios from 'axios';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { ColumnHeightOutlined, EllipsisOutlined, SearchOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import { useOutletContext } from 'react-router-dom';
 const { useToken } = theme;
 
@@ -100,6 +100,7 @@ const ColumnsOrder = () => {
                                 }}
                             >
                                 <Input
+                                    icon={<SearchOutlined />}
                                     ref={ref}
                                     placeholder="Pesquisar campos"
                                     value={searchValue}
@@ -147,9 +148,10 @@ const ColumnsOrder = () => {
         <Dropdown
             overlay={menu}
             style={{ padding: 5 }}
+            onVisibleChange={(visible) => setIsOpen(visible)}
             visible={isOpen}
             trigger={['click']}
-            onClick={() => setIsOpen(!isOpen)}
+            // onClick={() => setIsOpen(!isOpen)}
             dropdownRender={(menu) => (
                 <div style={contentStyle}>
                     {React.cloneElement(menu, {
@@ -158,7 +160,9 @@ const ColumnsOrder = () => {
                 </div>
             )}
         >
-            <Button type='text' onClick={openSelect} icon={<EllipsisOutlined />} />
+            <Tooltip title="Configurar campos" placement="left">
+                <Button style={{ marginLeft: 10 }} type='text' onClick={openSelect} icon={<ColumnHeightOutlined />} />
+            </Tooltip>
         </Dropdown>
     );
 };

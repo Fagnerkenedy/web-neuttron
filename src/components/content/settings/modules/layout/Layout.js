@@ -1189,7 +1189,10 @@ const DragAndDrop = () => {
                   marginTop: '50px',
                   overflowY: 'auto',
                   // backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
-                  padding: 8
+                  padding: 8,
+                  backgroundColor: snapshot.isDraggingOver 
+                    ? (darkMode ? '#3a3a3c' : '#e6f7ff') 
+                    : '',
                 }}
                 className='custom-scrollbar'
               >
@@ -1198,7 +1201,7 @@ const DragAndDrop = () => {
                   const sectionName = dados.sectionName
                   return (
                     <Draggable key={sectionId} draggableId={sectionId} index={index}>
-                      {(provided) => (
+                      {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
@@ -1206,7 +1209,11 @@ const DragAndDrop = () => {
                         >
                           <Card
                             key={sectionId}
-                            style={{ marginBottom: 16, maxHeight: smallHeight ? '251px' : '', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}
+                            style={{ 
+                              marginBottom: 16, 
+                              maxHeight: smallHeight ? '251px' : '', 
+                              border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
+                            }}
                             hoverable={true}
                             title={sectionName}
                             size="small"
@@ -1226,7 +1233,19 @@ const DragAndDrop = () => {
                             <DragContainer>
                               <Droppable droppableId={`left-SECTION-${sectionId}`}>
                                 {(provided, snapshot) => (
-                                  <Column ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} style={{ maxHeight: smallHeight ? '170px' : '', overflow: smallHeight ? 'hidden' : '', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
+                                  <Column
+                                    ref={provided.innerRef}
+                                    isDraggingOver={snapshot.isDraggingOver}
+                                    style={{
+                                      maxHeight: smallHeight ? '170px' : '', 
+                                      overflow: smallHeight ? 'hidden' : '', 
+                                      backgroundColor: snapshot.isDraggingOver 
+                                      ? (darkMode ? '#3a3a3c' : '#e6f7ff') 
+                                      : '',
+                                      border: snapshot.isDraggingOver 
+                                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff') 
+                                      : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                    }}>
                                     {sections[sectionId]?.left.length
                                       ? sections[sectionId].left.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
@@ -1246,7 +1265,11 @@ const DragAndDrop = () => {
                                               <Card
                                                 {...provided.dragHandleProps}
                                                 isDragging={snapshot.isDragging}
-                                                style={{ flex: 1, cursor: 'pointer', marginBottom: '8px' }}
+                                                style={{
+                                                  flex: 1,
+                                                  cursor: 'pointer',
+                                                  marginBottom: '8px',
+                                                }}
                                                 className='draggable-card'
                                                 hoverable={true}
                                                 size="small"
@@ -1259,16 +1282,16 @@ const DragAndDrop = () => {
                                                 <Row justify="space-between" align="middle" style={{ width: '100%' }}>
                                                   <Col span={8}>
                                                     <Form.Item
-                                                        label={<span>{item.name}</span>}
-                                                        name={item.name}
-                                                        rules={[
-                                                            {
-                                                                required: item.required,
-                                                                message: 'Este campo é obrigatório',
-                                                            },
-                                                        ]}
-                                                        colon={false}
-                                                        style={{ height: "10px" }}
+                                                      label={<span>{item.name}</span>}
+                                                      name={item.name}
+                                                      rules={[
+                                                        {
+                                                          required: item.required,
+                                                          message: 'Este campo é obrigatório',
+                                                        },
+                                                      ]}
+                                                      colon={false}
+                                                      style={{ height: "10px" }}
                                                     ></Form.Item>
                                                   </Col>
                                                   <Col>
@@ -1350,7 +1373,21 @@ const DragAndDrop = () => {
                               </Droppable>
                               <Droppable droppableId={`right-SECTION-${sectionId}`}>
                                 {(provided, snapshot) => (
-                                  <Column ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} style={{ maxHeight: smallHeight ? '170px' : '', overflow: smallHeight ? 'hidden' : '', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
+                                  <Column 
+                                    ref={provided.innerRef} 
+                                    isDraggingOver={snapshot.isDraggingOver} 
+                                    style={{ 
+                                      maxHeight: smallHeight ? '170px' : '', 
+                                      overflow: smallHeight ? 'hidden' : '', 
+                                      border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                      backgroundColor: snapshot.isDraggingOver 
+                                      ? (darkMode ? '#3a3a3c' : '#e6f7ff') 
+                                      : '',
+                                      border: snapshot.isDraggingOver 
+                                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff') 
+                                      : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                      }}
+                                    >
                                     {sections[sectionId]?.right.length
                                       ? sections[sectionId].right.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
@@ -1383,16 +1420,16 @@ const DragAndDrop = () => {
                                                 <Row justify="space-between" align="middle" style={{ width: '100%' }}>
                                                   <Col span={8}>
                                                     <Form.Item
-                                                          label={<span>{item.name}</span>}
-                                                          name={item.name}
-                                                          rules={[
-                                                              {
-                                                                  required: item.required,
-                                                                  message: 'Este campo é obrigatório',
-                                                              },
-                                                          ]}
-                                                          colon={false}
-                                                          style={{ height: "10px" }}
+                                                      label={<span>{item.name}</span>}
+                                                      name={item.name}
+                                                      rules={[
+                                                        {
+                                                          required: item.required,
+                                                          message: 'Este campo é obrigatório',
+                                                        },
+                                                      ]}
+                                                      colon={false}
+                                                      style={{ height: "10px" }}
                                                     ></Form.Item>
                                                   </Col>
                                                   <Col>
@@ -1723,26 +1760,26 @@ const DragAndDrop = () => {
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               {/* <ConfigProvider renderEmpty={() => "Selecione um Módulo para pesquisa"}> */}
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                placeholder="Selecione"
+                disabled={false}
+                onDropdownVisibleChange={(open) => {
+                  if (form.getFieldValue('module') != null) {
+                    fetchRelatedFields(open, form.getFieldValue('module'), form.getFieldValue('api_name'))
                   }
-                  placeholder="Selecione"
-                  disabled={false}
-                  onDropdownVisibleChange={(open) => {
-                    if (form.getFieldValue('module') != null) {
-                      fetchRelatedFields(open, form.getFieldValue('module'), form.getFieldValue('api_name'))
-                    }
-                  }}
-                >
-                  {relatedFields.map(item => (
-                    <Option key={item.api_name} value={item.api_name}>
-                      {item.field_value}
-                    </Option>
-                  ))}
-                </Select>
+                }}
+              >
+                {relatedFields.map(item => (
+                  <Option key={item.api_name} value={item.api_name}>
+                    {item.field_value}
+                  </Option>
+                ))}
+              </Select>
               {/* </ConfigProvider> */}
             </Form.Item>
             <Form.Item
@@ -1805,47 +1842,48 @@ const DragAndDrop = () => {
                 {(fields, { add, remove }, { move }) => (
                   <>
                     {fields.map((field, index) => {
-                      console.log("field",field)
-                      console.log("index",index)
-                      
+                      console.log("field", field)
+                      console.log("index", index)
+
                       return (
-                      <Form.Item
-                        {...(formItemLayout)}
-                        label={''}
-                        required={false}
-                        key={field.key}
-                      >
-                        <Space align="baseline">
-                          <Form.Item
-                            {...field}
-                            validateTrigger={['onChange', 'onBlur']}
-                            rules={[
-                              {
-                                required: true,
-                                whitespace: false,
-                                message: "Insira uma opção.",
-                              },
-                            ]}
-                            noStyle
-                            span={24}
-                          >
-                            <Input
-                              placeholder="Opção"
-                              style={{ width: '395px' }}
+                        <Form.Item
+                          {...(formItemLayout)}
+                          label={''}
+                          required={false}
+                          key={field.key}
+                        >
+                          <Space align="baseline">
+                            <Form.Item
+                              {...field}
+                              validateTrigger={['onChange', 'onBlur']}
+                              rules={[
+                                {
+                                  required: true,
+                                  whitespace: false,
+                                  message: "Insira uma opção.",
+                                },
+                              ]}
+                              noStyle
+                              span={24}
+                            >
+                              <Input
+                                placeholder="Opção"
+                                style={{ width: '395px' }}
+                              />
+                            </Form.Item>
+                            <PlusCircleOutlined
+                              onClick={() => add('', index + 1)}
                             />
-                          </Form.Item>
-                          <PlusCircleOutlined
-                            onClick={() => add('', index + 1)}
-                          />
-                          {fields.length > 1 && (
-                            <MinusCircleOutlined
-                              className="dynamic-delete-button"
-                              onClick={() => remove(field.name)}
-                            />
-                          )}
-                        </Space>
-                      </Form.Item>
-                    )})}
+                            {fields.length > 1 && (
+                              <MinusCircleOutlined
+                                className="dynamic-delete-button"
+                                onClick={() => remove(field.name)}
+                              />
+                            )}
+                          </Space>
+                        </Form.Item>
+                      )
+                    })}
                     {/* <Form.Item>
                         <Button
                           type="dashed"

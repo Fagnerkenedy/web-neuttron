@@ -40,13 +40,15 @@ const AppContent = () => {
                 currentPage={currentPage}
                 setLayoutVisualization={setLayoutVisualization}
             />
-            <Layout
-                style={{
-                    background: colorBgContainer,
-                    borderRadius: borderRadiusLG,
-                }}
-            >
-                {/* <Sider
+            {layoutType == 'tabela' ? (
+
+                <Layout
+                    style={{
+                        background: colorBgContainer,
+                        borderRadius: borderRadiusLG,
+                    }}
+                >
+                    {/* <Sider
                     className='sider'
                     style={{
                         background: colorBgContainer,
@@ -56,8 +58,7 @@ const AppContent = () => {
                     <SearchInputField onSearch={onSearch} />
                 </Sider> */}
 
-                <Content style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} className='dataTable'>
-                    {layoutType == 'tabela' ? (
+                    <Content style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} className='dataTable'>
                         <DataTableWithSearch
                             columns={columns}
                             data={tableData}
@@ -66,11 +67,11 @@ const AppContent = () => {
                             totalTableWidth={totalTableWidth}
                             loading={loading}
                         />
-                    ) : (
-                        <Kanban />
-                    )}
-                </Content>
-            </Layout >
+                    </Content>
+                </Layout >
+            ) : (
+                <Kanban />
+            )}
         </Content >
     );
 };
