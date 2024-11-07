@@ -100,7 +100,7 @@ const ColumnsOrder = () => {
                                 }}
                             >
                                 <Input
-                                    icon={<SearchOutlined />}
+                                    prefix={<SearchOutlined />}
                                     ref={ref}
                                     placeholder="Pesquisar campos"
                                     value={searchValue}

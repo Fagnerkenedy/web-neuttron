@@ -48,7 +48,7 @@ const AppContent = () => {
                         borderRadius: borderRadiusLG,
                     }}
                 >
-                    {/* <Sider
+                    <Sider
                     className='sider'
                     style={{
                         background: colorBgContainer,
@@ -56,7 +56,7 @@ const AppContent = () => {
                     width={200}
                 >
                     <SearchInputField onSearch={onSearch} />
-                </Sider> */}
+                </Sider>
 
                     <Content style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} className='dataTable'>
                         <DataTableWithSearch

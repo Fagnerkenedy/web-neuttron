@@ -117,7 +117,7 @@ const KanbanBoard = () => {
                   marginBottom: 10,
                   backgroundColor: snapshot.isDraggingOver
                     ? (darkMode ? '#3a3a3c' : '#e6f7ff')
-                    : '',
+                    : '#e0e0e0',
                   border: snapshot.isDraggingOver
                     ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
                     : '',
