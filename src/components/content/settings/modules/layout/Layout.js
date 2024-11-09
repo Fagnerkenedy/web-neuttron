@@ -122,7 +122,7 @@ const initialItems = [
   { id: '3650918476023874915', name: 'Caixa de seleção', type: "VARCHAR(255)", field_type: 'checkbox', required: false },
   { id: '8492017364859271043', name: 'Moeda', type: "VARCHAR(255)", field_type: 'currency', required: false },
   { id: '6203841957028641975', name: 'Pesquisar', type: "VARCHAR(255)", field_type: 'loockup', required: false },
-  { id: '1054729836042817596', name: 'Lista de opções', type: "VARCHAR(255)", field_type: 'select', options: [''], required: false },
+  { id: '1054729836042817596', name: 'Lista de seleção', type: "VARCHAR(255)", field_type: 'select', options: [{ id: null, label: '' }], required: false },
   { id: '7510938265401728493', name: 'Data', type: "VARCHAR(255)", field_type: 'date', required: false },
   { id: '3904851627489206173', name: 'Data/Hora', type: "VARCHAR(255)", field_type: 'date_time', required: false },
   { id: '8642915073281649052', name: 'E-mail', type: "VARCHAR(255)", field_type: 'email', required: false },
@@ -152,6 +152,8 @@ const DragAndDrop = () => {
   const [activeModule, setActiveModule] = useState("");
   let navigate = useNavigate()
   const inputRef = useRef(null);
+  const [deletedOptions, setDeletedOptions] = useState([])
+  const ref = useRef(null)
 
   const currentPath = window.location.pathname;
   const pathParts = currentPath.split('/');
@@ -552,6 +554,12 @@ const DragAndDrop = () => {
         console.log("unusedItems: ", unusedItems)
         const responseUnusedItems = await axios.put(`${linkApi}/crm/${org}/${moduleName}/unused_field`, unusedItems, config);
       }
+      if (deletedOptions.length !== 0) {
+        const responseDeletedOptions = await axios.delete(`${linkApi}/crm/${org}/${moduleName}/option`, {
+          data: deletedOptions,
+          ...config
+        });
+      }
       message.success('Layout atualizado!');
       console.log('Changes saved successfully:', response.data);
       console.log('Changes saved successfully sections:', responseSections.data);
@@ -602,26 +610,57 @@ const DragAndDrop = () => {
         search_field: item.search_field
       })
     } else if (item.field_type == "select") {
-      console.log("entrou select")
-      console.log("iitem select: ", item)
-      let options = ['']
+      console.log("entrou select");
+      console.log("item select: ", item);
+
+      let options = [{ id: null, label: '' }]; // Inicializa com uma estrutura padrão
+
       if (item.api_name) {
-        options = []
-        const result = await fetchOptions(item.module, item.api_name)
-        console.log("result options: ", result)
+        options = [];
+        const result = await fetchOptions(item.module, item.api_name);
+        console.log("result options: ", result);
+
         result.forEach(option => {
-          options.push(option.name)
+          options.push({
+            id: option.id || null, // Garante que IDs sejam armazenados, se disponíveis
+            label: option.name     // Nome ou rótulo da opção
+          });
         });
       }
-      console.log("options: ", options)
+
+      console.log("options: ", options);
+
       form.setFieldsValue({
+        id: item.id,
         field_type: item.field_type,
         api_name: item.api_name,
         label: item.name,
-        options: options,
+        options: options.length > 0 ? options : [{ id: null, label: '' }],
         required: item.required,
         disabled: item.disabled
-      })
+      });
+      // } else if (item.field_type == "select") {
+      //   console.log("entrou select")
+      //   console.log("iitem select: ", item)
+      //   let options = ['']
+      //   if (item.api_name) {
+      //     options = []
+      //     const result = await fetchOptions(item.module, item.api_name)
+      //     console.log("result options: ", result)
+      //     result.forEach(option => {
+      //       options.push(option.name)
+      //     });
+      //   }
+      //   console.log("options: ", options)
+      //   form.setFieldsValue({
+      //     id: item.id,
+      //     field_type: item.field_type,
+      //     api_name: item.api_name,
+      //     label: item.name,
+      //     options: options.length > 0 ? options : [''],
+      //     required: item.required,
+      //     disabled: item.disabled
+      //   })
     } else if (item.field_type == "number") {
       console.log("entrou loockup")
       form.setFieldsValue({
@@ -882,6 +921,12 @@ const DragAndDrop = () => {
       sm: { span: 20, offset: 4 },
     },
   };
+
+  const handleRemoveOption = (id) => {
+    deletedOptions.push(id)
+  }
+
+  const inputRefs = useRef([]);
 
   return (
     <Layout>
@@ -1190,8 +1235,8 @@ const DragAndDrop = () => {
                   overflowY: 'auto',
                   // backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
                   padding: 8,
-                  backgroundColor: snapshot.isDraggingOver 
-                    ? (darkMode ? '#3a3a3c' : '#e6f7ff') 
+                  backgroundColor: snapshot.isDraggingOver
+                    ? (darkMode ? '#3a3a3c' : '#e6f7ff')
                     : '',
                 }}
                 className='custom-scrollbar'
@@ -1209,9 +1254,9 @@ const DragAndDrop = () => {
                         >
                           <Card
                             key={sectionId}
-                            style={{ 
-                              marginBottom: 16, 
-                              maxHeight: smallHeight ? '251px' : '', 
+                            style={{
+                              marginBottom: 16,
+                              maxHeight: smallHeight ? '251px' : '',
                               border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                             }}
                             hoverable={true}
@@ -1237,14 +1282,14 @@ const DragAndDrop = () => {
                                     ref={provided.innerRef}
                                     isDraggingOver={snapshot.isDraggingOver}
                                     style={{
-                                      maxHeight: smallHeight ? '170px' : '', 
-                                      overflow: smallHeight ? 'hidden' : '', 
-                                      backgroundColor: snapshot.isDraggingOver 
-                                      ? (darkMode ? '#3a3a3c' : '#e6f7ff') 
-                                      : '',
-                                      border: snapshot.isDraggingOver 
-                                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff') 
-                                      : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                      maxHeight: smallHeight ? '170px' : '',
+                                      overflow: smallHeight ? 'hidden' : '',
+                                      backgroundColor: snapshot.isDraggingOver
+                                        ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                                        : '',
+                                      border: snapshot.isDraggingOver
+                                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                                        : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
                                     }}>
                                     {sections[sectionId]?.left.length
                                       ? sections[sectionId].left.map((item, index) => (
@@ -1303,7 +1348,7 @@ const DragAndDrop = () => {
                                                     ) : item.field_type === "select" ? (
                                                       <Col style={{ display: 'flex', alignItems: 'center' }}>
                                                         <img style={{ width: '16px' }} src={DropdownOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Lista de opções</Text>
+                                                        <Text style={{ marginLeft: '6px' }}>Lista de seleção</Text>
                                                       </Col>
                                                     ) : item.field_type === "date" ? (
                                                       <Col><CalendarOutlined /><Text style={{ marginLeft: '6px' }}>Data</Text></Col>
@@ -1373,21 +1418,21 @@ const DragAndDrop = () => {
                               </Droppable>
                               <Droppable droppableId={`right-SECTION-${sectionId}`}>
                                 {(provided, snapshot) => (
-                                  <Column 
-                                    ref={provided.innerRef} 
-                                    isDraggingOver={snapshot.isDraggingOver} 
-                                    style={{ 
-                                      maxHeight: smallHeight ? '170px' : '', 
-                                      overflow: smallHeight ? 'hidden' : '', 
+                                  <Column
+                                    ref={provided.innerRef}
+                                    isDraggingOver={snapshot.isDraggingOver}
+                                    style={{
+                                      maxHeight: smallHeight ? '170px' : '',
+                                      overflow: smallHeight ? 'hidden' : '',
                                       border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
-                                      backgroundColor: snapshot.isDraggingOver 
-                                      ? (darkMode ? '#3a3a3c' : '#e6f7ff') 
-                                      : '',
-                                      border: snapshot.isDraggingOver 
-                                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff') 
-                                      : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
-                                      }}
-                                    >
+                                      backgroundColor: snapshot.isDraggingOver
+                                        ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                                        : '',
+                                      border: snapshot.isDraggingOver
+                                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                                        : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                    }}
+                                  >
                                     {sections[sectionId]?.right.length
                                       ? sections[sectionId].right.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
@@ -1441,7 +1486,7 @@ const DragAndDrop = () => {
                                                     ) : item.field_type === "select" ? (
                                                       <Col style={{ display: 'flex', alignItems: 'center' }}>
                                                         <img style={{ width: '16px' }} src={DropdownOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Lista de opções</Text>
+                                                        <Text style={{ marginLeft: '6px' }}>Lista de seleção</Text>
                                                       </Col>
                                                     ) : item.field_type === "date" ? (
                                                       <Col><CalendarOutlined /><Text style={{ marginLeft: '6px' }}>Data</Text></Col>
@@ -1829,74 +1874,68 @@ const DragAndDrop = () => {
             >
               <Form.List
                 name="options"
-              // rules={[
-              //   {
-              //     validator: async (_, options) => {
-              //       if (!options || options.length < 2) {
-              //         return Promise.reject(new Error('At least 2 options'));
-              //       }
-              //     },
-              //   },
-              // ]}
+                initialValue={[{ id: null, label: '' }]} // Inicializar com a estrutura correta
               >
-                {(fields, { add, remove }, { move }) => (
+                {(fields, { add, remove }) => (
                   <>
-                    {fields.map((field, index) => {
-                      console.log("field", field)
-                      console.log("index", index)
-
-                      return (
-                        <Form.Item
-                          {...(formItemLayout)}
-                          label={''}
-                          required={false}
-                          key={field.key}
-                        >
-                          <Space align="baseline">
-                            <Form.Item
-                              {...field}
-                              validateTrigger={['onChange', 'onBlur']}
-                              rules={[
-                                {
-                                  required: true,
-                                  whitespace: false,
-                                  message: "Insira uma opção.",
-                                },
-                              ]}
-                              noStyle
-                              span={24}
-                            >
-                              <Input
-                                placeholder="Opção"
-                                style={{ width: '395px' }}
-                              />
-                            </Form.Item>
-                            <PlusCircleOutlined
-                              onClick={() => add('', index + 1)}
+                    {fields.map(({ key, name, ...restField }, index) => (
+                      <Form.Item
+                        key={key}
+                        required={false}
+                        style={{ marginBottom: 8 }}
+                      >
+                        <Space align="baseline">
+                          {/* Campo oculto para armazenar o ID da opção */}
+                          <Form.Item
+                            {...restField}
+                            name={[name, 'id']}
+                            style={{ display: 'none' }}
+                          >
+                            <Input />
+                          </Form.Item>
+                          {/* Campo para o label da opção */}
+                          <Form.Item
+                            {...restField}
+                            name={[name, 'label']}
+                            validateTrigger={['onChange', 'onBlur']}
+                            rules={[
+                              {
+                                required: true,
+                                whitespace: false,
+                                message: 'Insira uma opção.',
+                              },
+                            ]}
+                            noStyle
+                          >
+                            <Input
+                              ref={(el) => (inputRefs.current[index] = el)}
+                              placeholder="Opção"
+                              style={{ width: '395px' }}
                             />
-                            {fields.length > 1 && (
-                              <MinusCircleOutlined
-                                className="dynamic-delete-button"
-                                onClick={() => remove(field.name)}
-                              />
-                            )}
-                          </Space>
-                        </Form.Item>
-                      )
-                    })}
-                    {/* <Form.Item>
-                        <Button
-                          type="dashed"
-                          onClick={() => add()}
-                          style={{ width: '60%' }}
-                          icon={<PlusOutlined />}
-                        >
-                          Adicionar opção
-                        </Button>
-                      </Form.Item> */}
+                          </Form.Item>
+                          <PlusCircleOutlined
+                            onClick={() => {
+                              add({ id: null, label: '' }, index + 1)
+                              setTimeout(() => {
+                                inputRefs.current[index + 1]?.focus()
+                              }, 0);
+                            }}
+                          />
+                          {fields.length > 1 && (
+                            <MinusCircleOutlined
+                              onClick={() => {
+                                handleRemoveOption(form.getFieldValue(['options', index, 'id']))
+                                remove(index)
+                              }}
+                            />
+                          )}
+                        </Space>
+                      </Form.Item>
+                    ))}
                   </>
                 )}
               </Form.List>
+
             </Layout>
             <Form.Item
               name="required"
@@ -2052,3 +2091,76 @@ const DragAndDrop = () => {
 };
 
 export default DragAndDrop;
+
+
+
+{/* <Form.List */ }
+//   name="options"
+// // rules={[
+// //   {
+// //     validator: async (_, options) => {
+// //       if (!options || options.length < 2) {
+// //         return Promise.reject(new Error('At least 2 options'));
+// //       }
+// //     },
+// //   },
+// // ]}
+// >
+//   {(fields, { add, remove }, { move }) => (
+//     <>
+//       {fields.map((field, index) => {
+//         console.log("field", field)
+//         console.log("index", index)
+
+//         return (
+//           <Form.Item
+//             {...(formItemLayout)}
+//             label={''}
+//             required={false}
+//             key={field.key}
+//           >
+//             <Space align="baseline">
+//               <Form.Item
+//                 {...field}
+//                 validateTrigger={['onChange', 'onBlur']}
+//                 rules={[
+//                   {
+//                     required: true,
+//                     whitespace: false,
+//                     message: "Insira uma opção.",
+//                   },
+//                 ]}
+//                 noStyle
+//                 span={24}
+//               >
+//                 <Input
+//                   placeholder="Opção"
+//                   style={{ width: '395px' }}
+//                 />
+//               </Form.Item>
+//               <PlusCircleOutlined
+//                 onClick={() => add('', index + 1)}
+//               />
+//               {fields.length > 1 && (
+//                 <MinusCircleOutlined
+//                   className="dynamic-delete-button"
+//                   onClick={() => remove(field.name)}
+//                 />
+//               )}
+//             </Space>
+//           </Form.Item>
+//         )
+//       })}
+//       {/* <Form.Item>
+//           <Button
+//             type="dashed"
+//             onClick={() => add()}
+//             style={{ width: '60%' }}
+//             icon={<PlusOutlined />}
+//           >
+//             Adicionar opção
+//           </Button>
+//         </Form.Item> */}
+//     </>
+//   )}
+// </Form.List>

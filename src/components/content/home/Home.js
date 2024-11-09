@@ -34,6 +34,7 @@ function Home() {
     return (
         <Layout style={{ padding: '15px 15px 0 15px' }}>
             <Text style={{ fontSize: '20px', marginBottom: '15px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
+            <Charts />
             <Row gutter={16}>
                 {modules.map((module, index) => (
                     <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>
@@ -52,7 +53,6 @@ function Home() {
                     </Can>
                 ))}
             </Row>
-            <Charts />
         </Layout>
     )
 }

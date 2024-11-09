@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Badge, Button, Card, Col, Empty, Layout, Row, Table, Typography, theme } from 'antd';
+import { Badge, Button, Card, Col, Empty, Layout, Row, Table, Tooltip, Typography, theme } from 'antd';
 import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -70,15 +70,6 @@ const KanbanBoard = () => {
     fetchStages()
   };
 
-  const Column = styled.div`
-    flex: 1;
-    min-width: 0;
-    border-radius: 6px;
-    .dragging {
-      opacity: 0.5;
-    }
-  `;
-
   const colors = [
     'pink',
     'red',
@@ -97,74 +88,86 @@ const KanbanBoard = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Row gutter={16} wrap={false} style={{ overflowX: 'auto', height: '100%' }}>
+      <Row gutter={16} wrap={false} style={{ maxWidth: '100vw', width: '100vw', overflow: 'auto', maxHeight: '600px' }}>
         {columns != '' && field != '' ? (Object.entries(columns).map(([columnId, column]) => (
           <Droppable droppableId={columnId} key={columnId}>
             {(provided, snapshot) => (
-              <Card
-                title={column.name
-                  // colors.map((color) => (
-                  //   <Badge key={color} color={color} text={color} />
-                  // ))
-                  // <Badge color="green" status='success' text={column.name} />
-                }
-                size='small'
-                style={{
-                  height: 'calc(100vh - 155px)',
-                  width: '100%',
-                  marginLeft: snapshot.isDraggingOver ? 4 : 5,
-                  marginRight: snapshot.isDraggingOver ? 4 : 5,
-                  marginBottom: 10,
-                  backgroundColor: snapshot.isDraggingOver
-                    ? (darkMode ? '#3a3a3c' : '#e6f7ff')
-                    : '#e0e0e0',
-                  border: snapshot.isDraggingOver
-                    ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                    : '',
-                }}
-                bordered={false}
-              // hoverable={true}
-              >
-                <Column style={{ height: 'calc(100vh - 220px)', minWidth: 250, overflowY: 'auto' }} ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} {...provided.droppableProps}>
-                  {column.items && column.items.length > 0 ? (
-                    column.items.map((item, index) => (
-                      <Draggable key={item.id} draggableId={item.id} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={{
-                              transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition,
-                              ...provided.draggableProps.style,
-                              marginBottom: 8,
-                            }}
-                          >
-                            <Card
-                              size='small'
-                              hoverable={true}
-                              style={{ marginRight: 5, cursor: 'grab' }}
-                              onClick={() => navigate(`/${org}/${moduleName}/${item.id}`)}
+              <Tooltip title={column.name}>
+                <Card
+                  title={column.name
+                    // colors.map((color) => (
+                    //   <Badge key={color} color={color} text={color} />
+                    // ))
+                    // <Badge color="green" status='success' text={column.name} />
+                  }
+                  size='small'
+                  style={{
+                    // maxHeight: 'calc(100vh - 155px)',
+                    width: '100%',
+                    height: '100%',
+                    marginLeft: snapshot.isDraggingOver ? 4 : 5,
+                    marginRight: snapshot.isDraggingOver ? 4 : 5,
+                    marginBottom: 10,
+                    backgroundColor: snapshot.isDraggingOver
+                      ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                      : darkMode ? '' : '#e0e0e0',
+                    borderTop: snapshot.isDraggingOver
+                      ? (darkMode ? '3px solid green' : '3px solid green')
+                      : '3px solid green',
+                    borderLeft: snapshot.isDraggingOver
+                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                      : '',
+                    borderRight: snapshot.isDraggingOver
+                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                      : '',
+                    borderBottom: snapshot.isDraggingOver
+                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                      : '',
+                  }}
+                  bordered={false}
+                // hoverable={true}
+                >
+                  <div style={{ minHeight: 'calc(100vh - 220px)', height: '100%', minWidth: 300 }} ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} {...provided.droppableProps}>
+                    {column.items && column.items.length > 0 ? (
+                      column.items.map((item, index) => (
+                        <Draggable key={item.id} draggableId={item.id} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{
+                                transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition,
+                                ...provided.draggableProps.style,
+                                marginBottom: 8,
+                              }}
                             >
-                              {Object.entries(item.content).map(([key, value]) => {
-                                return (
-                                  <Row>
-                                    <Text>
-                                      {key == 'id' ? '' : value}
-                                    </Text>
-                                  </Row>
-                                )
-                              })}
-                            </Card>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))) : (
-                    <Text type="secondary">Nenhum item disponível</Text>
-                  )}
-                  {provided.placeholder}
-                </Column>
-              </Card>
+                              <Card
+                                size='small'
+                                hoverable={true}
+                                style={{ marginRight: 5, cursor: 'grab' }}
+                                onClick={() => navigate(`/${org}/${moduleName}/${item.id}`)}
+                              >
+                                {Object.entries(item.content).map(([key, value]) => {
+                                  return (
+                                    <Row>
+                                      <Text>
+                                        {key == 'id' ? '' : value}
+                                      </Text>
+                                    </Row>
+                                  )
+                                })}
+                              </Card>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))) : (
+                      <Text type="secondary">Nenhum item disponível</Text>
+                    )}
+                    {provided.placeholder}
+                  </div>
+                </Card>
+              </Tooltip>
             )}
           </Droppable>
         ))) : (

@@ -178,7 +178,6 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             <Logo fontSize={19} />
           </Row>
         </Link>
-
         <HeaderModules 
           modules={modules}
           org={org}
@@ -187,7 +186,6 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           setActiveModule={setActiveModule}
           ability={ability} 
         />
-        
         <div style={{ marginLeft: 'auto', minWidth: '215px' }}>
           <Row span={24}>
             <Col style={{ alignItems: 'center', alignContent: 'center', marginRight: 5 }} span={14} >

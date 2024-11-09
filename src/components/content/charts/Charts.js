@@ -5,6 +5,7 @@ import { fetchCharts } from './fetchCharts'
 import { Column } from '@ant-design/plots';
 import Barra from './Barra'
 import Linha from './Linha'
+import Funil from './Funil'
 const { Text } = Typography;
 
 function Charts() {
@@ -50,6 +51,12 @@ function Charts() {
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Linha xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </>
+                                )}
+                                {chart.query.type === 'funil' && (
+                                    <>
+                                    <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                    <Funil xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                </>
                                 )}
                             </div>
                         </Layout>
