@@ -16,7 +16,7 @@ function Funil({ xField, yField, data }) {
     //     action: item.name,
     //     pv: item.value
     // }))
-    // console.log("newData", newData)
+    console.log("datadatadata", data)
 
     const dataNumber = data.map(item => ({
         [xField]: item[xField],

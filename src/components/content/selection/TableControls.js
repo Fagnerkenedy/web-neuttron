@@ -46,9 +46,11 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
 
   const fetchLayoutType = async () => {
     const response = await axios.get(`/crm/${org}/${moduleName}/readLayoutContent`, apiConfig);
-    console.log("response response:> ",response.data.result[0].layout_type)
-    setLayoutType(response.data.result[0].layout_type)
-    setLayoutVisualization(response.data.result[0].layout_type)
+    if(response && response.data && response.data.result[0] && response.data.result[0].hasOwnProperty("layout_type")) {
+      console.log("response response:> ",response.data.result[0].layout_type)
+      setLayoutType(response.data.result[0].layout_type)
+      setLayoutVisualization(response.data.result[0].layout_type)
+    }
   }
 
   useEffect(() => {
