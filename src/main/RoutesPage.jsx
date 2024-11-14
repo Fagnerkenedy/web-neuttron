@@ -18,6 +18,8 @@ import Layout from '../components/content/settings/modules/layout/Layout';
 import Payment from '../components/checkout/Payment';
 import { useAbility } from '../contexts/AbilityContext.js'
 import { ConfigProvider } from 'antd';
+import ptBR from 'antd/lib/locale/pt_BR';
+import NewPassword from '../components/users/NewPassword.jsx';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
 function RoutesPage() {
@@ -60,6 +62,7 @@ function RoutesPage() {
       <AuthProvider>
         {/* <AbilityProvider> */}
         <ConfigProvider
+          locale={ptBR}
           theme={{
             token: {
               colorPrimary: '#1a73e8', // #1a73e8 #004E99
@@ -85,6 +88,7 @@ function RoutesPage() {
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />}  />
+            <Route path="/:orgId/cadastro/nova_senha/:uuid" element={<NewPassword />}  />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </ConfigProvider>

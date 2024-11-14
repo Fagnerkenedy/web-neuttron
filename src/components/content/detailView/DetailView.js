@@ -609,6 +609,8 @@ const DetailView = ({ itemId }) => {
                 </Form.Item>
             );
         } else if (fieldData.field_type === "date_time") {
+            const date = new Date(fieldData.field_value)
+            const toDateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',','')
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -620,7 +622,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{toDateTime}</Text>
                     {/* <DatePicker
                         disabled
                         showTime

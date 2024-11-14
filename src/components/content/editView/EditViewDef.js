@@ -38,6 +38,8 @@ const EditView = ({ itemId }) => {
     const [relatedFields, setRelatedFields] = useState([]);
     const [selectedModule, setSelectedModule] = useState(null);
     const [secondSelectValue, setSecondSelectValue] = useState('')
+    const localUser = localStorage.getItem('user')
+    const user = JSON.parse(localUser)
 
     const toSingular = (plural) => {
         return pluralize.singular(plural)
@@ -269,6 +271,29 @@ const EditView = ({ itemId }) => {
         fetchModulesData()
     }, [itemId]);
 
+    useEffect(() => {
+        sections.forEach((section, sectionIndex) => {
+            section.left.forEach((field, fieldIndex) => {
+                if (
+                    field.related_module != null &&
+                    field.field_type === "loockup" &&
+                    field.api_name === "modified_by"
+                ) {
+                    handleFieldChangeRelatedModule(sectionIndex, fieldIndex, user.name, field.api_name, 'left');
+                }
+            });
+            section.right.forEach((field, fieldIndex) => {
+                if (
+                    field.related_module != null &&
+                    field.field_type === "loockup" &&
+                    field.api_name === "modified_by"
+                ) {
+                    handleFieldChangeRelatedModule(sectionIndex, fieldIndex, user.name, field.api_name, 'right');
+                }
+            });
+        });
+    }, [sections, user.name]);
+
     if (!data) {
         return //<div>Carregando...</div>;
     }
@@ -329,12 +354,12 @@ const EditView = ({ itemId }) => {
             const fieldToUpdate5 = {
                 index: index,
                 related_module: fieldToUpdate1.related_module,
-                related_id: value.key,
+                related_id: value.key || user.id,
                 module_id: null,
                 id: fieldToUpdate1.id,
                 api_name: fieldToUpdate1.api_name,
                 name: fieldToUpdate1.field_value,
-                field_value: value.value
+                field_value: value.value || user.name
             };
 
             const index2 = combinedData.findIndex(combinedDataField => combinedDataField.id === fieldToUpdate1.id);
@@ -397,6 +422,17 @@ const EditView = ({ itemId }) => {
                         'Authorization': `Bearer ${token}`
                     }
                 }
+
+                if (fieldToUpdate3.hasOwnProperty("modified_by")) {
+                    fieldToUpdate3['related_record'].modified_by = {
+                        name: user.name,
+                        id: user.id,
+                        module: 'users'
+                    };
+                    fieldToUpdate3['modified_by'] = user.name
+                    fieldToUpdate3['modified_time'] = dayjs()
+                }
+
                 await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
                 console.log("RECORD ID:", record_id)
                 const newRelatedFieldData = records.map((item) => {
@@ -416,7 +452,7 @@ const EditView = ({ itemId }) => {
                 message.success('Registro Atualizado!');
                 navigate(`/${org}/${moduleName}`)
             }
-            navigate(`/${org}/${moduleName}`)
+            navigate(`/${org}/${moduleName}/${record_id}`)
 
         } catch (error) {
             console.error('Error saving data:', error);
@@ -678,6 +714,27 @@ const EditView = ({ itemId }) => {
                         // maxLength={16000}
                         maxLength={extractNumbers(fieldData.type)}
                     />
+                </Form.Item>
+            )
+        } else if (fieldData.field_type == "checkbox" && moduleName == "users" && fieldData.field_value == true) {
+            return (
+                <Form.Item
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    valuePropName="checked"
+                    rules={[
+                        {
+                            required: false,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
+                >
+                    <Checkbox
+                        disabled={true}
+                        // defaultChecked={fieldData.field_value == 1 ? true : false}
+                        onChange={(e) => onChange(e.target.checked)}
+                    >
+                    </Checkbox>
                 </Form.Item>
             )
         } else if (fieldData.field_type == "checkbox") {

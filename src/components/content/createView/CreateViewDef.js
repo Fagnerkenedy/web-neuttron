@@ -10,6 +10,7 @@ import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
 import { fetchModules } from '../selection/fetchModules.js';
+import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 const { deleteRecord } = apiURI;
@@ -41,6 +42,8 @@ const CreateView = ({ itemId }) => {
     const [fieldsToUpdate, setAllFieldsToUpdate] = useState(null);
     const [relatedModuleData, setRelatedModuleData] = useState([]);
     const [relatedFieldData, setRelatedFieldData] = useState([]);
+    const [relatedFieldData1, setRelatedFieldData1] = useState([]);
+    const [relatedFieldData2, setRelatedFieldData2] = useState([]);
     const [options, setOptions] = useState([]);
     const [sections, setSections] = useState([])
     const [activeModule, setActiveModule] = useState("");
@@ -50,6 +53,8 @@ const CreateView = ({ itemId }) => {
     const [selectedModule, setSelectedModule] = useState(null);
     const [quickCreate, setOpenQuickCreate] = useState(false);
     const [selectedRelatedModule, setSelectedRelatedModule] = useState('')
+    const localUser = localStorage.getItem('user')
+    const user = JSON.parse(localUser)
 
     const linkApi = process.env.REACT_APP_LINK_API;
     const handleInputChange = (newValue) => {
@@ -237,6 +242,29 @@ const CreateView = ({ itemId }) => {
         fetchModulesData();
     }, [itemId]);
 
+    useEffect(() => {
+        sections.forEach((section, sectionIndex) => {
+            section.left.forEach((field, fieldIndex) => {
+                if (
+                    field.related_module != null &&
+                    field.field_type === "loockup" &&
+                    (field.api_name === "created_by" || field.api_name === "modified_by")
+                ) {
+                    handleRelatedModule1(sectionIndex, fieldIndex, user.name, field.api_name, 'left');
+                }
+            });
+            section.right.forEach((field, fieldIndex) => {
+                if (
+                    field.related_module != null &&
+                    field.field_type === "loockup" &&
+                    (field.api_name === "created_by" || field.api_name === "modified_by")
+                ) {
+                    handleRelatedModule2(sectionIndex, fieldIndex, user.name, field.api_name, 'right');
+                }
+            });
+        });
+    }, [sections, user.name]);
+
     if (!data) {
         return //<div>Carregando...</div>;
     }
@@ -252,6 +280,59 @@ const CreateView = ({ itemId }) => {
     };
 
     // const handleFieldChangeRelatedModule = async (index, id, newValue) => {
+    const handleRelatedModule1 = (sectionIndex, index, value, api_name, column) => {
+        try {
+            let updatedData = [...sections];
+            updatedData[sectionIndex][column][index].field_value = value.value
+            const fieldToUpdate1 = updatedData[sectionIndex][column][index]
+
+            const fieldToUpdate5 = {
+                index: index,
+                related_module: fieldToUpdate1.related_module,
+                related_id: value.key || user.id,
+                module_id: null,
+                id: fieldToUpdate1.id,
+                api_name: fieldToUpdate1.api_name,
+                name: fieldToUpdate1.field_value,
+                field_value: value.value || user.name
+            };
+
+            const updatedRelatedFieldData = relatedFieldData ? [...relatedFieldData] : [];
+            console.log("apapapapapa: ",updatedRelatedFieldData)
+            updatedRelatedFieldData.push(fieldToUpdate5);
+
+            setRelatedFieldData1(updatedRelatedFieldData);
+        } catch (error) {
+            console.error("Erro ao atualizar os dados:", error);
+        }
+    };
+    const handleRelatedModule2 = (sectionIndex, index, value, api_name, column) => {
+        try {
+            let updatedData = [...sections];
+            updatedData[sectionIndex][column][index].field_value = value.value
+            const fieldToUpdate1 = updatedData[sectionIndex][column][index]
+
+            const fieldToUpdate5 = {
+                index: index,
+                related_module: fieldToUpdate1.related_module,
+                related_id: value.key || user.id,
+                module_id: null,
+                id: fieldToUpdate1.id,
+                api_name: fieldToUpdate1.api_name,
+                name: fieldToUpdate1.field_value,
+                field_value: value.value || user.name
+            };
+
+            const updatedRelatedFieldData = relatedFieldData1 ? [...relatedFieldData1] : [];
+            console.log("apapapapapa: ",updatedRelatedFieldData)
+            updatedRelatedFieldData.push(fieldToUpdate5);
+
+            setRelatedFieldData2(updatedRelatedFieldData);
+        } catch (error) {
+            console.error("Erro ao atualizar os dados:", error);
+        }
+    };
+
     const handleFieldChangeRelatedModule = (sectionIndex, index, value, api_name, column) => {
         try {
             console.log("datadatadatadatadatadata:sectionIndex", sectionIndex)
@@ -269,12 +350,12 @@ const CreateView = ({ itemId }) => {
             const fieldToUpdate5 = {
                 index: index,
                 related_module: fieldToUpdate1.related_module,
-                related_id: value.key,
+                related_id: value.key || user.id,
                 module_id: null,
                 id: fieldToUpdate1.id,
                 api_name: fieldToUpdate1.api_name,
                 name: fieldToUpdate1.field_value,
-                field_value: value.value
+                field_value: value.value || user.name
             };
 
             console.log("Batatinha quando nasce", fieldToUpdate5)
@@ -298,7 +379,6 @@ const CreateView = ({ itemId }) => {
             let fieldToUpdate3 = {}
             if (sections) {
                 const records = relatedFieldData.filter(record => !!record);
-
 
                 console.log("relatedFieldDatabatata", records)
 
@@ -336,19 +416,63 @@ const CreateView = ({ itemId }) => {
                         'Authorization': `Bearer ${token}`
                     }
                 }
+
+                if (fieldToUpdate3.hasOwnProperty("created_by")) {
+                    fieldToUpdate3['related_record'].created_by = {
+                        name: user.name,
+                        id: user.id,
+                        module: 'users'
+                    };
+                    fieldToUpdate3['related_record'].modified_by = {
+                        name: user.name,
+                        id: user.id,
+                        module: 'users'
+                    };
+                    fieldToUpdate3['created_by'] = user.name
+                    fieldToUpdate3['modified_by'] = user.name
+                    fieldToUpdate3['created_time'] = dayjs()
+                    fieldToUpdate3['modified_time'] = dayjs()
+                }
+
                 console.log("create: ", fieldToUpdate3)
                 const create = await axios.post(`${linkApi}/crm/${org}/${moduleName}/record`, fieldToUpdate3, config);
                 const record_id = create.data.record_id
-
-                const newRelatedFieldData = records.map((item) => {
+                
+                const updatedRelatedFieldData = [...records, ...relatedFieldData1, ...relatedFieldData2].map((item) => {
                     return {
                         ...item,
-                        module_id: record_id
+                        module_id: record_id,
                     };
-                })
-                console.log("newRelatedFieldData: ", newRelatedFieldData)
+                });
+                
+                // console.log("batyatatatattatataytfdghjfhjghjkgjkgbhjkgjyhftyuvghjbjkghyuigyuibjbn1: ",relatedFieldData1)
+                // const newRelatedFieldDataa = relatedFieldData1.map((item) => {
+                //     console.log("iterererem: ",item)
+                //     return {
+                //         ...item,
+                //         module_id: record_id,
+                //     };
+                // })
+                // console.log("batyatatatattatataytfdghjfhjghjkgjkgbhjkgjyhftyuvghjbjkghyuigyuibjbn: ",relatedFieldData2)
+                // const newRelatedFieldDatab = newRelatedFieldDataa.map((item) => {
+                //     console.log("iterererem: ",item)
+                //     return {
+                //         ...item,
+                //         module_id: record_id,
+                //     };
+                // })
+                // const newRelatedFieldData = newRelatedFieldDatab.map((item) => {
+                //     console.log("iterererem: ",item)
+                //     console.log("relatedFieldData1: ",relatedFieldData1)
+                //     return {
+                //         ...item,
+                //         module_id: record_id,
+                //     };
+                // })
+                // console.log("newRelatedFieldData: ", newRelatedFieldData)
+                console.log("updatedRelatedFieldData: ", updatedRelatedFieldData)
 
-                const promises = newRelatedFieldData.map(async item => {
+                const promises = updatedRelatedFieldData.map(async item => {
                     console.log("item", item)
                     await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, { related_id: item.related_id, id: item.id, api_name: item.api_name }, config);
                     return axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, item, config);
@@ -396,69 +520,72 @@ const CreateView = ({ itemId }) => {
         setOpenQuickCreate(true)
     }
 
+    
+    
+
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
+        console.log("fieldifekldfiel: ",fieldData.api_name)
         if (fieldData.related_module != null && fieldData.field_type == "loockup") {
             return (
                 <div>
-                    
                     <Modal
                         title={`Criar ${toSingular(selectedRelatedModule)}`}
                         visible={quickCreate}
                         // onOk={handleOk}
                         onCancel={() => setOpenQuickCreate(false)}
                     />
-                <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
-                    rules={[
-                        {
-                            required: fieldData.required,
-                            message: 'Este campo é obrigatório',
-                        },
-                    ]}
-                >
-                    <Select
-                        disabled={fieldData.disabled}
-                        allowClear
-                        showSearch
-                        variant="filled"
-                        optionFilterProp="children"
-                        filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                        placeholder="SelecioneSelecione"
-                        style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-                        // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-                        // value={selectedValue ? selectedValue.value : null}
-                        defaultValue={fieldData.field_value}
-                        // placeholder="Selecione"
-                        // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-                        onChange={(key, value) => {
-                            onChangeRelatedModule(value)
-                            setSelectedModule(value.value)
-                        }}
-                        // loading={loading}
-                        onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
-                        // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
-                        dropdownRender={(menu) => (
-                            <div>
-                                {menu}
-                                <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-                                    <Button type='link' onClick={() => handleQuickCreate(fieldData.related_module)}>
-                                        {`Criar ${toSingular(fieldData.related_module)}`}
-                                    </Button>
-                                </div>
-
-                            </div>
-                        )}
+                    <Form.Item
+                        label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                        name={fieldData.api_name}
+                        rules={[
+                            {
+                                required: fieldData.required,
+                                message: 'Este campo é obrigatório',
+                            },
+                        ]}
                     >
-                        {relatedModuleData.map(item => (
-                            <Option key={item.related_id} value={item.field_value}>
-                                {item.field_value}
-                            </Option>
-                        ))}
-                    </Select>
-                </Form.Item>
+                        <Select
+                            disabled={fieldData.disabled}
+                            allowClear
+                            showSearch
+                            variant="filled"
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                            placeholder="Selecione"
+                            style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+                            // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
+                            // value={selectedValue ? selectedValue.value : null}
+                            defaultValue={fieldData.field_value}
+                            // placeholder="Selecione"
+                            // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
+                            onChange={(key, value) => {
+                                onChangeRelatedModule(value)
+                                setSelectedModule(value.value)
+                            }}
+                            // loading={loading}
+                            onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
+                            // onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
+                            dropdownRender={(menu) => (
+                                <div>
+                                    {menu}
+                                    <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
+                                        <Button type='link' onClick={() => handleQuickCreate(fieldData.related_module)}>
+                                            {`Criar ${toSingular(fieldData.related_module)}`}
+                                        </Button>
+                                    </div>
+
+                                </div>
+                            )}
+                        >
+                            {relatedModuleData.map(item => (
+                                <Option key={item.related_id} value={item.field_value}>
+                                    {item.field_value}
+                                </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
                 </div>
             );
         } else if (fieldData.field_type == "loockup_field") {

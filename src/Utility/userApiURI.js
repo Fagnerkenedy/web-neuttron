@@ -70,6 +70,17 @@ const apiURI = {
 
   },
 
+  registerPassword: (data, id, org) => {
+    const config = {
+      method: 'put',
+      url: `${process.env.REACT_APP_USER_API_BASE_URL}/${org}/registerPassword/${id}`,
+      data: { ...data }
+    }
+
+    return userApiRequest(config)
+
+  },
+
 }
 
 export default apiURI;

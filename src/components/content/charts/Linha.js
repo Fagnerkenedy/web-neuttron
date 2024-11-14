@@ -1,7 +1,9 @@
 import React from "react";
 import { Line } from '@ant-design/plots';
+import { useOutletContext } from "react-router-dom";
 
 function Linha({ xField, yField, data }) {
+    const { darkMode } = useOutletContext();
     if (!Array.isArray(data)) {
         data = [data];
     }
@@ -32,6 +34,7 @@ function Linha({ xField, yField, data }) {
         },
         style: {
             lineWidth: 2,
+            fill: darkMode ? '#ffffff' : '#000000',
         },
     };
     return <Line {...config} />;

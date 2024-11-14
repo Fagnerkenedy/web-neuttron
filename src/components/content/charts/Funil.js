@@ -1,7 +1,9 @@
 import React from "react";
 import { Funnel } from '@ant-design/plots';
+import { useOutletContext } from "react-router-dom";
 
 function Funil({ xField, yField, data }) {
+    const { darkMode } = useOutletContext();
     if (!Array.isArray(data)) {
         data = [data];
     }
@@ -34,6 +36,9 @@ function Funil({ xField, yField, data }) {
                 text: (d) => d[yField],
                 // position: 'inside',
                 fontSize: 16,
+                style: {
+                    fill: darkMode ? '#ffffff' : '#000000',
+                }
             },
             {
                 render: ($, _, i) => {
@@ -59,6 +64,9 @@ function Funil({ xField, yField, data }) {
                 textAlign: 'left',
                 textBaseline: 'middle',
                 dx: 40,
+                style: {
+                    fill: darkMode ? '#ffffff' : '#000000',
+                }
             },
         ],
     };
