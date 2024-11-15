@@ -6,7 +6,7 @@ import { ConfigProvider, theme } from 'antd';
 import { useEffect, useState } from "react";
 import apiURI from "../../Utility/userApiURI.js"
 const updateDarkMode = apiURI.updateDarkMode
-const { defaultAlgorithm, darkAlgorithm } = theme;
+const { defaultAlgorithm, darkAlgorithm, compactAlgorithm, } = theme;
 
 function PageBase() {
     const currentPath = window.location.pathname;
@@ -27,7 +27,7 @@ function PageBase() {
         <ConfigProvider
             theme={{
                 // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
-                algorithm: darkMode ? darkAlgorithm : defaultAlgorithm, // compactAlgorithm
+                algorithm: darkMode ? darkAlgorithm : compactAlgorithm, // compactAlgorithm defaultAlgorithm
                 token: {
                     colorPrimary: '#1a73e8', // #1a73e8 #004E99
                     colorLink: darkMode ? '#ffffff' : '#000000',

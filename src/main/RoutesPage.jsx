@@ -83,8 +83,8 @@ function RoutesPage() {
               <Route path="/:org/settings/modules" element={<Modules />} />
               {/* <Route path="/:org/settings/roles" element={<PermissionsPage />} /> */}
               <Route path="/:org/settings/modules/:module" element={<Layout />} />
-              <Route path="/:org/checkout" element={<Payment />} />
             </Route>
+            <Route path="/:org/checkout" element={<Payment />} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />}  />
