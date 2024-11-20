@@ -11,7 +11,7 @@ const Payment = () => {
   const token = process.env.REACT_APP_USER_API_TOKEN;
   const [preferenceId, setPreferenceId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [orderData, setOrderData] = useState({ quantity: "2", price: "718.80", amount: 10, description: "Plano Profissional" });
+  const [orderData, setOrderData] = useState({ quantity: "1", price: 479.04, amount: 479.04, description: "Plano Profissional Teste 1 Usuário" });
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
