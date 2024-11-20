@@ -4,6 +4,7 @@ import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 import { Button, Col, Divider, Layout, Menu, Row, Select, Typography, theme } from "antd";
 import './style.css';
 import MercadoPagoButton from "./MercadoPagoButton";
+import PayPalButton from "./PayPalButton.js";
 const { Title, Text } = Typography;
 
 
@@ -179,6 +180,7 @@ const Payment = () => {
             </div> */}
               <MercadoPagoButton plan={current} users={numberOfUsers} usersMounth={numberOfUsersMounth} preferenceId={preferenceId} />
               <Wallet initialization={{preferenceId: preferenceId}} />
+              <PayPalButton />
             </div>
           </Col>
         )}
