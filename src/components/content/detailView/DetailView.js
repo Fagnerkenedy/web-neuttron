@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip, notification } from 'antd';
 import EditableCell from './EditableCell.js';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -98,7 +98,7 @@ const DetailView = ({ itemId }) => {
             const relatedModulePromises = combinedData.map(async field => {
                 if (field.related_module != null && field.related_module != "fields") {
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("response relatedDataById:",response)
+                    console.log("response relatedDataById:", response)
                     if (response.data.row.length != 0) {
                         return {
                             name: field.field_value,
@@ -142,29 +142,29 @@ const DetailView = ({ itemId }) => {
             const updatedSections = responseSectionsFields.map(section => {
                 // Atualizar campos à esquerda
                 const updatedLeft = section.fields.left.map(item => {
-                const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
-                return {
-                    ...item,
-                    field_value: matchingField ? matchingField.field_value : item.field_value
-                };
+                    const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
+                    return {
+                        ...item,
+                        field_value: matchingField ? matchingField.field_value : item.field_value
+                    };
                 });
 
                 // Atualizar campos à direita
                 const updatedRight = section.fields.right.map(item => {
-                const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
-                return {
-                    ...item,
-                    field_value: matchingField ? matchingField.field_value : item.field_value
-                };
+                    const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
+                    return {
+                        ...item,
+                        field_value: matchingField ? matchingField.field_value : item.field_value
+                    };
                 });
 
                 return {
-                ...section,
-                left: updatedLeft,
-                right: updatedRight
+                    ...section,
+                    left: updatedLeft,
+                    right: updatedRight
                 };
             });
-            
+
             setSections(updatedSections)
 
             if (Array.isArray(updatedCombinedData)) {
@@ -197,14 +197,14 @@ const DetailView = ({ itemId }) => {
                 setRelatedModuleData(matchingResponse);
             } else {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-                console.log("rataratata: ",response.data)
+                console.log("rataratata: ", response.data)
                 const matchingResponse = response.data.map(item => {
                     return {
                         field_value: item[search_field],
                         related_id: item.id
                     };
                 });
-                console.log("rataratata matchingResponse: ",matchingResponse)
+                console.log("rataratata matchingResponse: ", matchingResponse)
 
                 setRelatedModuleData(matchingResponse);
             }
@@ -236,7 +236,7 @@ const DetailView = ({ itemId }) => {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-        }; 
+        };
         const currentPath = window.location.pathname;
         const pathParts = currentPath.split('/');
         const org = pathParts[1];
@@ -288,16 +288,16 @@ const DetailView = ({ itemId }) => {
     const handleFieldChange = async (sectionIndex, index, value, api_name, column, id) => {
         try {
 
-            console.log("value sectionIndex?: ",sectionIndex)
-            console.log("value index?: ",index)
-            console.log("value value?: ",value)
-            console.log("value api_name?: ",api_name)
-            console.log("value column?: ",column)
+            console.log("value sectionIndex?: ", sectionIndex)
+            console.log("value index?: ", index)
+            console.log("value value?: ", value)
+            console.log("value api_name?: ", api_name)
+            console.log("value column?: ", column)
 
             // const updatedData = [...sections];
             // updatedData[sectionIndex][column][index].field_value = value;
             // console.log("datas datas cadabra: ",updatedData)
-            
+
             // setSections(updatedData)
 
             const updatedData = [...sections];
@@ -368,7 +368,7 @@ const DetailView = ({ itemId }) => {
             message.success('Registro Atualizado!');
             fetchData()
         } catch (error) {
-            
+
         }
     }
 
@@ -476,9 +476,9 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            console.log("fieldToUpdate3: ",fieldToUpdate3)
-            console.log("fieldToUpdate4: ",fieldToUpdate4)
-            console.log("fieldToUpdate5: ",fieldToUpdate5)
+            console.log("fieldToUpdate3: ", fieldToUpdate3)
+            console.log("fieldToUpdate4: ", fieldToUpdate4)
+            console.log("fieldToUpdate5: ", fieldToUpdate5)
 
             setFieldToUpdate3(fieldToUpdate3)
             setFieldToUpdate4(fieldToUpdate4)
@@ -500,9 +500,9 @@ const DetailView = ({ itemId }) => {
         const numbers = inputString.match(/\d+/g);
         return numbers ? numbers.join('') : '';
     }
-    
+
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
-        console.log("fieldData",fieldData)
+        console.log("fieldData", fieldData)
         if (fieldData.related_module != null && fieldData.related_module != "modules" && fieldData.related_module != "fields") {
             return (
                 <Form.Item
@@ -610,7 +610,7 @@ const DetailView = ({ itemId }) => {
             );
         } else if (fieldData.field_type === "date_time") {
             const date = new Date(fieldData.field_value)
-            const toDateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',','')
+            const toDateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',', '')
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -792,14 +792,14 @@ const DetailView = ({ itemId }) => {
         } else {
             return (
                 <Form.Item
-                        label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                        name={fieldData.api_name}
-                        rules={[
-                            {
-                                required: fieldData.required,
-                                message: 'Este campo é obrigatório',
-                            },
-                        ]}
+                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={fieldData.api_name}
+                    rules={[
+                        {
+                            required: fieldData.required,
+                            message: 'Este campo é obrigatório',
+                        },
+                    ]}
                 >
                     <Text>{fieldData.field_value}</Text>
                 </Form.Item>
@@ -807,21 +807,21 @@ const DetailView = ({ itemId }) => {
         }
 
         // } else {
-            // console.log("openfield: ",openField)
-            // if (openField == true) {
-            //     return (
-            //         <Input
-            //             defaultValue={fieldData.field_value}
-            //             // onChange={(e) => onChange(e.target.value)}
-            //             maxLength={extractNumbers(fieldData.type)}
-            //             onBlur={(e) => { 
-            //                 setOpenField(false)
-            //                 onChange(e.target.value)
-            //             }}
-            //             // showCount
-            //         />
-            //     )
-            // } else {
+        // console.log("openfield: ",openField)
+        // if (openField == true) {
+        //     return (
+        //         <Input
+        //             defaultValue={fieldData.field_value}
+        //             // onChange={(e) => onChange(e.target.value)}
+        //             maxLength={extractNumbers(fieldData.type)}
+        //             onBlur={(e) => { 
+        //                 setOpenField(false)
+        //                 onChange(e.target.value)
+        //             }}
+        //             // showCount
+        //         />
+        //     )
+        // } else {
         //     return (
         //         <Form.Item
         //             label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -936,6 +936,43 @@ const DetailView = ({ itemId }) => {
         // }
     };
 
+    const showNotification = (message, description, placement, type, duration, width, pauseOnHover) => {
+        if (!type) type = 'info';
+        notification[type]({ // success, info, warning, error
+            message: message,
+            description: description,
+            placement: placement, // topLeft, topRight, bottomLeft, bottomRight, top, bottom
+            duration: duration, // 3 (segundos), null (caso não queira que suma sozinho)
+            style: {
+                width: width,
+            },
+            showProgress: true,
+            pauseOnHover
+        });
+    };
+
+    const handleAccess = (e) => {
+        if (!ability.can('access', moduleName)) {
+            e.preventDefault(); // Evita a navegação
+            showNotification(
+                '',
+                <>
+                    {moduleName == "users" && (<Text>A criação de novos usuários não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+                    {moduleName == "profiles" && (<Text>A criação de novos perfis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+                    {moduleName == "functions" && (<Text>A criação de novas funções não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+                    {moduleName == "charts" && (<Text>A criação de novos painéis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+                    {moduleName == "kanban" && (<Text>A criação de novos kanbans não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+                    <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
+                </>,
+                'bottom',
+                'error',
+                10,
+                600,
+                true
+            )
+        }
+    };
+
     return (
         <div>
             {data && (
@@ -963,12 +1000,16 @@ const DetailView = ({ itemId }) => {
                                 </Row>
                                 <Col style={{ margin: '0 15px 0 0' }}>
                                     <Can I='create' a={moduleName} ability={ability}>
-                                        <Button icon={<PlusOutlined />} type='primary' href={`/${org}/${moduleName}/create`}
-                                            >Novo {moduleName == "users" ? ("Usuário") :
-                                                moduleName == "profiles" ? ("Perfil") :
-                                                moduleName == "functions" ? ("Função") :
-                                                    moduleName == "charts" ? ("Painel") :
-                                                    (toSingular(activeModule))}
+                                        <Button
+                                            onClick={handleAccess}
+                                            icon={<PlusOutlined />}
+                                            type='primary'
+                                            href={`/${org}/${moduleName}/create`}
+                                        >{moduleName == "users" ? ("Novo Usuário") :
+                                            moduleName == "profiles" ? ("Novo Perfil") :
+                                                moduleName == "functions" ? ("Nova Função") :
+                                                    moduleName == "charts" ? ("Novo Painel") :
+                                                        ("Novo " + toSingular(activeModule))}
                                         </Button>
                                     </Can>
                                     <Can I='update' a={moduleName} ability={ability}>
@@ -1008,69 +1049,69 @@ const DetailView = ({ itemId }) => {
                                             {sections.map((section, sectionIndex) => (
                                                 <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
                                                     <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
-                                                        <Row gutter={16}>
-                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                                {section.left.map((field, fieldIndex) => (
-                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
-                                                                        <Form
-                                                                            form={form}
-                                                                            name="Form"
-                                                                            initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
-                                                                            labelCol={{
-                                                                                flex: '200px',
-                                                                            }}
-                                                                            labelWrap
-                                                                            wrapperCol={{
-                                                                                flex: 1,
-                                                                            }}
-                                                                            colon={false}
-                                                                            layout="horizontal"
-                                                                            onFinish={handleSave}
-                                                                        >
-                                                                            <Row>
-                                                                                {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                    <Row gutter={16}>
+                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                            {section.left.map((field, fieldIndex) => (
+                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
+                                                                    <Form
+                                                                        form={form}
+                                                                        name="Form"
+                                                                        initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
+                                                                        labelCol={{
+                                                                            flex: '200px',
+                                                                        }}
+                                                                        labelWrap
+                                                                        wrapperCol={{
+                                                                            flex: 1,
+                                                                        }}
+                                                                        colon={false}
+                                                                        layout="horizontal"
+                                                                        onFinish={handleSave}
+                                                                    >
+                                                                        <Row>
+                                                                            {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                                     <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                                 </Col> */}
-                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
-                                                                                        {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
-                                                                                        {/* {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))} */}
-                                                                                </Col>
-                                                                            </Row>
-                                                                        </Form>
-                                                                    </div>
-                                                                ))}
-                                                            </Col>
-                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                                {section.right.map((field, fieldIndex) => (
-                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
-                                                                        <Form
-                                                                            form={form}
-                                                                            name="Form"
-                                                                            initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
-                                                                            labelCol={{
-                                                                                flex: '200px',
-                                                                            }}
-                                                                            labelWrap
-                                                                            wrapperCol={{
-                                                                                flex: 1,
-                                                                            }}
-                                                                            colon={false}
-                                                                            layout="horizontal"
-                                                                            onFinish={handleSave}
-                                                                        >
-                                                                            <Row>
-                                                                                {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                            <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
+                                                                                {/* {renderField(field, fieldIndex, (newValue) => handleFieldChange(fieldIndex, newValue, '', field.api_name))} */}
+                                                                            </Col>
+                                                                        </Row>
+                                                                    </Form>
+                                                                </div>
+                                                            ))}
+                                                        </Col>
+                                                        <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                            {section.right.map((field, fieldIndex) => (
+                                                                <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
+                                                                    <Form
+                                                                        form={form}
+                                                                        name="Form"
+                                                                        initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
+                                                                        labelCol={{
+                                                                            flex: '200px',
+                                                                        }}
+                                                                        labelWrap
+                                                                        wrapperCol={{
+                                                                            flex: 1,
+                                                                        }}
+                                                                        colon={false}
+                                                                        layout="horizontal"
+                                                                        onFinish={handleSave}
+                                                                    >
+                                                                        <Row>
+                                                                            {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                                     <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                                 </Col> */}
-                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
-                                                                                    {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
-                                                                                </Col>
-                                                                            </Row>
-                                                                        </Form>
-                                                                    </div>
-                                                                ))}
-                                                            </Col>
-                                                        </Row>
+                                                                            <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
+                                                                            </Col>
+                                                                        </Row>
+                                                                    </Form>
+                                                                </div>
+                                                            ))}
+                                                        </Col>
+                                                    </Row>
                                                 </Col>
                                             ))}
                                         </Row>
@@ -1093,277 +1134,4 @@ const DetailView = ({ itemId }) => {
     );
 };
 
-
-
 export default DetailView;
-        // return (
-        //     <div>
-        //         {data && (
-        //             <div style={{ overflowY: 'auto' }}>
-        //                 <div>
-        //                     <Layout
-        //                         style={{
-        //                             background: colorBgContainer
-        //                         }}
-        //                     >
-        //                         <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
-        //                             <Col>
-        //                                 <Title
-        //                                     style={{ paddingLeft: '30px', fontSize: '22px' }}
-        //                                 >
-        //                                     {data[0].field_value}
-        //                                 </Title>
-        //                             </Col>
-        //                             <Col style={{ margin: '0 15px 0 0' }}>
-        //                                 <Button icon={<LeftOutlined />} style={{ margin: '0 15px' }} href={`/${org}/${moduleName}`}>Voltar</Button>
-        //                                 <Can I='update' a={moduleName} ability={ability}>
-        //                                     <Button href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
-        //                                 </Can>
-        //                                 <Can I='delete' a={moduleName} ability={ability}>
-        //                                     <Popconfirm
-        //                                         title="Excluir"
-        //                                         description="Deseja excluir este(s) registro(s)?"
-        //                                         onConfirm={() => confirm()}
-        //                                         okText="Sim"
-        //                                         cancelText="Cancelar"
-        //                                     >
-        //                                         <Button style={{ margin: '0 15px' }} danger>Excluir</Button>
-        //                                     </Popconfirm>
-        //                                 </Can>
-        //                             </Col>
-        //                         </Row>
-        //                     </Layout>
-        //                 </div>
-        //                 <div style={{ padding: '15px 0' }}>
-        //                     <Content className='content'>
-
-        //                         <Layout
-        //                             style={{
-        //                                 background: colorBgContainer,
-        //                                 borderRadius: borderRadiusLG,
-        //                                 minHeight: (relatedList.length === 0 ? 'calc(100vh - 161px)' : ''),
-        //                                 padding: '20px'
-        //                             }}
-        //                         >
-        //                             {(() => {
-        //                                 if (moduleName == 'users') {
-        //                                     return (
-        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Usuário Informações</Text>
-        //                                     )
-        //                                 } else if (moduleName == 'profiles') {
-        //                                     return (
-        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Perfil Informações</Text>
-        //                                     )
-        //                                 } else if (moduleName == 'charts') {
-        //                                     return (
-        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>Gráfico Informações</Text>
-        //                                     )
-        //                                 } else {
-        //                                     return (
-        //                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text>
-        //                                     )
-        //                                 }
-        //                             })()}
-
-        //                             <Row>
-        //                                 <Col span={24}>
-        //                                     <Row gutter={16}>
-        //                                         {data.map((fieldData, index) => (
-        //                                             <Col key={index} span={(moduleName == "functions" ? 24 : 10)}>
-        //                                                 <div style={{ padding: '5px 0', minHeight: '66px' }}>
-        //                                                     <Row>
-        //                                                         <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-        //                                                             <Text style={{ fontSize: '16px', color: '#838da1' }}>
-        //                                                                 {/* {JSON.stringify(fieldData)} */}
-        //                                                                 {fieldData.name}
-        //                                                             </Text>
-        //                                                         </Col>
-        //                                                         <Col span={(moduleName == "functions" ? 19 : 14)}>
-        //                                                             {(() => {
-        //                                                                 if (fieldData.related_module != null) {
-        //                                                                     return (
-        //                                                                         <Select
-        //                                                                             showSearch
-        //                                                                             optionFilterProp="children"
-        //                                                                             filterOption={(input, option) =>
-        //                                                                                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        //                                                                             }
-        //                                                                             style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-        //                                                                             // value={selectedValue ? selectedValue.value : null}
-        //                                                                             defaultValue={fieldData.field_value}
-        //                                                                             placeholder="Selecione"
-        //                                                                             // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-        //                                                                             // loading={loading}
-        //                                                                             onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.api_name)}
-        //                                                                             onSelect={(key, value) => handleFieldChangeRelatedModule(index, key, value)}
-        //                                                                             dropdownRender={(menu) => (
-        //                                                                                 <div>
-        //                                                                                     {menu}
-        //                                                                                     <div style={{ textAlign: "center", padding: "10px", cursor: "pointer" }}>
-        //                                                                                         <a href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`} rel="noopener noreferrer">
-        //                                                                                             {(fieldData.field_value ? `Ir para ${fieldData.field_value}` : '')}
-        //                                                                                         </a>
-        //                                                                                     </div>
-        //                                                                                 </div>
-        //                                                                             )}
-        //                                                                         >
-        //                                                                             <Option value=''>-Nenhum-</Option>
-        //                                                                             {relatedModuleData.map(item => (
-        //                                                                                 <Option key={item.related_id} value={item.field_value}>
-        //                                                                                     {item.field_value}
-        //                                                                                 </Option>
-        //                                                                             ))}
-        //                                                                         </Select>
-        //                                                                     );
-        //                                                                 } else if (fieldData.field_type == "select") {
-        //                                                                     return (
-        //                                                                         <Select
-        //                                                                             showSearch
-        //                                                                             optionFilterProp="children"
-        //                                                                             filterOption={(input, option) =>
-        //                                                                                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        //                                                                             }
-        //                                                                             style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-        //                                                                             // value={selectedValue ? selectedValue.value : null}
-        //                                                                             defaultValue={fieldData.field_value}
-        //                                                                             placeholder="Selecione"
-        //                                                                             // onChange={(open, key) => handleFieldChangeRelatedModule(open, key)}
-        //                                                                             // loading={loading}
-        //                                                                             onDropdownVisibleChange={(open) => fetchOptions(open, fieldData.module, fieldData.api_name)}
-        //                                                                             onSelect={(newValue) => handleFieldChange(index, newValue)}
-        //                                                                         >
-        //                                                                             <Option value=''>-Nenhum-</Option>
-        //                                                                             {options.map(item => (
-        //                                                                                 <Option key={item.id} value={item.name}>
-        //                                                                                     {item.name}
-        //                                                                                 </Option>
-        //                                                                             ))}
-        //                                                                         </Select>
-        //                                                                     );
-        //                                                                 } else if (fieldData.field_type == "date") {
-        //                                                                     return (
-        //                                                                         <DatePicker
-        //                                                                             style={{ height: '100%', width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-        //                                                                             onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
-        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-        //                                                                             onChange={(value) => handleFieldChange(index, value)}
-        //                                                                             value={fieldData.field_value ? dayjs(fieldData.field_value) : null}
-        //                                                                             placeholder="Selecione uma data"
-        //                                                                             format="DD/MM/YYYY"
-        //                                                                         />
-        //                                                                     );
-        //                                                                 } else if (fieldData.field_type == "multi_line") {
-        //                                                                     return (
-        //                                                                         <TextArea
-        //                                                                             style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
-        //                                                                             onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
-        //                                                                             onBlur={(e) => handleFieldChange(index, e.target.value)}
-        //                                                                             onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
-        //                                                                             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
-        //                                                                             rows={4}
-        //                                                                             defaultValue={fieldData.field_value}
-        //                                                                             onChange={(newValue) => handleFieldChange(index, newValue)}
-        //                                                                             maxLength={16000}
-        //                                                                         />
-
-        //                                                                     )
-        //                                                                 } else if (fieldData.field_type == "checkbox" && fieldData.module == "users" && fieldData.api_name == "notification") {
-        //                                                                     return (
-        //                                                                         <Checkbox
-        //                                                                             defaultChecked={fieldData.field_value == 1 ? true : false}
-        //                                                                             // onChange={(e) => handleFieldChange(index, e.target.checked)}
-        //                                                                             disabled
-        //                                                                         >teste
-        //                                                                         </Checkbox>
-        //                                                                     )
-        //                                                                 } else if (fieldData.field_type == "checkbox") {
-        //                                                                     return (
-        //                                                                         <Checkbox
-        //                                                                             defaultChecked={fieldData.field_value == 1 ? true : false}
-        //                                                                             onChange={(e) => handleFieldChange(index, e.target.checked)}
-        //                                                                         >
-        //                                                                         </Checkbox>
-        //                                                                     )
-        //                                                                 } else if (fieldData.field_type == "number") {
-        //                                                                     return (
-        //                                                                         // <InputNumber
-        //                                                                         //     style={{ width: "100%" }}
-        //                                                                         //     changeOnWheel
-        //                                                                         //     defaultValue={fieldData.field_value}
-        //                                                                         //     onChange={(e) => handleFieldChange(index, e)}
-        //                                                                         // />
-        //                                                                         <EditableCell
-        //                                                                             value={fieldData.field_value}
-        //                                                                             onChange={(newValue) => handleFieldChange(index, newValue)}
-        //                                                                             type={'number'}
-        //                                                                         />
-        //                                                                     )
-        //                                                                 } else if (fieldData.field_type == "currency") {
-        //                                                                     return (
-        //                                                                         <InputNumber
-        //                                                                             style={{ width: "100%" }}
-        //                                                                             prefix="R$"
-        //                                                                             formatter={(val) => {
-        //                                                                                 if (!val) return;
-        //                                                                                 return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")
-        //                                                                             }}
-        //                                                                             parser={(val) => {
-        //                                                                                 if (!val) return;
-        //                                                                                 return Number.parseFloat(val.replace(/\$\s?|(\.*)/g, "").replace(/(\,{1})/g, ".")).toFixed(2)
-        //                                                                             }}
-        //                                                                             changeOnWheel
-        //                                                                             defaultValue={fieldData.field_value}
-        //                                                                             onChange={(e) => handleFieldChange(index, e)}
-        //                                                                         />
-        //                                                                     )
-        //                                                                 } else if (fieldData.field_type == "function") {
-        //                                                                     return (
-        //                                                                         <CodeEditor
-        //                                                                             height={'45vh'} 
-        //                                                                             language={'javascript'} 
-        //                                                                             value={fieldData.field_value} 
-        //                                                                             theme={'vs-dark'}
-        //                                                                             readOnly={true}
-        //                                                                         />
-        //                                                                     )
-        //                                                                 } else {
-        //                                                                     return (
-        //                                                                         <EditableCell
-        //                                                                             value={fieldData.field_value}
-        //                                                                             onChange={(newValue) => handleFieldChange(index, newValue)}
-        //                                                                             type={typeof fieldData.field_value === 'number' ? 'number' : 'text'}
-        //                                                                         />
-        //                                                                     );
-        //                                                                 }
-        //                                                             })()}
-        //                                                         </Col>
-        //                                                     </Row>
-        //                                                 </div>
-        //                                             </Col>
-        //                                         ))}
-        //                                     </Row>
-        //                                     {moduleName === 'profiles' && (
-        //                                         <div style={{ marginTop: '20px' }}>
-        //                                             <PermissionsPage />
-        //                                         </div>
-        //                                     )}
-        //                                 </Col>
-        //                             </Row>
-        //                         </Layout>
-
-        //                     </Content>
-        //                     {(console.log("relatedList", relatedList))}
-        //                     {Array.isArray(relatedList) && relatedList.map((item, index) => (
-        //                         <RelatedList key={index} related_module={item.module_name} related_id={record_id} />
-        //                     ))}
-        //                 </div>
-        //             </div>
-        //         )}
-        //     </div>
-        // );
-
-//     };
-
-// export default DetailView;

@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Layout, Card, Table, Button, Modal, Form, Input, Dropdown, Menu, Popconfirm, message } from 'antd';
+import { Layout, Card, Table, Button, Modal, Form, Input, Dropdown, Menu, Popconfirm, message, notification, Typography } from 'antd';
 import Link from "antd/es/typography/Link";
 import '../../styles.css'
 import { Content } from "antd/es/layout/layout";
 import axios from "axios";
-import { DownOutlined, MoreOutlined, PlusOutlined, WarningOutlined } from "@ant-design/icons";
+import { DownOutlined, EllipsisOutlined, PlusOutlined, WarningOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
+import { useAbility } from "../../../../contexts/AbilityContext";
+const { Title, Text } = Typography;
 const linkApi = process.env.REACT_APP_LINK_API;
 
 // const onMenuClick = (e) => {
@@ -34,6 +36,7 @@ function Modules() {
     const [form] = Form.useForm();
     const inputRef = useRef(null);
     let navigate = useNavigate()
+    const { ability, loading } = useAbility();
 
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
@@ -148,7 +151,7 @@ function Modules() {
                             onConfirm={(e) => onDelete(record)}
                             okText="Sim"
                             cancelText="Cancelar"
-                            icon={<WarningOutlined style={{color: 'red'}}/>}
+                            icon={<WarningOutlined style={{ color: 'red' }} />}
                         >
                             <Menu.Item
                                 key="2"
@@ -166,7 +169,7 @@ function Modules() {
                             trigger={['click']}
                         >
                             <Button
-                                icon={<MoreOutlined />}
+                                icon={<EllipsisOutlined />}
                                 type="text"
                                 style={{ marginLeft: 15 }}
                             />
@@ -196,19 +199,50 @@ function Modules() {
         fetchData();
     }, []);
 
-    const handleButtonClick = () => {
-        setIsModalVisible(true);
-        setTimeout(() => {
-            if (inputRef.current) {
-                inputRef.current.focus({
-                    cursor: 'all',
-                });
-            }
-        }, 100);
+    const handleAccess = (e) => {
+        if (!ability.can('access', "modules")) {
+            e.preventDefault(); // Evita a navegação
+            showNotification(
+                '',
+                <>
+                    <Text>A criação de novos módulos não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>
+                    <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
+                </>,
+                'bottom',
+                'error',
+                10,
+                600,
+                true
+            )
+        } else {
+            setIsModalVisible(true);
+            setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus({
+                        cursor: 'all',
+                    });
+                }
+            }, 100);
+        }
     }
 
     const handleCancel = () => {
         setIsModalVisible(false);
+    };
+
+    const showNotification = (message, description, placement, type, duration, width, pauseOnHover) => {
+        if (!type) type = 'info';
+        notification[type]({ // success, info, warning, error
+            message: message,
+            description: description,
+            placement: placement, // topLeft, topRight, bottomLeft, bottomRight, top, bottom
+            duration: duration, // 3 (segundos), null (caso não queira que suma sozinho)
+            style: {
+                width: width,
+            },
+            showProgress: true,
+            pauseOnHover
+        });
     };
 
     const handleOk = () => {
@@ -234,13 +268,12 @@ function Modules() {
             navigate(`/${org}/settings/modules/${api_name}`)
             window.location.reload()
         })
-
     }
 
     return (
         <Content className='content' style={{ paddingTop: '20px' }}>
             <Layout style={{ minHeight: 'calc(100vh - 160px)' }}>
-                <Card title="Módulos" extra={<Button onClick={handleButtonClick} style={{ margin: '10px' }} icon={<PlusOutlined />} >Novo</Button>}>
+                <Card title="Módulos" extra={<Button onClick={handleAccess} style={{ margin: '10px' }} icon={<PlusOutlined />} >Novo</Button>}>
                     <Table
                         columns={columns}
                         dataSource={data}

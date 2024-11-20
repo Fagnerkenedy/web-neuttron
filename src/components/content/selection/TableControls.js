@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message, Typography, Dropdown, Checkbox, Table, Menu } from 'antd';
+import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message, Typography, Dropdown, Checkbox, Table, Menu, notification } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { Option } from 'antd/es/mentions';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -65,6 +65,43 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
     setLayoutVisualization(value)
   }
 
+  const showNotification = (message, description, placement, type, duration, width, pauseOnHover) => {
+    if (!type) type = 'info';
+    notification[type]({ // success, info, warning, error
+      message: message,
+      description: description,
+      placement: placement, // topLeft, topRight, bottomLeft, bottomRight, top, bottom
+      duration: duration, // 3 (segundos), null (caso não queira que suma sozinho)
+      style: {
+        width: width,
+      },
+      showProgress: true,
+      pauseOnHover
+    });
+  };
+
+  const handleAccess = (e) => {
+    if (!ability.can('access', moduleName)) {
+      e.preventDefault(); // Evita a navegação
+      showNotification(
+        '',
+        <>
+          {moduleName == "users" && (<Text>A criação de novos usuários não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+          {moduleName == "profiles" && (<Text>A criação de novos perfis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+          {moduleName == "functions" && (<Text>A criação de novas funções não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+          {moduleName == "charts" && (<Text>A criação de novos painéis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+          {moduleName == "kanban" && (<Text>A criação de novos kanbans não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+          <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
+        </>, 
+        'bottom', 
+        'error', 
+        10, 
+        600,
+        true
+      )
+    }
+  };
+
   return (
     <Flex justify={'space-between'} style={{ height: '50px' }}>
       <Flex justify={'flex-start'} align={'center'}>
@@ -100,6 +137,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
         <Can I='create' a={moduleName} ability={ability}>
           <Flex style={{ paddingRight: '15px' }}>
             <Button
+              onClick={handleAccess}
               type='primary'
               href={`/${org}/${moduleName}/create`}>Criar {
                 moduleName == "users" ? ("Usuário") :

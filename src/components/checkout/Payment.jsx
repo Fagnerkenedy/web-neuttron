@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { initMercadoPago } from "@mercadopago/sdk-react";
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 import { Button, Col, Divider, Layout, Menu, Row, Select, Typography, theme } from "antd";
 import './style.css';
 import MercadoPagoButton from "./MercadoPagoButton";
 const { Title, Text } = Typography;
 
-initMercadoPago(process.env.REACT_APP_PUBLIC_KEY_MERCADO_PAGO);
 
 const Payment = () => {
   const token = process.env.REACT_APP_USER_API_TOKEN;
   const [preferenceId, setPreferenceId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [orderData, setOrderData] = useState({ quantity: "1", price: "718.80", amount: 10, description: "Plano Profissional" });
+  const [orderData, setOrderData] = useState({ quantity: "2", price: "718.80", amount: 10, description: "Plano Profissional" });
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -36,6 +35,7 @@ const Payment = () => {
       .finally(() => {
         setIsLoading(false);
       });
+    initMercadoPago(process.env.REACT_APP_PUBLIC_KEY_MERCADO_PAGO, { locale: 'pt-BR' });
   }, []);
 
   // const renderCheckoutButton = (preferenceId) => {
@@ -45,8 +45,11 @@ const Payment = () => {
   //   );
   // };
 
-  const valorTotal = numberOfUsers * 598.80;
-  const valorTotalMounth = numberOfUsersMounth * 49.90;
+  const valorAnual = 598.80
+  const valorMensal = 49.90
+
+  const valorTotal = numberOfUsers * valorAnual;
+  const valorTotalMounth = numberOfUsersMounth * valorMensal;
 
   const formatValue = (value) => {
     return value.toLocaleString('pt-BR', {
@@ -81,8 +84,10 @@ const Payment = () => {
       >
         <Col className="payment-heading">
           <Title className="titleH2" level={2}>Checkout de Pagamento</Title>
-          {/* <Title className="titleH3" level={3}>Este é um exemplo de integração do Mercado Pago</Title> */}
         </Col>
+        <Row justify="center">
+          <Text>Obtenha um desconto de 20% na assinatura anual</Text>
+        </Row>
         <Menu onClick={handleMenu} mode="horizontal" selectedKeys={[current]}
           items={
             [
@@ -140,11 +145,11 @@ const Payment = () => {
                 }
               >
               </Select>
-              
+
               <Divider />
 
               <Col className="item">
-                <Text className="price1"><span className="quantity">{numberOfUsers} Usuário(s) x </span>R$ 598,80</Text>
+                <Text className="price1"><span className="quantity">{numberOfUsers} Usuário(s) x </span>{formatValue(valorAnual)}</Text>
                 <Text className="item-name">
                   Plano Profissional
                 </Text>
@@ -153,7 +158,7 @@ const Payment = () => {
               <Divider />
 
               <Col className="valor">
-                <Text>Valor Plano</Text>
+                <Text>Subtotal</Text>
                 <Text className="price">{valorFormatado}</Text>
               </Col>
 
@@ -161,10 +166,10 @@ const Payment = () => {
                 <Text style={{ color: 'green' }}>Desconto (20%)</Text>
                 <Text className="item-discount">{valorFormatadoDesconto}</Text>
               </Col>
-              
+
               <Col className="total">
-                <Text>Total</Text>
-                <Text className="price">{valorTotalFormatado} / Ano</Text>
+                <Text className="textTotal">Total</Text>
+                <Text className="priceTotal">{valorTotalFormatado} / Ano</Text>
               </Col>
 
             </Col>
@@ -172,7 +177,8 @@ const Payment = () => {
               {/* <div>
               {renderCheckoutButton(preferenceId)}
             </div> */}
-              <MercadoPagoButton plan={current} users={numberOfUsers} usersMounth={numberOfUsersMounth} />
+              <MercadoPagoButton plan={current} users={numberOfUsers} usersMounth={numberOfUsersMounth} preferenceId={preferenceId} />
+              <Wallet initialization={{preferenceId: preferenceId}} />
             </div>
           </Col>
         )}
@@ -235,22 +241,22 @@ const Payment = () => {
               </Select>
               <Divider />
               <Col className="item">
-                <Text className="price1"><span className="quantity">{numberOfUsersMounth} Usuário(s) X </span>R$ 49,90</Text>
+                <Text className="price1"><span className="quantity">{numberOfUsersMounth} Usuário(s) X </span>{formatValue(valorMensal)}</Text>
                 <Text className="item-name">
                   Plano Profissional
                 </Text>
               </Col>
               <Divider />
               <Col className="total">
-                <Text>Total</Text>
-                <Text className="price">{valorFormatadoMounth} / Mês</Text>
+                <Text className="textTotal">Total</Text>
+                <Text className="priceTotal">{valorFormatadoMounth} / Mês</Text>
               </Col>
             </Col>
             <div className="payment-details">
               {/* <div>
               {renderCheckoutButton(preferenceId)}
             </div> */}
-              <MercadoPagoButton plan={current} users={numberOfUsers} usersMounth={numberOfUsersMounth} />
+              <MercadoPagoButton plan={current} users={numberOfUsers} usersMounth={numberOfUsersMounth} preferenceId={preferenceId} />
             </div>
           </Col>
         )}

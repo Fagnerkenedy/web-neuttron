@@ -25,10 +25,12 @@ const MercadoPagoButton = ({ plan, users, usersMounth }) => {
     }
   }, []);
 
+  
   const getPaymentLink = () => {
+    const baseUrlMercadoPago = "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id="
     if (plan === "anual") {
       switch (users) {
-        case 1: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c938084915406ae01916af385bf08de";
+        case 1: return `${baseUrlMercadoPago}2c938084915406ae01916af385bf08de`;
         // case 2: return "https://link-anual-2usuarios";
         // case 3: return "https://link-anual-3usuarios";
         // case 4: return "https://link-anual-4usuarios";
@@ -37,20 +39,20 @@ const MercadoPagoButton = ({ plan, users, usersMounth }) => {
       }
     } else if (plan === "mensal") {
       switch (usersMounth) {
-        case 1: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c938084930f5298019321e5066005a4";
-        case 2: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c9380849323ec5801932db0dc910449";
-        case 3: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c9380849319a00d01932db38ca2080c";
-        case 4: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c938084930f529801932db464c10a68";
-        case 5: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c9380849319a00d01932db54f0c080e";
-        case 6: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c9380849319a00d01932db79b6e080f";
-        case 7: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c938084930f529801932dbd99e20a6b";
-        case 8: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c9380849319a00d01932dbe68ac0812";
-        case 9: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c9380849319a00d01932dbf49e70813";
-        case 10: return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c9380849319a00d01932dc080ad0814";
+        case 1: return `${baseUrlMercadoPago}2c938084930f5298019321e5066005a4`;
+        case 2: return `${baseUrlMercadoPago}2c9380849323ec5801932db0dc910449`;
+        case 3: return `${baseUrlMercadoPago}2c9380849319a00d01932db38ca2080c`;
+        case 4: return `${baseUrlMercadoPago}2c938084930f529801932db464c10a68`;
+        case 5: return `${baseUrlMercadoPago}2c9380849319a00d01932db54f0c080e`;
+        case 6: return `${baseUrlMercadoPago}2c9380849319a00d01932db79b6e080f`;
+        case 7: return `${baseUrlMercadoPago}2c938084930f529801932dbd99e20a6b`;
+        case 8: return `${baseUrlMercadoPago}2c9380849319a00d01932dbe68ac0812`;
+        case 9: return `${baseUrlMercadoPago}2c9380849319a00d01932dbf49e70813`;
+        case 10: return `${baseUrlMercadoPago}2c9380849319a00d01932dc080ad0814`;
         default: return "";
       }
     }
-    return "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c938084915406ae01916af385bf08de";
+    return `${baseUrlMercadoPago}2c938084915406ae01916af385bf08de`;
   };
 
   return (

@@ -194,9 +194,11 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
                   className: linearGradientButton,
                 }}
               >
-                <Button type="primary" href={`/${org}/checkout`}>
-                  Fazer Upgrade
-                </Button>
+                <Can I='read' a='checkout' ability={ability}>
+                  <Button type="primary" href={`/${org}/checkout`}>
+                    Fazer Upgrade
+                  </Button>
+                </Can>
               </ConfigProvider>
             </Col>
             <Col ref={ref3}>

@@ -84,7 +84,7 @@ function RoutesPage() {
               {/* <Route path="/:org/settings/roles" element={<PermissionsPage />} /> */}
               <Route path="/:org/settings/modules/:module" element={<Layout />} />
             </Route>
-            <Route path="/:org/checkout" element={<Payment />} />
+            <Route path="/:org/checkout" element={<AuthorizedRoute action="read" subject={moduleName}><Payment /></AuthorizedRoute>} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />}  />
