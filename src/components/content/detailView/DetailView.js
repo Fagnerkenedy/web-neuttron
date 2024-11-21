@@ -54,6 +54,7 @@ const DetailView = ({ itemId }) => {
     const inputRef = useRef(null);
     const [inputValue, setInputValue] = useState('');
     const [activeModule, setActiveModule] = useState("");
+    const [usedUsers, setUsedUsers] = useState("")
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -165,6 +166,8 @@ const DetailView = ({ itemId }) => {
                     right: updatedRight
                 };
             });
+
+            setUsedUsers(await userApiURI.checkUsedUsers(org))
 
             setSections(updatedSections)
 
@@ -971,9 +974,7 @@ const DetailView = ({ itemId }) => {
                 600,
                 true
             )
-        }
-        const usedUsers = await userApiURI.checkUsedUsers()
-        if(usedUsers.users == usedUsers.active_users) {
+        } else if(usedUsers.users == usedUsers.active_users) {
             e.preventDefault()
             showNotification(
                 '',

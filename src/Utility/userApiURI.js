@@ -10,10 +10,10 @@ const apiURI = {
     return userApiRequest(config);
   },
 
-  checkUsedUsers: () => {
+  checkUsedUsers: (org) => {
     const config = {
       method: 'get',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/checkUsedUsers`,
+      url: `${process.env.REACT_APP_USER_API_BASE_URL}/${org}/checkUsedUsers`,
     }
     return userApiRequest(config);
   },
