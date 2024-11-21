@@ -126,10 +126,10 @@ const Payment = () => {
                       value: 1,
                       label: 1,
                     },
-                    {
-                      value: 2,
-                      label: 2,
-                    },
+                    // {
+                    //   value: 2,
+                    //   label: 2,
+                    // },
                     // {
                     //   value: 3,
                     //   label: 3,
@@ -179,8 +179,8 @@ const Payment = () => {
               {renderCheckoutButton(preferenceId)}
             </div> */}
               <MercadoPagoButton plan={current} users={numberOfUsers} usersMounth={numberOfUsersMounth} preferenceId={preferenceId} />
-              <Wallet initialization={{preferenceId: preferenceId}} />
-              <PayPalButton />
+              {/* <Wallet initialization={{preferenceId: preferenceId}} />
+              <PayPalButton /> */}
             </div>
           </Col>
         )}

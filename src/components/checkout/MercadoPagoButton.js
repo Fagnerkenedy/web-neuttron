@@ -31,7 +31,7 @@ const MercadoPagoButton = ({ plan, users, usersMounth }) => {
     if (plan === "anual") {
       switch (users) {
         case 1: return `${baseUrlMercadoPago}2c938084915406ae01916af385bf08de`;
-        case 2: return `${baseUrlMercadoPago}2c938084930f52980193476ab08b1155`; // LINK DO AMBIENTE DE TESTE DO MERCADO PAGO
+        // case 2: return `${baseUrlMercadoPago}2c938084930f52980193476ab08b1155`; // LINK DO AMBIENTE DE TESTE DO MERCADO PAGO
         // case 2: return "https://link-anual-2usuarios";
         // case 3: return "https://link-anual-3usuarios";
         // case 4: return "https://link-anual-4usuarios";
