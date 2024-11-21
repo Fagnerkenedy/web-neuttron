@@ -41,22 +41,22 @@ function Charts() {
                         >
                             <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '15px' }}>
                                 {chart.query.type === 'barra' && (
-                                    <>
+                                    <Col style={{ height: 500 }}>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Barra xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
-                                    </>
+                                    </Col>
                                 )}
                                 {chart.query.type === 'linha' && (
-                                    <>
+                                    <Col style={{ height: 500 }}>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Linha xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
-                                    </>
+                                    </Col>
                                 )}
                                 {chart.query.type === 'funil' && (
-                                    <>
-                                    <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                    <Funil xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
-                                </>
+                                    <Col style={{ height: 500 }}>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Funil xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </Col>
                                 )}
                             </div>
                         </Layout>

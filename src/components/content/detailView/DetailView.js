@@ -54,7 +54,6 @@ const DetailView = ({ itemId }) => {
     const inputRef = useRef(null);
     const [inputValue, setInputValue] = useState('');
     const [activeModule, setActiveModule] = useState("");
-    const [usedUsers, setUsedUsers] = useState("")
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -166,8 +165,6 @@ const DetailView = ({ itemId }) => {
                     right: updatedRight
                 };
             });
-
-            setUsedUsers(await userApiURI.checkUsedUsers(org))
 
             setSections(updatedSections)
 
@@ -969,25 +966,34 @@ const DetailView = ({ itemId }) => {
                     <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
                 </>,
                 'bottom',
-                'error',
+                'warning',
                 10,
                 600,
                 true
             )
-        } else if(usedUsers.users == usedUsers.active_users) {
-            e.preventDefault()
-            showNotification(
-                '',
-                <>
-                    {moduleName == "users" && (<Text>Você atingiu o limite de novos usuários para o plano contratado. Contrate novos usuários para continuar criando.{' '}</Text>)}
-                    {/* <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link> */}
-                </>,
-                'bottom',
-                'error',
-                10,
-                600,
-                true
-            )
+        }
+        if (moduleName == "users") {
+            const usedUsersAPI = await userApiURI.checkUsedUsers(org)
+            const usedUsers = usedUsersAPI.data.subscriptions[0] || {}
+            if (usedUsers.users <= usedUsers.active_users) {
+                e.preventDefault()
+                showNotification(
+                    '',
+                    <>
+                        {moduleName == "users" && (<Text>Você atingiu o limite de novos usuários para o plano contratado. Contrate novos usuários para continuar criando.{' '}</Text>)}
+                        {/* <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link> */}
+                    </>,
+                    'bottom',
+                    'warning',
+                    10,
+                    600,
+                    true
+                )
+            } else {
+                navigate(`/${org}/${moduleName}/create`)
+            }
+        } else {
+            navigate(`/${org}/${moduleName}/create`)
         }
     };
 
@@ -1007,14 +1013,16 @@ const DetailView = ({ itemId }) => {
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
                                 <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
                                     <Tooltip title="Voltar">
-                                        <Button type='text' icon={<LeftOutlined />} style={{ margin: '0 15px' }} href={`/${org}/${moduleName}`}></Button>
+                                        <Button type='text' icon={<LeftOutlined />} style={{ margin: '0 15px', height: 40 }} href={`/${org}/${moduleName}`}>
+                                            <Title
+                                                style={{ fontSize: '22px', margin: '0' }}
+                                            >
+                                                {/* {data[0].field_value} */}
+                                                Detalhes
+                                            </Title>
+                                        </Button>
                                     </Tooltip>
-                                    <Title
-                                        style={{ fontSize: '22px', margin: '0' }}
-                                    >
-                                        {/* {data[0].field_value} */}
-                                        Detalhes
-                                    </Title>
+
                                 </Row>
                                 <Col style={{ margin: '0 15px 0 0' }}>
                                     <Can I='create' a={moduleName} ability={ability}>
@@ -1022,7 +1030,6 @@ const DetailView = ({ itemId }) => {
                                             onClick={handleAccess}
                                             icon={<PlusOutlined />}
                                             type='primary'
-                                            href={`/${org}/${moduleName}/create`}
                                         >{moduleName == "users" ? ("Novo Usuário") :
                                             moduleName == "profiles" ? ("Novo Perfil") :
                                                 moduleName == "functions" ? ("Nova Função") :

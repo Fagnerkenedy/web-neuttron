@@ -36,6 +36,20 @@ function Barra({ xField, yField, data }) {
             radiusTopRight: 10
         },
     };
+    if (dataNumber.length === 0) {
+        return (
+            <div
+                style={{
+                    textAlign: "center",
+                    color: darkMode ? "#ffffff" : "#000000",
+                    padding: "20px",
+                }}
+            >
+                <p>Não há dados para exibir.</p>
+                <p>Adicione novos registros para renderizar o gráfico.</p>
+            </div>
+        );
+    }
     return <Column {...config} />;
 
 }

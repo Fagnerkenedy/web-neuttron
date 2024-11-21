@@ -9,6 +9,8 @@ import { useAbility } from '../../../contexts/AbilityContext.js'
 import { EllipsisOutlined, SwapOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import ColumnsOrder from './ColumnsOrder.js';
 import axios from 'axios';
+import userApiURI from '../../../Utility/userApiURI.js';
+import { useNavigate } from 'react-router-dom';
 const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
 const { Title, Text } = Typography;
@@ -25,6 +27,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   const { ability, loading } = useAbility();
   const [activeModule, setActiveModule] = useState("");
   const [layoutType, setLayoutType] = useState("");
+  let navigate = useNavigate()
 
   const confirm = async (e) => {
     await deleteRecord(org, moduleName, selectedRowKeys)
@@ -80,9 +83,9 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
     });
   };
 
-  const handleAccess = (e) => {
+  const handleAccess = async (e) => {
     if (!ability.can('access', moduleName)) {
-      e.preventDefault(); // Evita a navegação
+      e.preventDefault()
       showNotification(
         '',
         <>
@@ -92,13 +95,36 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
           {moduleName == "charts" && (<Text>A criação de novos painéis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
           {moduleName == "kanban" && (<Text>A criação de novos kanbans não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
           <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
-        </>, 
-        'bottom', 
-        'error', 
-        10, 
+        </>,
+        'bottom',
+        'warning',
+        10,
         600,
         true
       )
+    }
+    if (moduleName == "users") {
+      const usedUsersAPI = await userApiURI.checkUsedUsers(org)
+      const usedUsers = usedUsersAPI.data.subscriptions[0] || {}
+      if (usedUsers.users <= usedUsers.active_users) {
+        e.preventDefault()
+        showNotification(
+          '',
+          <>
+            {moduleName == "users" && (<Text>Você atingiu o limite de novos usuários para o plano contratado. Contrate novos usuários para continuar criando.{' '}</Text>)}
+            {/* <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link> */}
+          </>,
+          'bottom',
+          'warning',
+          10,
+          600,
+          true
+        )
+      } else {
+        navigate(`/${org}/${moduleName}/create`)
+      }
+    } else {
+      navigate(`/${org}/${moduleName}/create`)
     }
   };
 
@@ -139,7 +165,8 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
             <Button
               onClick={handleAccess}
               type='primary'
-              href={`/${org}/${moduleName}/create`}>Criar {
+              // href={`/${org}/${moduleName}/create`}
+            >Criar {
                 moduleName == "users" ? ("Usuário") :
                   moduleName == "profiles" ? ("Perfil") :
                     moduleName == "functions" ? ("Função") :
