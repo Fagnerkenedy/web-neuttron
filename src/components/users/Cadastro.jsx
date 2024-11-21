@@ -1,8 +1,9 @@
 import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result } from 'antd';
+import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result, InputNumber } from 'antd';
 import { PasswordInput } from 'antd-password-input-strength';
 import { React, useState } from 'react';
 import { Link } from 'react-router-dom';
+import InputMask from 'react-input-mask';
 
 import userApiURI from '../../Utility/userApiURI';
 // import logo from '../../img/logo.jpeg';
@@ -190,6 +191,19 @@ function Cadastro() {
                                                 ]}
                                             >
                                                 <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-mail" />
+                                            </Form.Item>
+
+                                            <Form.Item
+                                                name="CPF"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <InputMask mask="999.999.999-99" placeholder="CPF">
+                                                    {(inputProps) => <Input {...inputProps} />}
+                                                </InputMask>
                                             </Form.Item>
 
                                             <Form.Item
