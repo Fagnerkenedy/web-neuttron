@@ -10,6 +10,14 @@ const apiURI = {
     return userApiRequest(config);
   },
 
+  checkUsedUsers: () => {
+    const config = {
+      method: 'get',
+      url: `${process.env.REACT_APP_USER_API_BASE_URL}/checkUsedUsers`,
+    }
+    return userApiRequest(config);
+  },
+
   register: (data) => {
     const config = {
       method: 'post',

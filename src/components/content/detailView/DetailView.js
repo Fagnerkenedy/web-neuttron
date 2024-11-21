@@ -17,6 +17,7 @@ import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
 import Link from 'antd/es/typography/Link.js';
+import userApiURI from '../../../Utility/userApiURI.js';
 const { TextArea } = Input;
 const dayjs = require('dayjs');
 const { deleteRecord } = apiURI;
@@ -951,7 +952,7 @@ const DetailView = ({ itemId }) => {
         });
     };
 
-    const handleAccess = (e) => {
+    const handleAccess = async (e) => {
         if (!ability.can('access', moduleName)) {
             e.preventDefault(); // Evita a navegação
             showNotification(
@@ -963,6 +964,22 @@ const DetailView = ({ itemId }) => {
                     {moduleName == "charts" && (<Text>A criação de novos painéis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     {moduleName == "kanban" && (<Text>A criação de novos kanbans não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
+                </>,
+                'bottom',
+                'error',
+                10,
+                600,
+                true
+            )
+        }
+        const usedUsers = await userApiURI.checkUsedUsers()
+        if(usedUsers.users == usedUsers.active_users) {
+            e.preventDefault()
+            showNotification(
+                '',
+                <>
+                    {moduleName == "users" && (<Text>Você atingiu o limite de novos usuários para o plano contratado. Contrate novos usuários para continuar criando.{' '}</Text>)}
+                    {/* <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link> */}
                 </>,
                 'bottom',
                 'error',

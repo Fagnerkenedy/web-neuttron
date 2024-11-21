@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -11,6 +11,7 @@ import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
 import { fetchModules } from '../selection/fetchModules.js';
 import dayjs from 'dayjs';
+import userApiURI from '../../../Utility/userApiURI.js';
 
 const { TextArea } = Input;
 const { deleteRecord } = apiURI;
@@ -298,7 +299,7 @@ const CreateView = ({ itemId }) => {
             };
 
             const updatedRelatedFieldData = relatedFieldData ? [...relatedFieldData] : [];
-            console.log("apapapapapa: ",updatedRelatedFieldData)
+            console.log("apapapapapa: ", updatedRelatedFieldData)
             updatedRelatedFieldData.push(fieldToUpdate5);
 
             setRelatedFieldData1(updatedRelatedFieldData);
@@ -324,7 +325,7 @@ const CreateView = ({ itemId }) => {
             };
 
             const updatedRelatedFieldData = relatedFieldData1 ? [...relatedFieldData1] : [];
-            console.log("apapapapapa: ",updatedRelatedFieldData)
+            console.log("apapapapapa: ", updatedRelatedFieldData)
             updatedRelatedFieldData.push(fieldToUpdate5);
 
             setRelatedFieldData2(updatedRelatedFieldData);
@@ -371,6 +372,21 @@ const CreateView = ({ itemId }) => {
         } catch (error) {
             console.error("Erro ao atualizar os dados:", error);
         }
+    };
+
+    const showNotification = (message, description, placement, type, duration, width, pauseOnHover) => {
+        if (!type) type = 'info';
+        notification[type]({ // success, info, warning, error
+            message: message,
+            description: description,
+            placement: placement, // topLeft, topRight, bottomLeft, bottomRight, top, bottom
+            duration: duration, // 3 (segundos), null (caso não queira que suma sozinho)
+            style: {
+                width: width,
+            },
+            showProgress: true,
+            pauseOnHover
+        });
     };
 
     const handleSave = async () => {
@@ -434,17 +450,50 @@ const CreateView = ({ itemId }) => {
                     fieldToUpdate3['modified_time'] = dayjs()
                 }
 
+                if (moduleName == "users" && fieldToUpdate3.hasOwnProperty("email")) {
+                    const emailCheck = await userApiURI.checkEmail(fieldToUpdate3.email);
+                    console.log("fieldToUpdate3.email> ",fieldToUpdate3.email)
+                    console.log("emailCheck> ",emailCheck)
+                    if (emailCheck.status === 200 && emailCheck.data.success === false) {
+                        showNotification(
+                            '',
+                            <>
+                                {moduleName == "users" && (<Text>O E-mail informado já está cadastrado no sistema.{' '}</Text>)}
+                            </>,
+                            'bottom',
+                            'error',
+                            10,
+                            600,
+                            true
+                        )
+                        return
+                    } else if (emailCheck.status === 400) {
+                        showNotification(
+                            '',
+                            <>
+                                {moduleName == "users" && (<Text>OPS! Houve um erro ao cadastrar. Entre em contato com o suporte.{' '}</Text>)}
+                            </>,
+                            'bottom',
+                            'error',
+                            10,
+                            600,
+                            true
+                        )
+                        return
+                    }
+                }
+
                 console.log("create: ", fieldToUpdate3)
                 const create = await axios.post(`${linkApi}/crm/${org}/${moduleName}/record`, fieldToUpdate3, config);
                 const record_id = create.data.record_id
-                
+
                 const updatedRelatedFieldData = [...records, ...relatedFieldData1, ...relatedFieldData2].map((item) => {
                     return {
                         ...item,
                         module_id: record_id,
                     };
                 });
-                
+
                 // console.log("batyatatatattatataytfdghjfhjghjkgjkgbhjkgjyhftyuvghjbjkghyuigyuibjbn1: ",relatedFieldData1)
                 // const newRelatedFieldDataa = relatedFieldData1.map((item) => {
                 //     console.log("iterererem: ",item)
@@ -520,11 +569,11 @@ const CreateView = ({ itemId }) => {
         setOpenQuickCreate(true)
     }
 
-    
-    
+
+
 
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
-        console.log("fieldifekldfiel: ",fieldData.api_name)
+        console.log("fieldifekldfiel: ", fieldData.api_name)
         if (fieldData.related_module != null && fieldData.field_type == "loockup") {
             return (
                 <div>
