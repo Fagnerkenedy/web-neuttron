@@ -101,7 +101,7 @@ const KanbanBoard = ({ data }) => {
           {columns != '' && field != '' ? (Object.entries(columns).map(([columnId, column]) => (
             <Droppable droppableId={columnId} key={columnId}>
               {(provided, snapshot) => (
-                <Tooltip title={column.name}>
+                // <Tooltip title={column.name}>
                   <Card
                     title={column.name
                       // colors.map((color) => (
@@ -178,7 +178,7 @@ const KanbanBoard = ({ data }) => {
                       {provided.placeholder}
                     </div>
                   </Card>
-                </Tooltip>
+                // </Tooltip> 
               )}
             </Droppable>
           ))) : (
