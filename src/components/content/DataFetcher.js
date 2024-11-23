@@ -55,6 +55,7 @@ export const fetchData = async (org, moduleName) => {
     };
 
     const result = groupRecords(response.data);
+    console.log("avião: ", result)
     // const recordsData = response.data;
     // const data = recordsData.map((record) => {
     //   const recordObject = { key: record.field_api_name, name: record.field_value };

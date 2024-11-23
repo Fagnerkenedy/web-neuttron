@@ -70,7 +70,7 @@ const AppContent = () => {
                     </Content>
                 </Layout >
             ) : (
-                <Kanban />
+                <Kanban data={tableData} />
             )}
         </Content >
     );

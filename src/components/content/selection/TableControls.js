@@ -7,7 +7,6 @@ import { fetchModules } from './fetchModules.js';
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
 import { EllipsisOutlined, SwapOutlined, UnorderedListOutlined } from '@ant-design/icons';
-import ColumnsOrder from './ColumnsOrder.js';
 import axios from 'axios';
 import userApiURI from '../../../Utility/userApiURI.js';
 import { useNavigate } from 'react-router-dom';
@@ -199,7 +198,6 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
             }
             onChange={(value) => handleChange(value)}
           />
-          <ColumnsOrder />
           {totalItems > pageSize && (
             <Pagination simple={{ readOnly: true }} responsive={true} size='small' current={currentPage} pageSize={pageSize} total={totalItems} onChange={onPageChange} />
           )}

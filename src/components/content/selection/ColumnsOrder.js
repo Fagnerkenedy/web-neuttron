@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Button, Card, Checkbox, Dropdown, Input, Menu, theme, Tooltip, Typography } from 'antd';
+import { Button, Card, Checkbox, Col, Dropdown, Input, Menu, Row, theme, Tooltip, Typography } from 'antd';
 import axios from 'axios';
-import { ColumnHeightOutlined, EllipsisOutlined, SearchOutlined, SortAscendingOutlined } from '@ant-design/icons';
+import { ColumnHeightOutlined, DragOutlined, EllipsisOutlined, HolderOutlined, SearchOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import { useOutletContext } from 'react-router-dom';
 const { useToken } = theme;
 
-const ColumnsOrder = () => {
+const ColumnsOrder = ({ reload }) => {
     const [items, setItems] = useState([]);
     const [visible, setVisible] = useState(false);
     const ref = useRef(null);
@@ -52,6 +52,7 @@ const ColumnsOrder = () => {
 
         setItems(updatedItems);
         updateKanbanOrder(updatedItems);
+        reload()
     };
 
     const contentStyle = {
@@ -84,6 +85,7 @@ const ColumnsOrder = () => {
         setItems(updatedItems);
         const updatedField = { id, is_visible_in_kanban: checked }
         await axios.post(`/kanbans/updateVisibleFields/${org}/${moduleName}`, updatedField, apiConfig);
+        reload()
     }
 
     const menu = (
@@ -127,7 +129,8 @@ const ColumnsOrder = () => {
                                                     width: '100%'
                                                 }}
                                             >
-                                                <Checkbox checked={item.is_visible_in_kanban} onChange={(e) => handleCheckboxChange(item.id, e.target.checked)} style={{ marginRight: 8 }} />
+                                                <HolderOutlined />
+                                                <Checkbox checked={item.is_visible_in_kanban} onChange={(e) => handleCheckboxChange(item.id, e.target.checked)} style={{ marginRight: 8, marginLeft: 8 }} />
                                                 <Text style={{ color: darkMode ? '#fff' : '#000' }}>
                                                     {item.name}
                                                 </Text>
@@ -147,7 +150,7 @@ const ColumnsOrder = () => {
     return (
         <Dropdown
             overlay={menu}
-            style={{ padding: 5 }}
+            style={{ padding: 5, position: 'absolute', display: 'flex' }}
             onVisibleChange={(visible) => setIsOpen(visible)}
             visible={isOpen}
             trigger={['click']}
@@ -161,7 +164,7 @@ const ColumnsOrder = () => {
             )}
         >
             <Tooltip title="Configurar campos" placement="left">
-                <Button style={{ marginLeft: 10 }} type='text' onClick={openSelect} icon={<ColumnHeightOutlined />} />
+                <Button style={{ marginLeft: 10 }} variant="filled" onClick={openSelect} icon={<EllipsisOutlined />} />
             </Tooltip>
         </Dropdown>
     );
