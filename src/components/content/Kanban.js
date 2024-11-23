@@ -66,12 +66,14 @@ const KanbanBoard = ({ data }) => {
         [source.droppableId]: { ...sourceColumn, items: sourceItems },
         [destination.droppableId]: { ...destColumn, items: destItems },
       });
-      data[0][field] = destination.droppableId
-      delete data[0].key
-      delete data[0].created_at
-      delete data[0].updated_at
-      console.log("dados enviados ao servidor SEM O KEY: ", data)
-      await axios.put(`/crm/${org}/${moduleName}/${draggableId}`, data, apiConfig);
+
+      const dataRecord = data.find(registro => registro.key === draggableId)
+      dataRecord[field] = destination.droppableId
+      const newJson = { ...dataRecord }
+      delete newJson.key
+      delete newJson.created_at
+      delete newJson.updated_at
+      await axios.put(`/crm/${org}/${moduleName}/${draggableId}`, newJson, apiConfig);
     }
     fetchStages()
   };
