@@ -70,6 +70,7 @@ const KanbanBoard = ({ data }) => {
       delete data[0].key
       delete data[0].created_at
       delete data[0].updated_at
+      console.log("dados enviados ao servidor SEM O KEY: ", data)
       await axios.put(`/crm/${org}/${moduleName}/${draggableId}`, data, apiConfig);
     }
     fetchStages()
