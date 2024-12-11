@@ -170,6 +170,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
                   moduleName == "profiles" ? ("Perfil") :
                     moduleName == "functions" ? ("Função") :
                       moduleName == "charts" ? ("Painel") :
+                        moduleName == "kanban" ? ("Kanban") :
                         (toSingular(activeModule))}
             </Button>
           </Flex>

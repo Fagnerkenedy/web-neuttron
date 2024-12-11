@@ -517,7 +517,7 @@ const DetailView = ({ itemId }) => {
                     ]}
                 >
                     <Tooltip title={`Ir para ${fieldData.field_value}`}>
-                        <Link style={{ color: '#1a73e8' }} href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`}>{fieldData.field_value}</Link>
+                        <Link style={{ color: '#1a73e8' }} href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`}>{fieldData.field_value ? fieldData.field_value : "—"}</Link>
                     </Tooltip>
                     {/* <Select
                         showSearch
@@ -564,7 +564,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
                     {/* <Select
                         showSearch
                         optionFilterProp="children"
@@ -598,7 +598,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
                     {/* <DatePicker
                         locale={locale}
                         style={{height: '100%', width: "100%"}}
@@ -623,7 +623,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{toDateTime}</Text>
+                    <Text>{toDateTime ? toDateTime : "—"}</Text>
                     {/* <DatePicker
                         disabled
                         showTime
@@ -648,7 +648,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
                     {/* <TextArea
                         // style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                         rows={1}
@@ -690,7 +690,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
                     {/* <InputNumber
                         style={{ width: "100%" }}
                         defaultValue={fieldData.field_value}
@@ -711,7 +711,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
                     {/* <InputNumber
                         style={{ width: "100%" }}
                         prefix="R$"
@@ -740,7 +740,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
                     {/* <Input
                         allowClear
                         placeholder="Insira um e-mail"
@@ -762,7 +762,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>+55 {fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? `+55 ${fieldData.field_value}` : "—"}</Text>
                     {/* <Input
                         allowClear
                         addonBefore="+55"
@@ -784,7 +784,7 @@ const DetailView = ({ itemId }) => {
                 <TextArea
                     // style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                     rows={18}
-                    defaultValue={fieldData.field_value}
+                    defaultValue={fieldData.field_value ? fieldData.field_value : "—"}
                     maxLength={extractNumbers(fieldData.type)}
                     showCount
                     readOnly
@@ -802,7 +802,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value}</Text>
+                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
                 </Form.Item>
             )
         }

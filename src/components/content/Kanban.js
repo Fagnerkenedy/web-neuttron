@@ -166,7 +166,7 @@ const KanbanBoard = ({ data }) => {
                                     return (
                                       <Row>
                                         <Text>
-                                          {key == 'id' ? '' : value}
+                                          {key == 'id' ? '' : key == 'montante' ? ` R$ ${value.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")}` : value }
                                         </Text>
                                       </Row>
                                     )

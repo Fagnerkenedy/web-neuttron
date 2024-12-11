@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification, Table } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -54,6 +54,7 @@ const CreateView = ({ itemId }) => {
     const [selectedModule, setSelectedModule] = useState(null);
     const [quickCreate, setOpenQuickCreate] = useState(false);
     const [selectedRelatedModule, setSelectedRelatedModule] = useState('')
+    const [dataSource, setDataSource] = useState([]);
     const localUser = localStorage.getItem('user')
     const user = JSON.parse(localUser)
 
@@ -271,6 +272,19 @@ const CreateView = ({ itemId }) => {
     }
 
     const handleFieldChange = (sectionIndex, index, value, api_name, column) => {
+        setDataSource((prevDataSource) =>
+            prevDataSource.map((row, rowIndex) =>
+                rowIndex === index
+                    ? {
+                        ...row,
+                        [api_name]: value, // Atualiza apenas o campo necessário
+                    }
+                    : row
+            )
+        );
+        console.log("DataSource sectionIndex: ", sectionIndex)
+        console.log("DataSource index: ", index)
+        console.log("DataSource: ", dataSource)
 
         console.log("value checked?: ", value)
         const updatedData = [...sections];
@@ -452,8 +466,8 @@ const CreateView = ({ itemId }) => {
 
                 if (moduleName == "users" && fieldToUpdate3.hasOwnProperty("email")) {
                     const emailCheck = await userApiURI.checkEmail(fieldToUpdate3.email);
-                    console.log("fieldToUpdate3.email> ",fieldToUpdate3.email)
-                    console.log("emailCheck> ",emailCheck)
+                    console.log("fieldToUpdate3.email> ", fieldToUpdate3.email)
+                    console.log("emailCheck> ", emailCheck)
                     if (emailCheck.status === 200 && emailCheck.data.success === false) {
                         showNotification(
                             '',
@@ -589,7 +603,7 @@ const CreateView = ({ itemId }) => {
 
 
 
-    const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
+    const renderField = (fieldData, index, onChange, onChangeRelatedModule, source) => {
         console.log("fieldifekldfiel: ", fieldData.api_name)
         if (fieldData.related_module != null && fieldData.field_type == "loockup") {
             return (
@@ -601,8 +615,8 @@ const CreateView = ({ itemId }) => {
                         onCancel={() => setOpenQuickCreate(false)}
                     />
                     <Form.Item
-                        label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                        name={fieldData.api_name}
+                        label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                        name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                         rules={[
                             {
                                 required: fieldData.required,
@@ -657,8 +671,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "loockup_field") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -716,8 +730,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "select") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -755,8 +769,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "date") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -778,8 +792,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type === "date_time") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -802,8 +816,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "multi_line") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -827,8 +841,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "checkbox") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     valuePropName="checked"
                     rules={[
                         {
@@ -847,8 +861,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "number") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -870,8 +884,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "currency") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -902,8 +916,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "email") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -929,8 +943,8 @@ const CreateView = ({ itemId }) => {
         } else if (fieldData.field_type == "phone") {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -984,8 +998,8 @@ const CreateView = ({ itemId }) => {
         } else {
             return (
                 <Form.Item
-                    label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
-                    name={fieldData.api_name}
+                    label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
+                    name={source == "subform" ? `${fieldData.api_name}_${index}` : fieldData.api_name}
                     rules={[
                         {
                             required: fieldData.required,
@@ -1005,6 +1019,47 @@ const CreateView = ({ itemId }) => {
             );
         }
     }
+
+    // Adicionar nova linha Subformulário
+    const addRow = (section) => {
+        const newRow = section.left.reduce(
+            (acc, field) => ({
+                ...acc,
+                [field.api_name]: "",
+            }),
+            { key: dataSource.length + 1 } // Adicione um identificador único
+        );
+        console.log("New Row: ", newRow)
+        setDataSource((prevDataSource) => [...prevDataSource, newRow]);
+        console.log("New Row dataSource: ", dataSource)
+    };
+
+    // Remover linha
+    const removeRow = (index) => {
+        const newData = [...dataSource];
+        newData.splice(index, 1);
+        setDataSource(newData);
+        calculateTotals(newData);
+    };
+
+    // Atualizar valores
+    const handleValueChange = (value, index, key) => {
+        const newData = [...dataSource];
+        newData[index][key] = value;
+        setDataSource(newData);
+        calculateTotals(newData);
+    };
+
+    // Calcular totais
+    const calculateTotals = (data) => {
+        const totalQty = data.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        const subTotal = data.reduce(
+            (sum, item) => sum + (item.quantity * item.price || 0),
+            0
+        );
+
+        // setTotalValues({ totalQty, subTotal });
+    };
 
     return (
         <div>
@@ -1056,7 +1111,6 @@ const CreateView = ({ itemId }) => {
                         </div>
                         <div style={{ padding: '15px 0' }}>
                             <Content className='content'>
-
                                 <Layout
                                     style={{
                                         background: colorBgContainer,
@@ -1072,37 +1126,105 @@ const CreateView = ({ itemId }) => {
                                                 {sections.map((section, sectionIndex) => (
                                                     <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
                                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
+                                                        {section.field_type == "subform" && (
+                                                            <Row gutter={16} style={{ paddingTop: '15px', paddingBottom: '25px' }}>
+                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                    <Table
+                                                                        dataSource={dataSource}
+                                                                        columns={[
+                                                                            {
+                                                                                title: "N.º",
+                                                                                dataIndex: "key",
+                                                                                width: 80,
+                                                                                render: (_, __, index) => index + 1,
+                                                                            },
+                                                                            ...section.left.map((field, fieldIndex) => ({
+                                                                                title: field.name,
+                                                                                dataIndex: field.api_name,
+                                                                                render: (text, record, rowIndex) => (
+                                                                                    renderField(
+                                                                                        field,
+                                                                                        rowIndex,
+                                                                                        (newValue) => handleFieldChange(sectionIndex, rowIndex, newValue, field.api_name, 'left'),
+                                                                                        (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'),
+                                                                                        "subform"
+                                                                                    )
+                                                                                ),
+                                                                            })),
+                                                                            {
+                                                                                title: "Total (R$)",
+                                                                                dataIndex: "total",
+                                                                                width: 150,
+                                                                                render: (_, record) => <span>{(record.quantidade * record.valor_unit_rio - record.desconto__r__ || 0).toFixed(2)}</span>,
+                                                                            },
+                                                                            {
+                                                                                title: "Ações",
+                                                                                dataIndex: "actions",
+                                                                                width: 100,
+                                                                                render: (_, __, index) => (
+                                                                                    <Button danger onClick={() => removeRow(index)}>
+                                                                                        Remover
+                                                                                    </Button>
+                                                                                ),
+                                                                            },]}
+                                                                        pagination={false}
+                                                                        rowKey={(record, index) => index}
+                                                                        summary={() => (
+                                                                            <>
+                                                                                <Table.Summary.Row>
+                                                                                    <Table.Summary.Cell index={0} colSpan={2}>
+                                                                                        Soma das Qtdes
+                                                                                    </Table.Summary.Cell>
+                                                                                    <Table.Summary.Cell index={1}>{10}</Table.Summary.Cell>
+                                                                                </Table.Summary.Row>
+                                                                                <Table.Summary.Row>
+                                                                                    <Table.Summary.Cell index={2} colSpan={2}>
+                                                                                        Sub-total (R$)
+                                                                                    </Table.Summary.Cell>
+                                                                                    <Table.Summary.Cell index={3}>{10}</Table.Summary.Cell>
+                                                                                </Table.Summary.Row>
+                                                                            </>
+                                                                        )}
+                                                                    />
+                                                                    <Button type="dashed" onClick={() => addRow(section)} style={{ marginTop: 16 }}>
+                                                                        + Adicionar linha
+                                                                    </Button>
+                                                                </Col>
+                                                            </Row>
+                                                        )}
+                                                        {section.field_type != "subform" && (
+                                                            <Row gutter={16} style={{ paddingTop: '15px' }}>
+                                                                <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                                    {section.left.map((field, fieldIndex) => (
+                                                                        <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
+                                                                            <Row>
+                                                                                {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                                <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                            </Col> */}
+                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                    {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </div>
+                                                                    ))}
+                                                                </Col>
+                                                                <Col span={(moduleName == "functions" ? 24 : 12)}>
+                                                                    {section.right.map((field, fieldIndex) => (
+                                                                        <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
+                                                                            <Row>
+                                                                                {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                                <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
+                                                                            </Col> */}
+                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                    {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </div>
+                                                                    ))}
+                                                                </Col>
 
-                                                        <Row gutter={16} style={{ paddingTop: '15px' }}>
-                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                                {section.left.map((field, fieldIndex) => (
-                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
-                                                                        <Row>
-                                                                            {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-                                                                                <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
-                                                                            </Col> */}
-                                                                            <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
-                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
-                                                                            </Col>
-                                                                        </Row>
-                                                                    </div>
-                                                                ))}
-                                                            </Col>
-                                                            <Col span={(moduleName == "functions" ? 24 : 12)}>
-                                                                {section.right.map((field, fieldIndex) => (
-                                                                    <div key={field.id} style={{ padding: '5px 0', minHeight: '66px' }}>
-                                                                        <Row>
-                                                                            {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
-                                                                                <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
-                                                                            </Col> */}
-                                                                            <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
-                                                                                {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
-                                                                            </Col>
-                                                                        </Row>
-                                                                    </div>
-                                                                ))}
-                                                            </Col>
-                                                        </Row>
+                                                            </Row>
+                                                        )}
                                                     </Col>
                                                 ))}
                                             </Row>

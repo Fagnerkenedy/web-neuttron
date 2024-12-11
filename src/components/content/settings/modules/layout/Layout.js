@@ -130,7 +130,8 @@ const initialItems = [
   // { id: 'add-list', name: 'Nova Seção', field_type: 'section' }
 ];
 const sectionItems = [
-  { id: 'add-list', name: 'Nova Seção', field_type: 'section' }
+  { id: 'add-list', name: 'Nova Seção', field_type: 'section' },
+  // { id: 'add-list-subform', name: 'Subformulário', field_type: 'section' },
 ]
 
 const DragAndDrop = () => {
@@ -238,6 +239,7 @@ const DragAndDrop = () => {
       sectionsData.forEach(section => {
         const sectionId = section.id;
         const sectionName = section.name;
+        const fieldType = section.field_type;
 
         const leftFields = section.fields.left || [];
         const rightFields = section.fields.right || [];
@@ -257,7 +259,7 @@ const DragAndDrop = () => {
           left: leftFields,
           right: rightFields
         };
-        newSectionOrder.push({ sectionId, sectionName, field_type: "section" });
+        newSectionOrder.push({ sectionId, sectionName, field_type: fieldType != "" ? fieldType : "section" });
 
       });
 
@@ -358,7 +360,17 @@ const DragAndDrop = () => {
 
         setSectionOrder(result)
         return;
-      }
+      } else
+        if (draggedItem.id === 'add-list-subform') {
+          const newSectionId = uuid();
+          setSections(prevSections => ({ ...prevSections, [newSectionId.split('-')[0]]: { left: [], right: [] } }));
+
+          const result = Array.from(sectionOrder);
+          result.splice(destination.index, 0, { sectionId: newSectionId.split('-')[0], sectionName: "Subformulário", field_type: "subform" });
+
+          setSectionOrder(result)
+          return;
+        }
       // showModal(draggedItem);
     }
     if (source.droppableId == 'section-draggable' && destination.droppableId == 'section-draggable') {
@@ -531,9 +543,10 @@ const DragAndDrop = () => {
       }
     };
 
-    const sectionsData = sectionOrder.map(({ sectionId, sectionName }) => ({
+    const sectionsData = sectionOrder.map(({ sectionId, sectionName, field_type }) => ({
       id: sectionId,
       name: sectionName,
+      field_type: field_type,
       fields: sections[sectionId]
     }));
 
@@ -961,19 +974,6 @@ const DragAndDrop = () => {
               header="Novos campos"
               key="1"
               style={{ width: 242 }}
-              extra={
-                <Tooltip title="Visualizar tour">
-                  <Button
-                    type="text"
-                    shape="circle"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setModulesTour(true)
-                    }}
-                    icon={<QuestionCircleOutlined />}
-                  />
-                </Tooltip>
-              }
             >
               <Droppable droppableId="section-draggable" type="section">
                 {(provided, snapshot) => (
@@ -1216,7 +1216,20 @@ const DragAndDrop = () => {
               </Text>
             </Col>
             <Col style={{ margin: '0 15px 0 0' }}>
-              <Button href={`/${org}/settings/modules`}>Cancelar</Button>
+              <Tooltip title="Visualizar tour">
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setModulesTour(true)
+                  }}
+                  icon={<QuestionCircleOutlined />}
+                />
+              </Tooltip>
+              <Button href={`/${org}/settings/modules`} style={{ marginLeft: 16 }}>
+                Cancelar
+              </Button>
               <Button ref={ref3} type="primary" onClick={saveChanges} style={{ marginLeft: 16 }}>
                 Salvar
               </Button>
@@ -1244,6 +1257,7 @@ const DragAndDrop = () => {
                 {sectionOrder.length > 0 ? sectionOrder.map((dados, index) => {
                   const sectionId = dados.sectionId
                   const sectionName = dados.sectionName
+                  const fieldType = dados.field_type
                   return (
                     <Draggable key={sectionId} draggableId={sectionId} index={index}>
                       {(provided, snapshot) => (
@@ -1275,286 +1289,383 @@ const DragAndDrop = () => {
                             onClick={() => handleSectionClick(dados, sectionId, index)}
                             ref={ref2}
                           >
-                            <DragContainer>
-                              <Droppable droppableId={`left-SECTION-${sectionId}`}>
-                                {(provided, snapshot) => (
-                                  <Column
-                                    ref={provided.innerRef}
-                                    isDraggingOver={snapshot.isDraggingOver}
-                                    style={{
-                                      maxHeight: smallHeight ? '170px' : '',
-                                      overflow: smallHeight ? 'hidden' : '',
-                                      backgroundColor: snapshot.isDraggingOver
-                                        ? (darkMode ? '#3a3a3c' : '#e6f7ff')
-                                        : '',
-                                      border: snapshot.isDraggingOver
-                                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                                        : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
-                                    }}>
-                                    {sections[sectionId]?.left.length
-                                      ? sections[sectionId].left.map((item, index) => (
-                                        <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                                          {(provided, snapshot) => (
-                                            <div
-                                              ref={provided.innerRef}
-                                              {...provided.draggableProps}
-                                              style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                width: '100%',
-                                                ...provided.draggableProps.style,
-                                                transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition
-                                              }}
-                                            >
-                                              <Card
-                                                {...provided.dragHandleProps}
-                                                isDragging={snapshot.isDragging}
+                            {fieldType == "subform" && (
+                              <DragContainer>
+                                <Droppable droppableId={`left-SECTION-${sectionId}`} direction="horizontal">
+                                  {(provided, snapshot) => (
+                                    <Column
+                                      ref={provided.innerRef}
+                                      isDraggingOver={snapshot.isDraggingOver}
+                                      style={{
+                                        display: 'flex',
+                                        // flexWrap: 'wrap',
+                                        gap: '24px',
+                                        width: '100%', // Define a largura baseada no pai
+                                        maxWidth: '100%', // Garante que o tamanho não ultrapasse o limite
+                                        overflowX: 'auto', // Ativa a barra de rolagem horizontal
+                                        position: 'relative',
+                                        maxHeight: smallHeight ? '170px' : '',
+                                        overflow: smallHeight ? 'hidden' : '',
+                                        backgroundColor: snapshot.isDraggingOver
+                                          ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                                          : '',
+                                        border: snapshot.isDraggingOver
+                                          ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                                          : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                      }}>
+                                      {sections[sectionId]?.left.length
+                                        ? sections[sectionId].left.map((item, index) => (
+                                          <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                            {(provided, snapshot) => (
+                                              <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
                                                 style={{
-                                                  flex: 1,
-                                                  cursor: 'pointer',
-                                                  marginBottom: '8px',
+                                                  // display: 'flex',
+                                                  // justifyContent: 'space-between',
+                                                  alignItems: 'center',
+                                                  width: '120px',
+                                                  ...provided.draggableProps.style,
+                                                  transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition
                                                 }}
-                                                className='draggable-card'
-                                                hoverable={true}
-                                                size="small"
-                                                onClick={(e) => {
-                                                  e.stopPropagation()
-                                                  handleMenuClick(item, 'left', sectionId, index)
-                                                }}
-                                              // hoverable
                                               >
-                                                <Row justify="space-between" align="middle" style={{ width: '100%' }}>
-                                                  <Col span={8}>
-                                                    <Form.Item
-                                                      label={<span>{item.name}</span>}
-                                                      name={item.name}
-                                                      rules={[
-                                                        {
-                                                          required: item.required,
-                                                          message: 'Este campo é obrigatório',
-                                                        },
-                                                      ]}
-                                                      colon={false}
-                                                      style={{ height: "10px" }}
-                                                    ></Form.Item>
-                                                  </Col>
-                                                  <Col>
-                                                    {item.field_type === "single_line" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Linha Única</Text>
+                                                <Row>
+                                                  <Card
+                                                    {...provided.dragHandleProps}
+                                                    isDragging={snapshot.isDragging}
+                                                    style={{
+                                                      // flex: 1,
+                                                      cursor: 'pointer',
+                                                      marginBottom: '8px',
+                                                    }}
+                                                    className='draggable-card'
+                                                    hoverable={true}
+                                                    size="small"
+                                                    onClick={(e) => {
+                                                      e.stopPropagation()
+                                                      handleMenuClick(item, 'left', sectionId, index)
+                                                    }}
+                                                  // hoverable
+                                                  >
+                                                    <Row justify="space-between" align="middle" style={{ width: '120px' }}>
+                                                      <Col span={20}>
+                                                        <Form.Item
+                                                          label={<span>{item.name}</span>}
+                                                          name={item.name}
+                                                          rules={[
+                                                            {
+                                                              required: item.required,
+                                                              message: 'Este campo é obrigatório',
+                                                            },
+                                                          ]}
+                                                          colon={false}
+                                                          style={{ height: "10px" }}
+                                                        ></Form.Item>
                                                       </Col>
-                                                    ) : item.field_type === "select" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={DropdownOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Lista de seleção</Text>
+                                                      <Col span={4} style={{ textAlign: 'right' }}>
+                                                        <Button
+                                                          type="text"
+                                                          icon={<CloseOutlined />}
+                                                          onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            handleRemoveField(item.id)
+                                                          }} />
                                                       </Col>
-                                                    ) : item.field_type === "date" ? (
-                                                      <Col><CalendarOutlined /><Text style={{ marginLeft: '6px' }}>Data</Text></Col>
-                                                    ) : item.field_type === "loockup" ? (
-                                                      <Col><SearchOutlined /><Text style={{ marginLeft: '6px' }}>Pesquisar</Text></Col>
-                                                    ) : item.field_type === "currency" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={CurrencyOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Moeda</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "multi_line" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={MultilineOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Multilinha</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "number" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={NumbersOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Número</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "checkbox" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={CheckboxOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Caixa de seleção</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "section" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={SectionOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Nova Seção</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "phone" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={PhoneOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Telefone</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "email" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>E-mail</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "date_time" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Data/Hora</Text>
-                                                      </Col>
-                                                    ) : null}
-                                                  </Col>
-                                                  <Col span={8} style={{ textAlign: 'right' }}>
-                                                    <Button
-                                                      type="text"
-                                                      icon={<CloseOutlined />}
-                                                      onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        handleRemoveField(item.id)
-                                                      }} />
-                                                  </Col>
+                                                    </Row>
+                                                  </Card>
                                                 </Row>
-                                              </Card>
-                                            </div>
-                                          )}
-                                        </Draggable>
-                                      ))
-                                      : !provided.placeholder && <Notice>Drop items here</Notice>}
-                                    {provided.placeholder}
-                                  </Column>
-                                )}
-                              </Droppable>
-                              <Droppable droppableId={`right-SECTION-${sectionId}`}>
-                                {(provided, snapshot) => (
-                                  <Column
-                                    ref={provided.innerRef}
-                                    isDraggingOver={snapshot.isDraggingOver}
-                                    style={{
-                                      maxHeight: smallHeight ? '170px' : '',
-                                      overflow: smallHeight ? 'hidden' : '',
-                                      border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
-                                      backgroundColor: snapshot.isDraggingOver
-                                        ? (darkMode ? '#3a3a3c' : '#e6f7ff')
-                                        : '',
-                                      border: snapshot.isDraggingOver
-                                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                                        : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
-                                    }}
-                                  >
-                                    {sections[sectionId]?.right.length
-                                      ? sections[sectionId].right.map((item, index) => (
-                                        <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                                          {(provided, snapshot) => (
-                                            <div
-                                              ref={provided.innerRef}
-                                              {...provided.draggableProps}
-                                              style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                width: '100%',
-                                                ...provided.draggableProps.style,
-                                                transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition
-                                              }}
-                                            >
-                                              <Card
-                                                {...provided.dragHandleProps}
-                                                isDragging={snapshot.isDragging}
-                                                style={{ flex: 1, cursor: 'pointer', marginBottom: '8px' }}
-                                                className='draggable-card'
-                                                hoverable={true}
-                                                size="small"
-                                                onClick={(e) => {
-                                                  e.stopPropagation()
-                                                  handleMenuClick(item, 'right', sectionId, index)
+                                              </div>
+                                            )}
+                                          </Draggable>
+                                        ))
+                                        : !provided.placeholder && <Notice>Drop items here</Notice>}
+                                      {provided.placeholder}
+                                    </Column>
+                                  )}
+                                </Droppable>
+                              </DragContainer>
+                            )}
+                            {fieldType != "subform" && (
+                              <DragContainer>
+                                <Droppable droppableId={`left-SECTION-${sectionId}`}>
+                                  {(provided, snapshot) => (
+                                    <Column
+                                      ref={provided.innerRef}
+                                      isDraggingOver={snapshot.isDraggingOver}
+                                      style={{
+                                        maxHeight: smallHeight ? '170px' : '',
+                                        overflow: smallHeight ? 'hidden' : '',
+                                        backgroundColor: snapshot.isDraggingOver
+                                          ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                                          : '',
+                                        border: snapshot.isDraggingOver
+                                          ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                                          : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                      }}>
+                                      {sections[sectionId]?.left.length
+                                        ? sections[sectionId].left.map((item, index) => (
+                                          <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                            {(provided, snapshot) => (
+                                              <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                style={{
+                                                  display: 'flex',
+                                                  justifyContent: 'space-between',
+                                                  alignItems: 'center',
+                                                  width: '100%',
+                                                  ...provided.draggableProps.style,
+                                                  transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition
                                                 }}
-                                              // hoverable
                                               >
-                                                <Row justify="space-between" align="middle" style={{ width: '100%' }}>
-                                                  <Col span={8}>
-                                                    <Form.Item
-                                                      label={<span>{item.name}</span>}
-                                                      name={item.name}
-                                                      rules={[
-                                                        {
-                                                          required: item.required,
-                                                          message: 'Este campo é obrigatório',
-                                                        },
-                                                      ]}
-                                                      colon={false}
-                                                      style={{ height: "10px" }}
-                                                    ></Form.Item>
-                                                  </Col>
-                                                  <Col>
-                                                    {item.field_type === "single_line" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Linha Única</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "select" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={DropdownOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Lista de seleção</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "date" ? (
-                                                      <Col><CalendarOutlined /><Text style={{ marginLeft: '6px' }}>Data</Text></Col>
-                                                    ) : item.field_type === "loockup" ? (
-                                                      <Col><SearchOutlined /><Text style={{ marginLeft: '6px' }}>Pesquisar</Text></Col>
-                                                    ) : item.field_type === "currency" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={CurrencyOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Moeda</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "multi_line" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={MultilineOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Multilinha</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "number" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={NumbersOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Número</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "checkbox" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={CheckboxOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Caixa de seleção</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "section" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={SectionOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Nova Seção</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "phone" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={PhoneOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Telefone</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "email" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>E-mail</Text>
-                                                      </Col>
-                                                    ) : item.field_type === "date_time" ? (
-                                                      <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
-                                                        <Text style={{ marginLeft: '6px' }}>Data/Hora</Text>
-                                                      </Col>
-                                                    ) : null}
-                                                  </Col>
-                                                  <Col span={8} style={{ textAlign: 'right' }}>
-                                                    <Button
-                                                      type="text"
-                                                      icon={<CloseOutlined />}
-                                                      onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        handleRemoveField(item.id)
-                                                      }} />
-                                                  </Col>
-                                                </Row>
-                                              </Card>
-                                            </div>
-                                          )}
-                                        </Draggable>
-                                      ))
-                                      : !provided.placeholder && <Notice>Drop items here</Notice>}
-                                    {provided.placeholder}
-                                  </Column>
-                                )}
-                              </Droppable>
-                            </DragContainer>
+                                                <Card
+                                                  {...provided.dragHandleProps}
+                                                  isDragging={snapshot.isDragging}
+                                                  style={{
+                                                    flex: 1,
+                                                    cursor: 'pointer',
+                                                    marginBottom: '8px',
+                                                  }}
+                                                  className='draggable-card'
+                                                  hoverable={true}
+                                                  size="small"
+                                                  onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    handleMenuClick(item, 'left', sectionId, index)
+                                                  }}
+                                                // hoverable
+                                                >
+                                                  <Row justify="space-between" align="middle" style={{ width: '100%' }}>
+                                                    <Col span={8}>
+                                                      <Form.Item
+                                                        label={<span>{item.name}</span>}
+                                                        name={item.name}
+                                                        rules={[
+                                                          {
+                                                            required: item.required,
+                                                            message: 'Este campo é obrigatório',
+                                                          },
+                                                        ]}
+                                                        colon={false}
+                                                        style={{ height: "10px" }}
+                                                      ></Form.Item>
+                                                    </Col>
+                                                    <Col>
+                                                      {item.field_type === "single_line" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Linha Única</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "select" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={DropdownOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Lista de seleção</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "date" ? (
+                                                        <Col><CalendarOutlined /><Text style={{ marginLeft: '6px' }}>Data</Text></Col>
+                                                      ) : item.field_type === "loockup" ? (
+                                                        <Col><SearchOutlined /><Text style={{ marginLeft: '6px' }}>Pesquisar</Text></Col>
+                                                      ) : item.field_type === "currency" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={CurrencyOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Moeda</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "multi_line" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={MultilineOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Multilinha</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "number" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={NumbersOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Número</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "checkbox" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={CheckboxOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Caixa de seleção</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "section" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={SectionOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Nova Seção</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "phone" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={PhoneOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Telefone</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "email" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>E-mail</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "date_time" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Data/Hora</Text>
+                                                        </Col>
+                                                      ) : null}
+                                                    </Col>
+                                                    <Col span={8} style={{ textAlign: 'right' }}>
+                                                      <Button
+                                                        type="text"
+                                                        icon={<CloseOutlined />}
+                                                        onClick={(e) => {
+                                                          e.stopPropagation()
+                                                          handleRemoveField(item.id)
+                                                        }} />
+                                                    </Col>
+                                                  </Row>
+                                                </Card>
+                                              </div>
+                                            )}
+                                          </Draggable>
+                                        ))
+                                        : !provided.placeholder && <Notice>Drop items here</Notice>}
+                                      {provided.placeholder}
+                                    </Column>
+                                  )}
+                                </Droppable>
+                                <Droppable droppableId={`right-SECTION-${sectionId}`}>
+                                  {(provided, snapshot) => (
+                                    <Column
+                                      ref={provided.innerRef}
+                                      isDraggingOver={snapshot.isDraggingOver}
+                                      style={{
+                                        maxHeight: smallHeight ? '170px' : '',
+                                        overflow: smallHeight ? 'hidden' : '',
+                                        border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                        backgroundColor: snapshot.isDraggingOver
+                                          ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                                          : '',
+                                        border: snapshot.isDraggingOver
+                                          ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                                          : darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                      }}
+                                    >
+                                      {sections[sectionId]?.right.length
+                                        ? sections[sectionId].right.map((item, index) => (
+                                          <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                            {(provided, snapshot) => (
+                                              <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                style={{
+                                                  display: 'flex',
+                                                  justifyContent: 'space-between',
+                                                  alignItems: 'center',
+                                                  width: '100%',
+                                                  ...provided.draggableProps.style,
+                                                  transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition
+                                                }}
+                                              >
+                                                <Card
+                                                  {...provided.dragHandleProps}
+                                                  isDragging={snapshot.isDragging}
+                                                  style={{ flex: 1, cursor: 'pointer', marginBottom: '8px' }}
+                                                  className='draggable-card'
+                                                  hoverable={true}
+                                                  size="small"
+                                                  onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    handleMenuClick(item, 'right', sectionId, index)
+                                                  }}
+                                                // hoverable
+                                                >
+                                                  <Row justify="space-between" align="middle" style={{ width: '100%' }}>
+                                                    <Col span={8}>
+                                                      <Form.Item
+                                                        label={<span>{item.name}</span>}
+                                                        name={item.name}
+                                                        rules={[
+                                                          {
+                                                            required: item.required,
+                                                            message: 'Este campo é obrigatório',
+                                                          },
+                                                        ]}
+                                                        colon={false}
+                                                        style={{ height: "10px" }}
+                                                      ></Form.Item>
+                                                    </Col>
+                                                    <Col>
+                                                      {item.field_type === "single_line" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={InputOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Linha Única</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "select" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={DropdownOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Lista de seleção</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "date" ? (
+                                                        <Col><CalendarOutlined /><Text style={{ marginLeft: '6px' }}>Data</Text></Col>
+                                                      ) : item.field_type === "loockup" ? (
+                                                        <Col><SearchOutlined /><Text style={{ marginLeft: '6px' }}>Pesquisar</Text></Col>
+                                                      ) : item.field_type === "currency" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={CurrencyOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Moeda</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "multi_line" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={MultilineOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Multilinha</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "number" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={NumbersOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Número</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "checkbox" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={CheckboxOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Caixa de seleção</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "section" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={SectionOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Nova Seção</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "phone" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={PhoneOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Telefone</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "email" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={EmailOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>E-mail</Text>
+                                                        </Col>
+                                                      ) : item.field_type === "date_time" ? (
+                                                        <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                          <img style={{ width: '16px' }} src={DateTimeOutlined} alt="Logo" />
+                                                          <Text style={{ marginLeft: '6px' }}>Data/Hora</Text>
+                                                        </Col>
+                                                      ) : null}
+                                                    </Col>
+                                                    <Col span={8} style={{ textAlign: 'right' }}>
+                                                      <Button
+                                                        type="text"
+                                                        icon={<CloseOutlined />}
+                                                        onClick={(e) => {
+                                                          e.stopPropagation()
+                                                          handleRemoveField(item.id)
+                                                        }} />
+                                                    </Col>
+                                                  </Row>
+                                                </Card>
+                                              </div>
+                                            )}
+                                          </Draggable>
+                                        ))
+                                        : !provided.placeholder && <Notice>Drop items here</Notice>}
+                                      {provided.placeholder}
+                                    </Column>
+                                  )}
+                                </Droppable>
+                              </DragContainer>)}
                           </Card>
                         </div>
                       )}
