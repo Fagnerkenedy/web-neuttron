@@ -7,6 +7,7 @@ import PageNotFound from "../components/PageNotFound"
 import AuthContext, { AuthProvider } from '../contexts/auth'
 import Loading from '../components/utils/Loading';
 import Home from '../components/content/home/Home';
+import Chats from '../components/content/chats/Chats';
 import AppContent from '../components/content/AppContent';
 import DetailView from '../components/content/detailView/DetailView';
 import CreateView from '../components/content/createView/CreateViewDef';
@@ -75,6 +76,7 @@ function RoutesPage() {
             {/* <Route path="/" element={<Navigate to="/login" />} /> */}
             <Route path="/:org" element={<Private><PageBase /></Private>}>
               <Route path="/:org/home" element={<Home />} />
+              <Route path="/:org/chats" element={<Chats />} />
               <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
               <Route path="/:org/:module/:recordId" element={<AuthorizedRoute action="read" subject={moduleName}><DetailView /></AuthorizedRoute>} />
               <Route path="/:org/:module/create" element={<AuthorizedRoute action="create" subject={moduleName}><CreateView /></AuthorizedRoute>} />
