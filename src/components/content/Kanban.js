@@ -155,9 +155,9 @@ const KanbanBoard = ({ data }) => {
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     fetchStages();
-    await fetchData();
+    fetchData();
   }, []);
 
   const onDragEnd = async (result) => {
