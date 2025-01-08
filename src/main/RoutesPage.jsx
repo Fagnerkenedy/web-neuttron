@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Cadastro from '../components/users/Cadastro'
 import Login from "../components/users/Login"
@@ -21,7 +21,10 @@ import { useAbility } from '../contexts/AbilityContext.js'
 import { ConfigProvider } from 'antd';
 import ptBR from 'antd/lib/locale/pt_BR';
 import NewPassword from '../components/users/NewPassword.jsx';
+import { io } from 'socket.io-client';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
+
+const socket = io('http://localhost:3002');
 
 function RoutesPage() {
   const currentPath = window.location.pathname;
@@ -76,7 +79,7 @@ function RoutesPage() {
             {/* <Route path="/" element={<Navigate to="/login" />} /> */}
             <Route path="/:org" element={<Private><PageBase /></Private>}>
               <Route path="/:org/home" element={<Home />} />
-              <Route path="/:org/chats" element={<Chats />} />
+              <Route path="/:org/chats" element={<Chats socket={socket} />} />
               <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
               <Route path="/:org/:module/:recordId" element={<AuthorizedRoute action="read" subject={moduleName}><DetailView /></AuthorizedRoute>} />
               <Route path="/:org/:module/create" element={<AuthorizedRoute action="create" subject={moduleName}><CreateView /></AuthorizedRoute>} />
@@ -89,8 +92,8 @@ function RoutesPage() {
             <Route path="/:org/checkout" element={<AuthorizedRoute action="read" subject={moduleName}><Payment /></AuthorizedRoute>} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />}  />
-            <Route path="/:orgId/cadastro/nova_senha/:uuid" element={<NewPassword />}  />
+            <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />} />
+            <Route path="/:orgId/cadastro/nova_senha/:uuid" element={<NewPassword />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </ConfigProvider>

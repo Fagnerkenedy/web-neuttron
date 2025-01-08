@@ -10,7 +10,7 @@ import axios from "axios";
 
 const { Text } = Typography;
 
-function Chats() {
+function Chats({ socket }) {
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
@@ -21,6 +21,21 @@ function Chats() {
 
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
+    const [conversations, setConversations] = useState([]);
+    const [currentConversation, setCurrentConversation] = useState(null);
+
+    useEffect(() => {
+        socket.on('newMessage', message => {
+            console.log("nova mensagem: ", message)
+            // if (message.conversationId === currentConversation?.id) {
+                setMessages(prevMessages => [...prevMessages, message]);
+            // }
+        });
+
+        return () => {
+            socket.off('newMessage');
+        };
+    }, [currentConversation]);
 
     const sendMessage = async () => {
         if (input) {
@@ -30,8 +45,8 @@ function Chats() {
             try {
                 const response = await axios.post(`${process.env.REACT_APP_LINK_API}/chat/send-message`, {
                     numberId: '537389792787824',
-                    // to: '5545999792202',
-                    to: '5545988057396',
+                    to: '5545999792202',
+                    // to: '5545988057396',
                     message: input,
                 });
                 console.log('Mensagem enviada:', response.data);
