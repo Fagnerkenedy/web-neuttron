@@ -50,7 +50,7 @@ function Chats({ socket }) {
     useEffect(() => {
         socket.on('newMessage', message => {
             console.log("nova mensagem: ", message)
-            const newMessage = { from: message.value.contacts[0].profile.name, body: message.value.messages[0].text.body };
+            const newMessage = { from: message.contacts[0].profile.name, body: message.messages[0].text.body };
             // if (message.conversationId === currentConversation?.id) {
             setMessages(prevMessages => [...prevMessages, newMessage]);
             // }
