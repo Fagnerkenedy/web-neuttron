@@ -25,6 +25,7 @@ import { io } from 'socket.io-client';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
 const socket = io(process.env.REACT_APP_LINK_API);
+console.log("process env: ",process.env.REACT_APP_LINK_API)
 
 function RoutesPage() {
   const currentPath = window.location.pathname;

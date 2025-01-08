@@ -24,11 +24,35 @@ function Chats({ socket }) {
     const [conversations, setConversations] = useState([]);
     const [currentConversation, setCurrentConversation] = useState(null);
 
+
+    useEffect(() => {
+        console.log("testetert")
+        socket.on('connect', () => {
+            console.log("conectado!")
+        });
+        socket.on('disconnect', () => {
+            console.log("desconectado!")
+        });
+        socket.on('message', data => {
+            console.log("mensagem!")
+        });
+        socket.on('error', (error) => {
+            console.error("Erro na conexão:", error);
+        });
+        return () => {
+            socket.off('connect');
+            socket.off('disconnect');
+            socket.off('message');
+            socket.off('error');
+        };
+    }, []);
+
     useEffect(() => {
         socket.on('newMessage', message => {
             console.log("nova mensagem: ", message)
+            const newMessage = { from: message.value.contacts[0].profile.name, body: message.value.messages[0].text.body };
             // if (message.conversationId === currentConversation?.id) {
-                setMessages(prevMessages => [...prevMessages, message]);
+            setMessages(prevMessages => [...prevMessages, newMessage]);
             // }
         });
 
