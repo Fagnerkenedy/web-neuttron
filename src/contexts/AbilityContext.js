@@ -12,9 +12,7 @@ export const AbilityProvider = ({ children }) => {
 
     const updateAbility = async () => {
         const permissions = await fetchPermissions()
-        console.log("permissions a",permissions)
         setAbility(defineAbilitiesFor(permissions.permissions[0]))
-        console.log("abilities",ability)
         setLoading(false);
     };
 

@@ -6,7 +6,7 @@ import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
 import AuthContext from '../../contexts/auth';
-import { DeleteOutlined, ExclamationOutlined, LogoutOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ExclamationOutlined, LogoutOutlined, MessageOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import ButtonDarkMode from './ButtonDarkMode';
 import './styles.css'
 import Logo from '../utils/Logo';
@@ -170,7 +170,6 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   return (
     <>
       <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '49px', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
-
         <Link
           href={`/${org}/home`}
         >
@@ -178,13 +177,23 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             <Logo fontSize={19} />
           </Row>
         </Link>
-        <HeaderModules 
+        <Col style={{ marginLeft: '15px'}}>
+          <Link
+            href={`/${org}/chats`}
+          >
+            <Tooltip title="Mensagens">
+              <Button type={activeModule === 'chats' ? "text" : "link"} icon={<MessageOutlined />}></Button>
+            </Tooltip>
+          </Link>
+        </Col>
+
+        <HeaderModules
           modules={modules}
           org={org}
           darkMode={darkMode}
           activeModule={activeModule}
           setActiveModule={setActiveModule}
-          ability={ability} 
+          ability={ability}
         />
         <div style={{ marginLeft: 'auto', minWidth: '215px' }}>
           <Row span={24}>

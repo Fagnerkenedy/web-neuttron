@@ -13,7 +13,6 @@ function PageBase() {
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
     const userString = localStorage.getItem('user');
-    console.log("userString Antigo: ", userString)
     const user = JSON.parse(userString)
     const [darkMode, setDarkMode] = useState(user.dark_mode);
 

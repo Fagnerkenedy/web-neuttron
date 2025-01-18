@@ -67,14 +67,14 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
             >
                 Página Inicial
             </Link>
-            <Link
+            {/* <Link
                 className={`modules ${activeModule === 'chats' ? 'active' : ''}`}
                 style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}
                 href={`/${org}/chats`}
                 onClick={() => setActiveModule('chats')}
             >
                 Chats
-            </Link>
+            </Link> */}
 
             {visibleModules.map((module, index) => (
                 <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>

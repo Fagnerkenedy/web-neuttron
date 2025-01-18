@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Cadastro from '../components/users/Cadastro'
 import Login from "../components/users/Login"
@@ -8,6 +8,7 @@ import AuthContext, { AuthProvider } from '../contexts/auth'
 import Loading from '../components/utils/Loading';
 import Home from '../components/content/home/Home';
 import Chats from '../components/content/chats/Chats';
+import Conversations from '../components/content/chats/Conversations';
 import AppContent from '../components/content/AppContent';
 import DetailView from '../components/content/detailView/DetailView';
 import CreateView from '../components/content/createView/CreateViewDef';
@@ -25,7 +26,6 @@ import { io } from 'socket.io-client';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
 const socket = io(process.env.REACT_APP_LINK_API);
-console.log("process env: ",process.env.REACT_APP_LINK_API)
 
 function RoutesPage() {
   const currentPath = window.location.pathname;
@@ -80,7 +80,9 @@ function RoutesPage() {
             {/* <Route path="/" element={<Navigate to="/login" />} /> */}
             <Route path="/:org" element={<Private><PageBase /></Private>}>
               <Route path="/:org/home" element={<Home />} />
-              <Route path="/:org/chats" element={<Chats socket={socket} />} />
+              <Route path="/:org/chats" element={<Chats socket={socket} />}>
+                <Route path="/:org/chats/:conversationId" element={<Conversations socket={socket} />} />
+              </Route>
               <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
               <Route path="/:org/:module/:recordId" element={<AuthorizedRoute action="read" subject={moduleName}><DetailView /></AuthorizedRoute>} />
               <Route path="/:org/:module/create" element={<AuthorizedRoute action="create" subject={moduleName}><CreateView /></AuthorizedRoute>} />

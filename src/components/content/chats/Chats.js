@@ -1,16 +1,20 @@
-import { Button, Card, Col, Input, Layout, List, Row } from "antd";
+import { Badge, Button, Card, Col, Input, Layout, List, Menu, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
-import { useOutletContext } from 'react-router-dom';
+import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import Sider from "antd/es/layout/Sider.js";
 import axios from "axios";
 
 const { Text } = Typography;
 
 function Chats({ socket }) {
+    const apiConfig = {
+        baseURL: process.env.REACT_APP_LINK_API,
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    };
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
@@ -18,17 +22,24 @@ function Chats({ socket }) {
     const userName = JSON.parse(user)
     const { ability, loading } = useAbility();
     const { darkMode } = useOutletContext();
+    let navigate = useNavigate()
 
     const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState('');
     const [conversations, setConversations] = useState([]);
-    const [currentConversation, setCurrentConversation] = useState(null);
+    const { conversationId } = useParams();
 
+    const fetchData = async () => {
+        const response = await axios.get(`/chat/${org}/conversations`, apiConfig);
+        const conversationsResponse = response.data.conversations[0]
+
+        setConversations(conversationsResponse)
+    }
 
     useEffect(() => {
-        console.log("testetert")
-        socket.on('connect', () => {
-            console.log("conectado!")
+        fetchData()
+        socket.emit('identify', { orgId: org });
+        socket.on('connection', () => {
+            console.log("conectadsdfsdo!")
         });
         socket.on('disconnect', () => {
             console.log("desconectado!")
@@ -48,65 +59,67 @@ function Chats({ socket }) {
     }, []);
 
     useEffect(() => {
-        socket.on('newMessage', message => {
-            console.log("nova mensagem: ", message)
-            const newMessage = { from: message.contacts[0].profile.name, body: message.messages[0].text.body };
-            // if (message.conversationId === currentConversation?.id) {
-            setMessages(prevMessages => [...prevMessages, newMessage]);
-            // }
-        });
-
-        return () => {
-            socket.off('newMessage');
+        const handleNewMessage = (message) => {
+            setConversations((prevConversations) => {
+                const existingConversation = prevConversations.find(
+                    (conversation) => conversation.id === message?.conversationId
+                );
+                const updatedConversations = prevConversations.filter(
+                    (conversation) => conversation.id !== message?.conversationId
+                );
+        
+                if (existingConversation) {
+                    // Atualiza a conversa existente
+                    const newConversation = {
+                        id: message.conversationId,
+                        name: message?.senderName,
+                        unread: 1,
+                    };
+            
+                    return [newConversation, ...updatedConversations]
+                } else {
+                    // Adiciona uma nova conversa
+                    return [
+                        {
+                            id: message?.conversationId,
+                            name: message?.senderName,
+                            unread: 1,
+                        },
+                        ...prevConversations,
+                    ];
+                }
+            });
         };
-    }, [currentConversation]);
+        
 
-    const sendMessage = async () => {
-        if (input) {
-            const newMessage = { from: 'Me', body: input };
-            setMessages((prev) => [...prev, newMessage]);
-
-            try {
-                const response = await axios.post(`${process.env.REACT_APP_LINK_API}/chat/send-message`, {
-                    numberId: '537389792787824',
-                    to: '5545999792202',
-                    // to: '5545988057396',
-                    message: input,
-                });
-                console.log('Mensagem enviada:', response.data);
-            } catch (error) {
-                console.error('Erro ao enviar mensagem:', error);
-            }
-
-            setInput('');
-        }
-    };
+        socket.on("newMessage", handleNewMessage);
+    }, [conversationId, socket])
 
     return (
         <Layout style={{ padding: '15px 15px 0 15px' }}>
             <Row gutter={16}>
-                <Sider>
-                    Teste
-                </Sider>
-                <Layout>
-                    <List
-                        bordered
-                        dataSource={messages}
-                        renderItem={(item) => (
-                            <List.Item>
-                                <b>{item.from}:</b> {item.body}
-                            </List.Item>
-                        )}
-                        style={{ marginBottom: '10px', maxHeight: '400px', overflowY: 'auto' }}
-                    />
-                    <Input
-                        placeholder="Digite sua mensagem..."
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onPressEnter={sendMessage}
-                        addonAfter={<Button type="primary" onClick={sendMessage}>Enviar</Button>}
-                    />
-                </Layout>
+                <Menu>
+                    {conversations?.length > 0 ? (
+                        conversations.map((item, index) => {
+                            return (
+                                // <Badge count={item.unread}>
+                                    <Menu.Item
+                                        key={item.id || index}
+                                        style={{ marginBottom: 8 }}
+                                        onClick={() => navigate(`/${org}/chats/${item.id}`)}
+                                    >
+                                        <Text>{item.name}</Text>
+                                    </Menu.Item>
+                                // </Badge> 
+                            );
+                        })
+                    ) : (
+                        <Menu.Item disabled>
+                            <Text>No conversations available</Text>
+                        </Menu.Item>
+                    )}
+                </Menu>
+                <Outlet />
             </Row>
         </Layout>
     )
