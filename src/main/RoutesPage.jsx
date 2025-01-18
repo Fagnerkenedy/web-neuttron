@@ -25,7 +25,7 @@ import NewPassword from '../components/users/NewPassword.jsx';
 import { io } from 'socket.io-client';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
-const socket = io('https://localhost:3003');
+const socket = io('https://crm.neuttron.com.br:3003');
 
 function RoutesPage() {
   const currentPath = window.location.pathname;
