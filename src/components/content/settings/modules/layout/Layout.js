@@ -707,7 +707,8 @@ const DragAndDrop = () => {
         label: item.name,
         char: await extractNumbers(item.type),
         required: item.required,
-        disabled: item.disabled
+        disabled: item.disabled,
+        rows: item.visible_rows || 3
       })
     }
 
@@ -747,6 +748,7 @@ const DragAndDrop = () => {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `TEXT(${values.char})`
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].required = values.required
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].disabled = values.disabled
+        sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].visible_rows = values.rows
       } else if (clickedItem.item.field_type == 'date') {
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].name = values.label
         sections[clickedItem.item.section_id ? clickedItem.item.section_id : clickedItem.section_id][clickedItem.item.position ? clickedItem.item.position : clickedItem.position][clickedItem.index].type = `VARCHAR(255)`
@@ -1760,6 +1762,13 @@ const DragAndDrop = () => {
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <InputNumber changeOnWheel max={16000} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="rows"
+              label="Número de linhas exibidas (Padrão 3)"
+              rules={[{ required: false, message: 'Insira um valor!' }]}
+            >
+              <InputNumber changeOnWheel style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
               name="required"

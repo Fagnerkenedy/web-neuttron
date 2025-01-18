@@ -703,6 +703,7 @@ const EditView = ({ itemId }) => {
                 </Form.Item>
             );
         } else if (fieldData.field_type == "multi_line") {
+            console.log("entrou multiline: ", fieldData)
             return (
                 <Form.Item
                     label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -720,7 +721,7 @@ const EditView = ({ itemId }) => {
                         variant="filled"
                         onFocus={(e) => { e.target.style.overflowY = 'auto'; }}
                         onBlur={(e) => { e.target.style.overflowY = 'hidden'; e.target.scrollTop = 0; }}
-                        rows={1}
+                        rows={fieldData.visible_rows || 3}
                         // defaultValue={fieldData.field_value}
                         onChange={(e) => onChange(e.target.value)}
                         // maxLength={16000}
