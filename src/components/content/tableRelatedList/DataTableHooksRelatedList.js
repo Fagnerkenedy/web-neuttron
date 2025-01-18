@@ -29,6 +29,7 @@ export const useDataTable = ({ related_module, related_id }) => {
     };
 
     fetchDataAndColumns();
+    console.log("askdn",tableData)
   }, []);
 
   return { columns, tableData };

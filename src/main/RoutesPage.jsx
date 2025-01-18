@@ -25,7 +25,7 @@ import NewPassword from '../components/users/NewPassword.jsx';
 import { io } from 'socket.io-client';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
 
-const socket = io(process.env.REACT_APP_LINK_API);
+const socket = io('//localhost');
 
 function RoutesPage() {
   const currentPath = window.location.pathname;
