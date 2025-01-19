@@ -42,6 +42,7 @@ const Conversations = ({ socket }) => {
     useEffect(() => {
         if (conversationId) {
             fetchConversation();
+            scrollToBottom()
         }
     }, [conversationId]);
 
@@ -54,6 +55,7 @@ const Conversations = ({ socket }) => {
 
             if (message?.conversationId === conversationId) {
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
+                scrollToBottom()
             }
         };
 
@@ -69,6 +71,7 @@ const Conversations = ({ socket }) => {
             const newMessage = { senderName: user.name, body: input };
             setMessages((prev) => [...prev, newMessage]);
 
+            console.log("para: ", messages[0]?.contactNumber)
             try {
                 await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",
@@ -83,6 +86,7 @@ const Conversations = ({ socket }) => {
             }
 
             setInput("");
+            scrollToBottom()
         }
     };
 
@@ -123,7 +127,6 @@ const Conversations = ({ socket }) => {
                                             <Space direction="vertical" size={0}>
                                                 {!isMyMessage && <Text strong>{item.senderName}</Text>}
                                                 <Text>{item.body}</Text>
-                                                <Text>{item.contactNumber}</Text>
                                             </Space>
                                         </Card>
                                     </List.Item>
