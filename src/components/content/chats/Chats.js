@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Col, Input, Layout, List, Menu, Row } from "antd";
+import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
@@ -7,8 +7,10 @@ import { useAbility } from '../../../contexts/AbilityContext.js'
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import Sider from "antd/es/layout/Sider.js";
 import axios from "axios";
+import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 
-const { Text } = Typography;
+const { Header, Content } = Layout;
+const { Title, Text } = Typography;
 
 function Chats({ socket }) {
     const apiConfig = {
@@ -18,8 +20,8 @@ function Chats({ socket }) {
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
-    const user = localStorage.getItem('user')
-    const userName = JSON.parse(user)
+    const localUser = localStorage.getItem("user");
+    const user = JSON.parse(localUser);
     const { ability, loading } = useAbility();
     const { darkMode } = useOutletContext();
     let navigate = useNavigate()
@@ -33,6 +35,7 @@ function Chats({ socket }) {
         const conversationsResponse = response.data.conversations[0]
 
         setConversations(conversationsResponse)
+        console.log("conversarioin:",conversations)
     }
 
     useEffect(() => {
@@ -67,7 +70,7 @@ function Chats({ socket }) {
                 const updatedConversations = prevConversations.filter(
                     (conversation) => conversation.id !== message?.conversationId
                 );
-        
+
                 if (existingConversation) {
                     // Atualiza a conversa existente
                     const newConversation = {
@@ -75,7 +78,7 @@ function Chats({ socket }) {
                         name: message?.senderName,
                         unread: 1,
                     };
-            
+
                     return [newConversation, ...updatedConversations]
                 } else {
                     // Adiciona uma nova conversa
@@ -90,7 +93,7 @@ function Chats({ socket }) {
                 }
             });
         };
-        
+
 
         socket.on("newMessage", handleNewMessage);
     }, [conversationId, socket])
@@ -98,7 +101,42 @@ function Chats({ socket }) {
     return (
         <Layout style={{ padding: '15px 15px 0 15px' }}>
             <Row gutter={16}>
-                <Menu>
+                <Sider width={300} theme="light" style={{ borderRight: "1px solid #f0f0f0" }}>
+                    <div style={{ padding: "16px", textAlign: "center" }}>
+                        <Avatar size={64} icon={<UserOutlined />} />
+                        <Title level={4} style={{ marginTop: "8px" }}>
+                            {user.name}
+                        </Title>
+                        <Text type="success">Available</Text>
+                    </div>
+                    <Input
+                        prefix={<SearchOutlined />}
+                        placeholder="Search..."
+                        style={{ marginBottom: "16px", borderRadius: "8px", marginLeft: 15, marginRight: 15 ,width: 270 }}
+                    />
+                    {conversations?.length > 0 ? (
+                        <List
+                            dataSource={conversations}
+                            renderItem={(item) => (
+                                <List.Item onClick={() => navigate(`/${org}/chats/${item.id}`)} style={{ padding: "10px 16px" }}>
+                                    <List.Item.Meta
+                                        avatar={<Avatar icon={<UserOutlined />} />}
+                                        title={item.name}
+                                        // description={item.lastMessage}
+                                    />
+                                </List.Item>
+                            )}
+                        />
+                    ) : (
+                        <Text>Nenhuma conversa disponível</Text>
+                    )}
+                </Sider>
+                {/* <Header style={{ backgroundColor: "#fff", padding: "0 16px", borderBottom: "1px solid #f0f0f0" }}>
+                    <Title level={4} style={{ margin: 0 }}>
+                        Mensagem
+                    </Title>
+                </Header> */}
+                {/* <Menu>
                     {conversations?.length > 0 ? (
                         conversations.map((item, index) => {
                             return (
@@ -118,7 +156,7 @@ function Chats({ socket }) {
                             <Text>No conversations available</Text>
                         </Menu.Item>
                     )}
-                </Menu>
+                </Menu> */}
                 <Outlet />
             </Row>
         </Layout>
