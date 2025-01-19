@@ -36,6 +36,7 @@ const Conversations = ({ socket }) => {
         const conversationResponse = response.data.conversation[0];
         scrollToBottom();
         setMessages(conversationResponse);
+        console.log("messagensss:",messages)
     };
 
     useEffect(() => {
@@ -71,7 +72,7 @@ const Conversations = ({ socket }) => {
             try {
                 await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",
-                    to: "5545999792202",
+                    to: messages[0]?.contactNumber,
                     message: input,
                     conversationId,
                     userName: user.name,
@@ -122,6 +123,7 @@ const Conversations = ({ socket }) => {
                                             <Space direction="vertical" size={0}>
                                                 {!isMyMessage && <Text strong>{item.senderName}</Text>}
                                                 <Text>{item.body}</Text>
+                                                <Text>{item.contactNumber}</Text>
                                             </Space>
                                         </Card>
                                     </List.Item>
