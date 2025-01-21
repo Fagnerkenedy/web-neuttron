@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row } from "antd";
+import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
@@ -35,7 +35,7 @@ function Chats({ socket }) {
         const conversationsResponse = response.data.conversations[0]
 
         setConversations(conversationsResponse)
-        console.log("conversarioin:",conversations)
+        console.log("conversarioin:", conversations)
     }
 
     useEffect(() => {
@@ -100,8 +100,8 @@ function Chats({ socket }) {
 
     return (
         <Layout style={{ padding: '15px 15px 0 15px' }}>
-            <Row gutter={16}>
-                <Sider width={300} theme="light" style={{ borderRight: "1px solid #f0f0f0" }}>
+            <Col span={5}>
+                <Sider width={'100%'} theme="light" style={{ height:'100%', borderRight: "1px solid #f0f0f0" }}>
                     <div style={{ padding: "16px", textAlign: "center" }}>
                         <Avatar size={64} icon={<UserOutlined />} />
                         <Title level={4} style={{ marginTop: "8px" }}>
@@ -112,53 +112,50 @@ function Chats({ socket }) {
                     <Input
                         prefix={<SearchOutlined />}
                         placeholder="Search..."
-                        style={{ marginBottom: "16px", borderRadius: "8px", marginLeft: 15, marginRight: 15 ,width: 270 }}
+                        style={{ marginBottom: "16px", borderRadius: "8px", marginLeft: 15, marginRight: 15, width: "90%" }}
                     />
-                    {conversations?.length > 0 ? (
-                        <List
-                            dataSource={conversations}
-                            renderItem={(item) => (
-                                <List.Item onClick={() => navigate(`/${org}/chats/${item.id}`)} style={{ padding: "10px 16px" }}>
-                                    <List.Item.Meta
-                                        avatar={<Avatar icon={<UserOutlined />} />}
-                                        title={item.name}
-                                        // description={item.lastMessage}
-                                    />
-                                </List.Item>
-                            )}
-                        />
-                    ) : (
-                        <Text>Nenhuma conversa disponível</Text>
-                    )}
+                    <Menu>
+                        {conversations?.length > 0 ? (
+                            conversations.map((item) => (
+
+                                <Menu.Item
+                                    key={item.id}
+                                    onClick={() => navigate(`/${org}/chats/${item.id}`)}
+                                >
+                                    {/* <Badge count={item.unread}> */}
+                                    <Avatar icon={<UserOutlined />} style={{ marginRight: "8px" }} />
+                                    <span>{item.name}</span>
+                                    {/* </Badge> */}
+                                </Menu.Item>
+                            ))
+                        ) : (
+                            <Text>Nenhuma conversa disponível</Text>
+                        )}
+                    </Menu>
                 </Sider>
-                {/* <Header style={{ backgroundColor: "#fff", padding: "0 16px", borderBottom: "1px solid #f0f0f0" }}>
-                    <Title level={4} style={{ margin: 0 }}>
-                        Mensagem
-                    </Title>
-                </Header> */}
-                {/* <Menu>
-                    {conversations?.length > 0 ? (
-                        conversations.map((item, index) => {
-                            return (
-                                // <Badge count={item.unread}>
-                                    <Menu.Item
-                                        key={item.id || index}
-                                        style={{ marginBottom: 8 }}
-                                        onClick={() => navigate(`/${org}/chats/${item.id}`)}
-                                    >
-                                        <Text>{item.name}</Text>
-                                    </Menu.Item>
-                                // </Badge> 
-                            );
-                        })
-                    ) : (
-                        <Menu.Item disabled>
-                            <Text>No conversations available</Text>
-                        </Menu.Item>
-                    )}
-                </Menu> */}
-                <Outlet />
-            </Row>
+            </Col>
+            <Col span={19}>
+                {conversationId ? <Outlet /> : (
+                    <Content
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                        }}
+                    >
+                        <Space direction="vertical" align="center">
+                            <Typography.Title level={4}>
+                                Nenhuma conversa selecionada
+                            </Typography.Title>
+                            <Typography.Text>
+                                Por favor, selecione uma conversa à esquerda para visualizar os
+                                detalhes.
+                            </Typography.Text>
+                        </Space>
+                    </Content>
+                )}
+            </Col>
         </Layout>
     )
 }

@@ -1,4 +1,4 @@
-import { Button, Input, Layout, List, Typography, Card, Avatar, Space, Tabs } from "antd";
+import { Button, Input, Layout, List, Typography, Card, Avatar, Space, Tabs, Col } from "antd";
 import { UserOutlined, SendOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -24,7 +24,7 @@ const Conversations = ({ socket }) => {
     const localUser = localStorage.getItem("user");
     const user = JSON.parse(localUser);
     const messagesEndRef = useRef(null);
-    
+
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" }); // Rola suavemente para o final
@@ -36,7 +36,7 @@ const Conversations = ({ socket }) => {
         const conversationResponse = response.data.conversation[0];
         scrollToBottom();
         setMessages(conversationResponse);
-        console.log("messagensss:",messages)
+        console.log("messagensss:", messages)
     };
 
     useEffect(() => {
@@ -91,68 +91,66 @@ const Conversations = ({ socket }) => {
     };
 
     return (
-        <Layout span={18} style={{ height: "87vh" }}>
+        <Layout style={{ height: "calc(100vh - 92px)" }}>
             {/* Main Chat Area */}
-            <Layout style={{ width: 1200 }}>
-                <Header style={{ backgroundColor: "#fff", padding: "0 16px", borderBottom: "1px solid #f0f0f0", alignContent: 'center' }}>
-                    <Title level={4} style={{ margin: 0 }}>
-                        {messages[0]?.senderName}
-                    </Title>
-                </Header>
-                <Content style={{ padding: "16px", display: "flex", flexDirection: "column" }}>
-                    <Tabs defaultActiveKey="1" style={{ marginBottom: "16px" }}>
-                        <TabPane tab="Messages" key="1" />
-                        <TabPane tab="Participants" key="2" />
-                    </Tabs>
+            <Header style={{ backgroundColor: "#fff", padding: "0 16px", borderBottom: "1px solid #f0f0f0", alignContent: 'center' }}>
+                <Title level={4} style={{ margin: 0 }}>
+                    {messages[0]?.senderName}
+                </Title>
+            </Header>
+            <Content style={{ width: '100%', padding: "16px", display: "flex", flexDirection: "column" }}>
+                <Tabs defaultActiveKey="1" style={{ marginBottom: "16px" }}>
+                    <TabPane tab="Messages" key="1" />
+                    <TabPane tab="Participants" key="2" />
+                </Tabs>
 
-                    <div style={{ flex: 1, overflowY: "auto", marginBottom: "16px", paddingRight: 16 }}>
-                        <List
-                            dataSource={messages}
-                            renderItem={(item) => {
-                                const isMyMessage = item.senderName === user.name
-                                return (
-                                    <List.Item
+                <div style={{ flex: 1, overflowY: "auto", marginBottom: "16px", paddingRight: 16 }}>
+                    <List
+                        dataSource={messages}
+                        renderItem={(item) => {
+                            const isMyMessage = item.senderName === user.name
+                            return (
+                                <List.Item
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: isMyMessage ? "flex-end" : "flex-start", // Define o alinhamento
+                                    }}
+                                >
+                                    <Card
                                         style={{
-                                            display: "flex",
-                                            justifyContent: isMyMessage ? "flex-end" : "flex-start", // Define o alinhamento
+                                            borderRadius: "8px",
+                                            backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff", // Cor diferente para suas mensagens
+                                            maxWidth: "70%", // Limita o tamanho da mensagem
                                         }}
                                     >
-                                        <Card
-                                            style={{
-                                                borderRadius: "8px",
-                                                backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff", // Cor diferente para suas mensagens
-                                                maxWidth: "70%", // Limita o tamanho da mensagem
-                                            }}
-                                        >
-                                            <Space direction="vertical" size={0}>
-                                                {!isMyMessage && <Text strong>{item.senderName}</Text>}
-                                                <Text>{item.body}</Text>
-                                            </Space>
-                                        </Card>
-                                    </List.Item>
-                                )
-                            }}
-                        />
-                        <div ref={messagesEndRef} />
-                    </div>
+                                        <Space direction="vertical" size={0}>
+                                            {!isMyMessage && <Text strong>{item.senderName}</Text>}
+                                            <Text>{item.body}</Text>
+                                        </Space>
+                                    </Card>
+                                </List.Item>
+                            )
+                        }}
+                    />
+                    <div ref={messagesEndRef} />
+                </div>
 
-                    <Space style={{ display: "flex", alignItems: "center" }}>
-                        <Input
-                            placeholder="Escreva sua mensagem..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onPressEnter={sendMessage}
-                            style={{ borderRadius: "20px", flex: 1, width: 1150 }}
-                        />
-                        <Button
-                            type="primary"
-                            shape="circle"
-                            icon={<SendOutlined />}
-                            onClick={sendMessage}
-                        />
-                    </Space>
-                </Content>
-            </Layout>
+                <Col style={{ width: '100%', display: "flex", alignItems: "center" }}>
+                    <Input
+                        placeholder="Escreva sua mensagem..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onPressEnter={sendMessage}
+                        style={{ borderRadius: "20px", flex: 1, width: '100%' }}
+                    />
+                    <Button
+                        type="primary"
+                        shape="circle"
+                        icon={<SendOutlined />}
+                        onClick={sendMessage}
+                    />
+                </Col>
+            </Content>
         </Layout>
     );
 };
