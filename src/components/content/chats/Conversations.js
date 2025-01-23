@@ -43,7 +43,8 @@ const Conversations = ({ socket }) => {
         const pageServer = response.data.page
 
         console.log("conversaton 2: ", conversation)
-        setMessages((prev) => [...prev, ...conversation]);
+        const reverseArray = (arr) => [...conversation].reverse();
+        setMessages((prev) => [...reverseArray, ...prev]);
         setHasMore(hasMore)
         setPage(parseInt(pageServer) + 1)
         // scrollToBottom();
@@ -61,7 +62,8 @@ const Conversations = ({ socket }) => {
             const hasMore = response.data.hasMore
             const pageServer = response.data.page
             console.log("convrsetion 3:", conversation)
-            setMessages(conversation);
+            const reverseArray = (arr) => [...conversation].reverse();
+            setMessages(reverseArray);
             setHasMore(hasMore);
             setPage(parseInt(pageServer) + 1)
             // scrollToBottom()
