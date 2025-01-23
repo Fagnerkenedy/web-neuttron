@@ -43,7 +43,7 @@ const Conversations = ({ socket }) => {
         const pageServer = response.data.page
 
         console.log("conversaton 2: ", conversation)
-        setMessages((prev) => [...conversation, ...prev]);
+        setMessages((prev) => [...prev, ...conversation]);
         setHasMore(hasMore)
         setPage(parseInt(pageServer) + 1)
         // scrollToBottom();
