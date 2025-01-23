@@ -1,19 +1,17 @@
-import { Button, Input, Layout, List, Typography, Card, Avatar, Space, Tabs, Col } from "antd";
+import { Button, Input, Layout, List, Typography, Card, Avatar, Space, Tabs, Col, Skeleton, Divider } from "antd";
 import { UserOutlined, SendOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-// import "./Chat.css"; // Adicione estilos personalizados aqui
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
 const Conversations = ({ socket }) => {
-    const apiConfig = {
-        baseURL: process.env.REACT_APP_LINK_API,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    };
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split("/");
     const org = pathParts[1];
@@ -26,25 +24,55 @@ const Conversations = ({ socket }) => {
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" }); // Rola suavemente para o final
+        const scrollableDiv = document.getElementById("scrollableDivMessages");
+        if (scrollableDiv) {
+            scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
         }
-    };
+    }
 
     const fetchConversation = async () => {
-        const response = await axios.get(`/chat/${org}/messages/${conversationId}`, apiConfig);
-        const conversationResponse = response.data.conversation[0];
-        scrollToBottom();
-        setMessages(conversationResponse);
-        console.log("messagensss:", messages)
-    };
+        const scrollableDiv = document.getElementById("scrollableDivMessages");
+        const previousScrollHeight = scrollableDiv.scrollHeight;
+        const response = await axios.get(`/chat/${org}/messages/${conversationId}`, {
+            baseURL: process.env.REACT_APP_LINK_API,
+            params: { page: page, limit: 10 },
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const conversation = response.data.conversation
+        const hasMore = response.data.hasMore
+        const pageServer = response.data.page
+
+        console.log("conversaton 2: ", conversation)
+        setMessages((prev) => [...conversation, ...prev]);
+        setHasMore(hasMore)
+        setPage(parseInt(pageServer) + 1)
+        // scrollToBottom();
+    }
 
     useEffect(() => {
-        if (conversationId) {
-            fetchConversation();
-            scrollToBottom()
+        console.log("messagessss:", messages)
+        const getMessages = async () => {
+            const response = await axios.get(`/chat/${org}/messages/${conversationId}`, {
+                baseURL: process.env.REACT_APP_LINK_API,
+                params: { page: 1, limit: 10 },
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
+            const conversation = response.data.conversation
+            const hasMore = response.data.hasMore
+            const pageServer = response.data.page
+            console.log("convrsetion 3:", conversation)
+            setMessages(conversation);
+            setHasMore(hasMore);
+            setPage(parseInt(pageServer) + 1)
+            // scrollToBottom()
         }
+
+        getMessages()
     }, [conversationId]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     useEffect(() => {
         const handleNewMessage = (message) => {
@@ -55,7 +83,7 @@ const Conversations = ({ socket }) => {
 
             if (message?.conversationId === conversationId) {
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
-                scrollToBottom()
+                // scrollToBottom()
             }
         };
 
@@ -70,8 +98,6 @@ const Conversations = ({ socket }) => {
         if (input) {
             const newMessage = { senderName: user.name, body: input };
             setMessages((prev) => [...prev, newMessage]);
-
-            console.log("para: ", messages[0]?.contactNumber)
             try {
                 await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",
@@ -86,7 +112,7 @@ const Conversations = ({ socket }) => {
             }
 
             setInput("");
-            scrollToBottom()
+            // scrollToBottom()
         }
     };
 
@@ -95,7 +121,7 @@ const Conversations = ({ socket }) => {
             {/* Main Chat Area */}
             <Header style={{ backgroundColor: "#fff", padding: "0 16px", borderBottom: "1px solid #f0f0f0", alignContent: 'center' }}>
                 <Title level={4} style={{ margin: 0 }}>
-                    {messages[0]?.senderName}
+                    {/* {messages[0]?.senderName} */}
                 </Title>
             </Header>
             <Content style={{ width: '100%', padding: "16px", display: "flex", flexDirection: "column" }}>
@@ -105,33 +131,74 @@ const Conversations = ({ socket }) => {
                 </Tabs>
 
                 <div style={{ flex: 1, overflowY: "auto", marginBottom: "16px", paddingRight: 16 }}>
-                    <List
-                        dataSource={messages}
-                        renderItem={(item) => {
-                            const isMyMessage = item.senderName === user.name
-                            return (
-                                <List.Item
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: isMyMessage ? "flex-end" : "flex-start", // Define o alinhamento
-                                    }}
-                                >
-                                    <Card
-                                        style={{
-                                            borderRadius: "8px",
-                                            backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff", // Cor diferente para suas mensagens
-                                            maxWidth: "70%", // Limita o tamanho da mensagem
-                                        }}
-                                    >
-                                        <Space direction="vertical" size={0}>
-                                            {!isMyMessage && <Text strong>{item.senderName}</Text>}
-                                            <Text>{item.body}</Text>
-                                        </Space>
-                                    </Card>
-                                </List.Item>
-                            )
+                    <div
+                        id="scrollableDivMessages"
+                        style={{
+                            width: "100%",
+                            maxHeight: "calc(100vh - 292px)",
+                            overflow: 'auto',
+                            padding: '0 16px',
+                            display: "flex",
+                            flexDirection: "column-reverse",
                         }}
-                    />
+                    >
+                        <InfiniteScroll
+                            dataLength={messages.length}
+                            next={fetchConversation}
+                            hasMore={hasMore}
+                            loader={null}
+                            // loader={
+                            //     <Skeleton
+                            //         paragraph={{
+                            //             rows: 1,
+                            //         }}
+                            //         active
+                            //     />
+                            // }
+                            endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+                            scrollableTarget="scrollableDivMessages"
+                            inverse={true}
+                        >
+                            {hasMore && (
+                                <div style={{ textAlign: "center", marginBottom: "16px" }}>
+                                    <Skeleton
+                                        paragraph={{
+                                            rows: 1,
+                                        }}
+                                        active
+                                    />
+                                </div>
+                            )}
+                            
+                            <List
+                                dataSource={messages}
+                                renderItem={(item) => {
+                                    const isMyMessage = item.senderName === user.name
+                                    return (
+                                        <List.Item
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: isMyMessage ? "flex-end" : "flex-start",
+                                            }}
+                                        >
+                                            <Card
+                                                style={{
+                                                    borderRadius: "8px",
+                                                    backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff",
+                                                    maxWidth: "70%",
+                                                }}
+                                            >
+                                                <Space direction="vertical" size={0}>
+                                                    {!isMyMessage && <Text strong>{item.senderName}</Text>}
+                                                    <Text>{item.body}</Text>
+                                                </Space>
+                                            </Card>
+                                        </List.Item>
+                                    )
+                                }}
+                            />
+                        </InfiniteScroll>
+                    </div>
                     <div ref={messagesEndRef} />
                 </div>
 
