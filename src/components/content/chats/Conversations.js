@@ -42,12 +42,18 @@ const Conversations = ({ socket }) => {
         const hasMore = response.data.hasMore
         const pageServer = response.data.page
 
-        console.log("conversaton 2: ", conversation)
-        const reverseArray = (arr) => [...conversation].reverse();
-        setMessages((prev) => [...reverseArray, ...prev]);
+        console.log("conversaton 2: ", ...conversation)
+        conversation.reverse();
+        console.log("reverseArray: ", ...conversation)
+
+        setMessages((prev) => [...conversation, ...prev]);
         setHasMore(hasMore)
         setPage(parseInt(pageServer) + 1)
         // scrollToBottom();
+        setTimeout(() => {
+            const newScrollHeight = scrollableDiv.scrollHeight;
+            scrollableDiv.scrollTop += newScrollHeight - previousScrollHeight;
+        }, 0);
     }
 
     useEffect(() => {
@@ -62,8 +68,8 @@ const Conversations = ({ socket }) => {
             const hasMore = response.data.hasMore
             const pageServer = response.data.page
             console.log("convrsetion 3:", conversation)
-            const reverseArray = (arr) => [...conversation].reverse();
-            setMessages(reverseArray);
+            conversation.reverse();
+            setMessages(conversation);
             setHasMore(hasMore);
             setPage(parseInt(pageServer) + 1)
             // scrollToBottom()
@@ -72,9 +78,9 @@ const Conversations = ({ socket }) => {
         getMessages()
     }, [conversationId]);
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+    // useEffect(() => {
+    //     scrollToBottom();
+    // }, [messages]);
 
     useEffect(() => {
         const handleNewMessage = (message) => {
