@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Col, Divider, Input, Layout, List, Menu, Row, Skeleton, Space } from "antd";
+import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row, Skeleton, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
@@ -275,7 +275,6 @@ function Chats({ socket }) {
                                         active
                                     />
                                 }
-                                endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
                                 scrollableTarget="scrollableDiv"
                             >
                                 <List

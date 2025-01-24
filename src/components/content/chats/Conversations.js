@@ -1,4 +1,4 @@
-import { Button, Input, Layout, List, Typography, Card, Avatar, Space, Tabs, Col, Skeleton, Divider } from "antd";
+import { Button, Input, Layout, List, Typography, Card, Space, Tabs, Col, Skeleton } from "antd";
 import { UserOutlined, SendOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -120,7 +120,7 @@ const Conversations = ({ socket }) => {
             }
 
             setInput("");
-            // scrollToBottom()
+            scrollToBottom()
         }
     };
 
@@ -129,21 +129,21 @@ const Conversations = ({ socket }) => {
             {/* Main Chat Area */}
             <Header style={{ backgroundColor: "#fff", padding: "0 16px", borderBottom: "1px solid #f0f0f0", alignContent: 'center' }}>
                 <Title level={4} style={{ margin: 0 }}>
-                    {/* {messages[0]?.senderName} */}
+                    {messages[0]?.senderName}
                 </Title>
             </Header>
             <Content style={{ width: '100%', padding: "16px", display: "flex", flexDirection: "column" }}>
-                <Tabs defaultActiveKey="1" style={{ marginBottom: "16px" }}>
+                {/* <Tabs defaultActiveKey="1" style={{ marginBottom: "16px" }}>
                     <TabPane tab="Messages" key="1" />
                     <TabPane tab="Participants" key="2" />
-                </Tabs>
+                </Tabs> */}
 
                 <div style={{ flex: 1, overflowY: "auto", marginBottom: "16px", paddingRight: 16 }}>
                     <div
                         id="scrollableDivMessages"
                         style={{
                             width: "100%",
-                            maxHeight: "calc(100vh - 292px)",
+                            maxHeight: "calc(100vh - 224px)",
                             overflow: 'auto',
                             padding: '0 16px',
                             display: "flex",
@@ -155,15 +155,6 @@ const Conversations = ({ socket }) => {
                             next={fetchConversation}
                             hasMore={hasMore}
                             loader={null}
-                            // loader={
-                            //     <Skeleton
-                            //         paragraph={{
-                            //             rows: 1,
-                            //         }}
-                            //         active
-                            //     />
-                            // }
-                            endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
                             scrollableTarget="scrollableDivMessages"
                             inverse={true}
                         >
@@ -177,7 +168,7 @@ const Conversations = ({ socket }) => {
                                     />
                                 </div>
                             )}
-                            
+
                             <List
                                 dataSource={messages}
                                 renderItem={(item) => {
@@ -195,11 +186,28 @@ const Conversations = ({ socket }) => {
                                                     backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff",
                                                     maxWidth: "70%",
                                                 }}
+                                                size="small"
                                             >
-                                                <Space direction="vertical" size={0}>
-                                                    {!isMyMessage && <Text strong>{item.senderName}</Text>}
+                                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                                                     <Text>{item.body}</Text>
-                                                </Space>
+                                                    <div
+                                                        style={{
+                                                            width: 20,
+                                                            fontSize: "11px",
+                                                            color: "#999",
+                                                            marginLeft: "10px", // Espaçamento entre mensagem e horário
+                                                            whiteSpace: "nowrap", // Previne quebra de linha
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                
+                                                            }}
+                                                        >
+                                                            18:16 {/* Exemplo: '18:16' */}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </Card>
                                         </List.Item>
                                     )
