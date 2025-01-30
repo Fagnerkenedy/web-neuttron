@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { formatTime, formatDateToISO } from "./formatNumbers"
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text } = Typography;
@@ -104,7 +105,10 @@ const Conversations = ({ socket }) => {
 
     const sendMessage = async () => {
         if (input) {
-            const newMessage = { senderName: user.name, body: input };
+            const created_at = formatDateToISO(new Date())
+            console.log("toLocaleString:  ", created_at.toLocaleString())
+            // const toDateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',', '')
+            const newMessage = { senderName: user.name, body: input, created_at };
             setMessages((prev) => [...prev, newMessage]);
             try {
                 await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
@@ -114,6 +118,7 @@ const Conversations = ({ socket }) => {
                     conversationId,
                     userName: user.name,
                     userId: user.id,
+                    created_at
                 });
             } catch (error) {
                 console.error("Erro ao enviar mensagem:", error);
@@ -123,6 +128,15 @@ const Conversations = ({ socket }) => {
             scrollToBottom()
         }
     };
+
+    const updateUnread = async () => {
+        console.log("Executou!")
+        try {
+            await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/conversation/${conversationId}`);
+        } catch (error) {
+            console.error("Erro ao enviar mensagem:", error);
+        }
+    }
 
     return (
         <Layout style={{ height: "calc(100vh - 92px)" }}>
@@ -158,7 +172,7 @@ const Conversations = ({ socket }) => {
                             scrollableTarget="scrollableDivMessages"
                             inverse={true}
                         >
-                            {hasMore && (
+                            {/* {hasMore && (
                                 <div style={{ textAlign: "center", marginBottom: "16px" }}>
                                     <Skeleton
                                         paragraph={{
@@ -167,7 +181,7 @@ const Conversations = ({ socket }) => {
                                         active
                                     />
                                 </div>
-                            )}
+                            )} */}
 
                             <List
                                 dataSource={messages}
@@ -204,7 +218,7 @@ const Conversations = ({ socket }) => {
                                                                 
                                                             }}
                                                         >
-                                                            18:16 {/* Exemplo: '18:16' */}
+                                                            {formatTime(item.created_at)} {/* Exemplo: '18:16' */}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -225,6 +239,7 @@ const Conversations = ({ socket }) => {
                         onChange={(e) => setInput(e.target.value)}
                         onPressEnter={sendMessage}
                         style={{ borderRadius: "20px", flex: 1, width: '100%' }}
+                        onClick={() => updateUnread()}
                     />
                     <Button
                         type="primary"

@@ -10,6 +10,7 @@ import axios from "axios";
 import { MessageOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import './styles.css'
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { formatTime } from "./formatNumbers.js";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -47,7 +48,7 @@ function Chats({ socket }) {
 
         setConversations((prev) => [...prev, ...conversations]);
         setHasMore(hasMore);
-        console.log("hasMore? ",hasMore)
+        console.log("hasMore? ", hasMore)
         setPage((prevPage) => prevPage + 1);
 
         // setConversations(conversationsResponse)
@@ -288,7 +289,7 @@ function Chats({ socket }) {
                                                 actions={
                                                     !loading ? [
                                                         <Col>
-                                                            {item.unread && (
+                                                            {item.unread !== 0 && (
                                                                 <Row>
                                                                     <Space>
                                                                         <MessageOutlined />
@@ -297,7 +298,7 @@ function Chats({ socket }) {
                                                                 </Row>
                                                             )}
                                                             <Row>
-                                                                <Text>12:29</Text>
+                                                                <Text>{formatTime(item.updated_at)}</Text>
                                                             </Row>
                                                         </Col>
                                                     ] : undefined
@@ -308,7 +309,7 @@ function Chats({ socket }) {
                                                     <List.Item.Meta
                                                         avatar={<Avatar icon={<UserOutlined />} />}
                                                         title={<Text strong>{item.name}</Text>}
-                                                        description={<Text type="secondary">{item.lastMessage || "Sem mensagens ainda"}</Text>}
+                                                        description={<Text type="secondary">{item.last_message || "Sem mensagens"}</Text>}
                                                     />
                                                 </Skeleton>
                                             </List.Item>

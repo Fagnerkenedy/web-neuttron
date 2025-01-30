@@ -23,7 +23,6 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         const data = { email, password }
-        console.log("const data = { email, password }: ", data)
         login(data)
     }
 
