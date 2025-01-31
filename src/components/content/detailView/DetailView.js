@@ -244,6 +244,7 @@ const DetailView = ({ itemId }) => {
         const moduleName = pathParts[2];
         const record_id = pathParts[3];
         const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField/${record_id}`, config);
+        console.log("retorno related module list: ", response.data)
         setRelatedModuleList(response.data)
     }
 

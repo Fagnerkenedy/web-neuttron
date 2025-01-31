@@ -580,7 +580,7 @@ const EditView = ({ itemId }) => {
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
-                        placeholder="SelecioneSelecione"
+                        placeholder="Selecione"
                         style={{ width: "100%", border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
                         // onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
                         // value={selectedValue ? selectedValue.value : null}

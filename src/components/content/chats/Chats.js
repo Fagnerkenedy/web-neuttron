@@ -11,6 +11,7 @@ import { MessageOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons
 import './styles.css'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { formatTime } from "./formatNumbers.js";
+import WhatsAppQRCode from "./QrCode.js";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -238,11 +239,12 @@ function Chats({ socket }) {
             <Sider width={"22%"} theme="light" style={{ borderRight: "1px solid #f0f0f0" }}>
                 <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
                     <div style={{ padding: "16px", textAlign: "center" }}>
-                        <Avatar size={64} icon={<UserOutlined />} />
+                        {/* <Avatar size={64} icon={<UserOutlined />} />
                         <Title level={4} style={{ marginTop: "8px" }}>
                             {user.name}
                         </Title>
-                        <Text type="success">Disponível</Text>
+                        <Text type="success">Disponível</Text> */}
+                        <WhatsAppQRCode />
                     </div>
                     <div style={{ width: "90%" }}>
                         <Input

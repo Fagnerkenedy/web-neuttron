@@ -78,6 +78,12 @@ and limitations under the License.
  */
 
 /**
+ * @license qrcode.react
+ * Copyright (c) Paul O'Shannessy
+ * SPDX-License-Identifier: ISC
+ */
+
+/**
  * @remix-run/router v1.17.1
  *
  * Copyright (c) Remix Software Inc.
