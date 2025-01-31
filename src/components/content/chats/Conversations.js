@@ -218,6 +218,7 @@ const Conversations = ({ socket }) => {
                                                                 
                                                             }}
                                                         >
+                                                            {console.log("time: ",item.created_at)}
                                                             {formatTime(item.created_at)} {/* Exemplo: '18:16' */}
                                                         </span>
                                                     </div>
