@@ -200,6 +200,8 @@ function Chats({ socket }) {
                         id: message.conversationId,
                         name: message?.senderName,
                         unread: 1,
+                        last_message: message?.body,
+                        updated_at: message?.updated_at
                     };
 
                     return [newConversation, ...updatedConversations]
@@ -210,6 +212,8 @@ function Chats({ socket }) {
                             id: message?.conversationId,
                             name: message?.senderName,
                             unread: 1,
+                            last_message: message?.body,
+                            updated_at: message?.updated_at
                         },
                         ...prevConversations,
                     ];

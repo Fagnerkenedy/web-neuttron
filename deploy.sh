@@ -11,4 +11,4 @@ echo "Pushing to git.."
 git push
 
 echo "Deploying files to server..."
-scp -r build/* ubuntu@52.67.55.72:/var/www/52.67.55.72
+scp -r build/* ubuntu@crm.neuttron.com.br:/var/www/52.67.55.72
