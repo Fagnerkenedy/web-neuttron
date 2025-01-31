@@ -106,10 +106,13 @@ const Conversations = ({ socket }) => {
 
     const sendMessage = async () => {
         if (input) {
-            const created_at = formatDateToISO(new Date())
-            console.log("toLocaleString:  ", created_at.toLocaleString())
+            // const created_at = formatDateToISO(new Date())
+            // console.log("toLocaleString:  ", created_at.toLocaleString())
             // const toDateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',', '')
-            const newMessage = { senderName: user.name, body: input, created_at };
+            const date = new Date()
+            date.setHours(date.getHours() - 3)
+            const formattedDate = date.toISOString().replace("T", " ").replace("Z", "")
+            const newMessage = { senderName: user.name, body: input, created_at: formattedDate };
             setMessages((prev) => [...prev, newMessage]);
             try {
                 await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
@@ -119,7 +122,7 @@ const Conversations = ({ socket }) => {
                     conversationId,
                     userName: user.name,
                     userId: user.id,
-                    created_at
+                    created_at: formattedDate
                 });
             } catch (error) {
                 console.error("Erro ao enviar mensagem:", error);
@@ -216,10 +219,10 @@ const Conversations = ({ socket }) => {
                                                     >
                                                         <span
                                                             style={{
-                                                                
+
                                                             }}
                                                         >
-                                                            {console.log("time: ",item.created_at)}
+                                                            {console.log("time: ", item.created_at)}
                                                             {formatTime(item.created_at)} {/* Exemplo: '18:16' */}
                                                         </span>
                                                     </div>
