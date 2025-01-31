@@ -88,6 +88,7 @@ const Conversations = ({ socket }) => {
             const newMessage = {
                 senderName: message?.senderName || "Unknown",
                 body: message?.body || "",
+                created_at: message?.updated_at
             };
 
             if (message?.conversationId === conversationId) {
