@@ -1,4 +1,4 @@
-import { Button, Input, Layout, List, Typography, Card, Space, Tabs, Col, Skeleton } from "antd";
+import { Button, Input, Layout, List, Typography, Card, Space, Tabs, Col, Skeleton, theme } from "antd";
 import { UserOutlined, SendOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -23,6 +23,9 @@ const Conversations = ({ socket }) => {
     const localUser = localStorage.getItem("user");
     const user = JSON.parse(localUser);
     const messagesEndRef = useRef(null);
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken()
 
     const scrollToBottom = () => {
         const scrollableDiv = document.getElementById("scrollableDivMessages");
@@ -143,9 +146,9 @@ const Conversations = ({ socket }) => {
     }
 
     return (
-        <Layout style={{ height: "calc(100vh - 92px)" }}>
+        <Layout style={{ height: "calc(100vh - 94px)" }}>
             {/* Main Chat Area */}
-            <Header style={{ backgroundColor: "#fff", padding: "0 16px", borderBottom: "1px solid #f0f0f0", alignContent: 'center' }}>
+            <Header style={{ height: '50px', backgroundColor: colorBgContainer, padding: "0 16px", alignContent: 'center' }}>
                 <Title level={4} style={{ margin: 0 }}>
                     {messages[0]?.senderName}
                 </Title>
@@ -201,7 +204,7 @@ const Conversations = ({ socket }) => {
                                             <Card
                                                 style={{
                                                     borderRadius: "8px",
-                                                    backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff",
+                                                    // backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff",
                                                     maxWidth: "70%",
                                                 }}
                                                 size="small"

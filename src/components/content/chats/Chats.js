@@ -8,7 +8,7 @@ import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-d
 import Sider from "antd/es/layout/Sider.js";
 import axios from "axios";
 import { MessageOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
-import './styles.css'
+// import './styles.css'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { formatTime } from "./formatNumbers.js";
 import WhatsAppQRCode from "./QrCode.js";
@@ -240,9 +240,9 @@ function Chats({ socket }) {
 
     return (
         <Layout style={{ padding: '15px 15px 0 15px' }}>
-            <Sider width={"22%"} theme="light" style={{ borderRight: "1px solid #f0f0f0" }}>
+            <Sider width={"22%"} theme="light">
                 <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
-                    <div style={{ padding: "16px", textAlign: "center" }}>
+                    <div style={{ textAlign: "center" }}>
                         {/* <Avatar size={64} icon={<UserOutlined />} />
                         <Title level={4} style={{ marginTop: "8px" }}>
                             {user.name}
@@ -309,7 +309,7 @@ function Chats({ socket }) {
                                                         </Col>
                                                     ] : undefined
                                                 }
-                                                style={{ cursor: "pointer", padding: "10px 12px", backgroundColor: selectedKey === item.id ? "#e6f7ff" : "transparent", }}
+                                                style={{ cursor: "pointer", padding: "10px 12px", border: selectedKey === item.id && darkMode ? "#000000 solid 2px" : selectedKey === item.id && !darkMode ? "#f5f5f5 solid 2px" : "transparent" }}
                                             >
                                                 <Skeleton avatar title={false} loading={loading} active>
                                                     <List.Item.Meta
@@ -327,7 +327,7 @@ function Chats({ socket }) {
                     )}
                 </Col>
             </Sider>
-            {conversationId ? <Outlet /> : (
+            {conversationId ? <Outlet darkMode={{ darkMode }}/> : (
                 <Content
                     style={{
                         display: "flex",
