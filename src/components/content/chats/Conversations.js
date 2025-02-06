@@ -89,7 +89,7 @@ const Conversations = ({ socket }) => {
     useEffect(() => {
         const handleNewMessage = (message) => {
             const newMessage = {
-                senderName: message?.senderName || "Unknown",
+                senderName: message?.senderName || "Desconhecido",
                 body: message?.body || "",
                 created_at: message?.updated_at
             };
@@ -193,7 +193,7 @@ const Conversations = ({ socket }) => {
                             <List
                                 dataSource={messages}
                                 renderItem={(item) => {
-                                    const isMyMessage = item.senderName === user.name
+                                    const isMyMessage = item.contactNumber === user.wa_id
                                     return (
                                         <List.Item
                                             style={{
