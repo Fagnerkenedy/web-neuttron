@@ -6,6 +6,8 @@ import React from 'react';
 const {Text} = Typography;
 
 const FooterText = () => {
+    const date = new Date()
+    const year = date.getFullYear()
     return (
         <p
             style={{
@@ -13,7 +15,7 @@ const FooterText = () => {
                 marginTop: "20px"
             }}
         >
-            <Text type="secondary"><CopyrightOutlined /> 2024, CRM | Sua venda com perfeição.</Text>
+            <Text type="secondary"><CopyrightOutlined /> {year}, CRM | Sua venda com perfeição.</Text>
         </p>
     )
 }

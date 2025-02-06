@@ -197,8 +197,10 @@ const Conversations = ({ socket }) => {
                                     return (
                                         <List.Item
                                             style={{
+                                                paddingBottom: 0,
                                                 display: "flex",
                                                 justifyContent: isMyMessage ? "flex-end" : "flex-start",
+                                                border: 'none'
                                             }}
                                         >
                                             <Card
