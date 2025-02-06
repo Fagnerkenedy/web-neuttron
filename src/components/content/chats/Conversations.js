@@ -90,6 +90,7 @@ const Conversations = ({ socket }) => {
         const handleNewMessage = (message) => {
             const newMessage = {
                 senderName: message?.senderName || "Desconhecido",
+                contactNumber: message?.contactNumber,
                 body: message?.body || "",
                 created_at: message?.updated_at
             };
