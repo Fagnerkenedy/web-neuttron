@@ -9,3 +9,5 @@ cd build
 
 echo "Coppying files to online folder"
 cp -r * /var/www/52.67.55.72
+
+echo "Executed Successfully"
