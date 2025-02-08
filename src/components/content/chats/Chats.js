@@ -8,13 +8,24 @@ import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-d
 import Sider from "antd/es/layout/Sider.js";
 import axios from "axios";
 import { MessageOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
-// import './styles.css'
+import './styles.css'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { formatTime } from "./formatNumbers.js";
 import WhatsAppQRCode from "./QrCode.js";
+import styled from "styled-components";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
+
+const ItemList = styled.div`
+  padding: 5px;
+  transition: background-color 0.3s;
+  border-radius: 5px;
+  
+  &:hover {
+    background-color: ${(props) => props.darkMode === true ? "#333" : "#f5f5f5"};
+  }
+`;
 
 function Chats({ socket }) {
     const [page, setPage] = useState(1);
@@ -239,7 +250,7 @@ function Chats({ socket }) {
     };
 
     return (
-        <Layout style={{ padding: '15px 15px 0 15px' }}>
+        <Layout>
             <Sider width={"22%"} theme="light">
                 <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
                     <div style={{ textAlign: "center" }}>
@@ -264,10 +275,11 @@ function Chats({ socket }) {
                             id="scrollableDiv"
                             style={{
                                 width: "100%",
-                                maxHeight: "calc(100vh - 292px)",
+                                maxHeight: darkMode ? "calc(100vh - 485px)" : "calc(100vh - 461px)",
                                 overflow: 'auto',
                                 padding: '0 16px',
                             }}
+                            className='custom-scrollbar'
                         >
                             <InfiniteScroll
                                 dataLength={filteredConversations.length}
@@ -288,7 +300,7 @@ function Chats({ socket }) {
                                     itemLayout="horizontal"
                                     dataSource={filteredConversations}
                                     renderItem={(item) => (
-                                        <div className="itemList">
+                                        <ItemList className="itemList" darkMode={darkMode}>
 
                                             <List.Item
                                                 onClick={() => handleSelect(item.id)}
@@ -309,7 +321,7 @@ function Chats({ socket }) {
                                                         </Col>
                                                     ] : undefined
                                                 }
-                                                style={{ cursor: "pointer", padding: "10px 12px", border: selectedKey === item.id && darkMode ? "#000000 solid 2px" : selectedKey === item.id && !darkMode ? "#f5f5f5 solid 2px" : "transparent" }}
+                                                style={{ cursor: "pointer", padding: "10px 12px", borderRadius: 5, backgroundColor: selectedKey === item.id && darkMode ? "#000000" : selectedKey === item.id && !darkMode ? "#f5f5f5" : "transparent" }}
                                             >
                                                 <Skeleton avatar title={false} loading={loading} active>
                                                     <List.Item.Meta
@@ -319,7 +331,7 @@ function Chats({ socket }) {
                                                     />
                                                 </Skeleton>
                                             </List.Item>
-                                        </div>
+                                        </ItemList>
                                     )}
                                 />
                             </InfiniteScroll>
@@ -327,7 +339,7 @@ function Chats({ socket }) {
                     )}
                 </Col>
             </Sider>
-            {conversationId ? <Outlet darkMode={{ darkMode }}/> : (
+            {conversationId ? <Outlet context={{ darkMode }}/> : (
                 <Content
                     style={{
                         display: "flex",

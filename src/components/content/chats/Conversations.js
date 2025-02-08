@@ -2,9 +2,10 @@ import { Button, Input, Layout, List, Typography, Card, Space, Tabs, Col, Skelet
 import { UserOutlined, SendOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { formatTime, formatDateToISO } from "./formatNumbers"
+import './styles.css'
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text } = Typography;
@@ -26,6 +27,7 @@ const Conversations = ({ socket }) => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken()
+    const { darkMode } = useOutletContext();
 
     const scrollToBottom = () => {
         const scrollableDiv = document.getElementById("scrollableDivMessages");
@@ -65,7 +67,7 @@ const Conversations = ({ socket }) => {
         const getMessages = async () => {
             const response = await axios.get(`/chat/${org}/messages/${conversationId}`, {
                 baseURL: process.env.REACT_APP_LINK_API,
-                params: { page: 1, limit: 10 },
+                params: { page: 1, limit: 30 },
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
             const conversation = response.data.conversation
@@ -154,23 +156,24 @@ const Conversations = ({ socket }) => {
                     {messages[0]?.senderName}
                 </Title>
             </Header>
-            <Content style={{ width: '100%', padding: "16px", display: "flex", flexDirection: "column" }}>
+            <Content style={{ width: '100%', display: "flex", flexDirection: "column" }}>
                 {/* <Tabs defaultActiveKey="1" style={{ marginBottom: "16px" }}>
                     <TabPane tab="Messages" key="1" />
                     <TabPane tab="Participants" key="2" />
                 </Tabs> */}
 
-                <div style={{ flex: 1, overflowY: "auto", marginBottom: "16px", paddingRight: 16 }}>
+                <div style={{ flex: 1, overflowY: "auto" }}>
                     <div
                         id="scrollableDivMessages"
                         style={{
                             width: "100%",
-                            maxHeight: "calc(100vh - 224px)",
+                            maxHeight: "calc(100vh - 190px)",
                             overflow: 'auto',
                             padding: '0 16px',
                             display: "flex",
                             flexDirection: "column-reverse",
                         }}
+                        className='custom-scrollbar'
                     >
                         <InfiniteScroll
                             dataLength={messages.length}
@@ -206,11 +209,21 @@ const Conversations = ({ socket }) => {
                                         >
                                             <Card
                                                 style={{
+                                                    padding: 5,
+                                                    paddingRight: 15,
+                                                    paddingLeft: 10,
                                                     borderRadius: "8px",
+                                                    border: 0,
                                                     // backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff",
+                                                    backgroundColor: 
+                                                        isMyMessage && darkMode ? "#3A3F44" : 
+                                                        isMyMessage && !darkMode ? "#e6f7ff" : 
+                                                        !isMyMessage && darkMode ? "#2A2A2A" : 
+                                                        !isMyMessage && !darkMode ? "" : null,
                                                     maxWidth: "70%",
                                                 }}
                                                 size="small"
+                                                bodyStyle={{ padding: 0 }}
                                             >
                                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                                                     <Text>{item.body}</Text>
@@ -243,21 +256,21 @@ const Conversations = ({ socket }) => {
                     <div ref={messagesEndRef} />
                 </div>
 
-                <Col style={{ width: '100%', display: "flex", alignItems: "center" }}>
+                <Col style={{ padding: '0 10px 0 10px', width: '100%', display: "flex", alignItems: "center" }}>
                     <Input
                         placeholder="Escreva sua mensagem..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onPressEnter={sendMessage}
-                        style={{ borderRadius: "20px", flex: 1, width: '100%' }}
+                        style={{  flex: 1, width: '100%' }}
                         onClick={() => updateUnread()}
                     />
-                    <Button
+                    {/* <Button
                         type="primary"
                         shape="circle"
                         icon={<SendOutlined />}
                         onClick={sendMessage}
-                    />
+                    /> */}
                 </Col>
             </Content>
         </Layout>
