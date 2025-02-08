@@ -152,7 +152,7 @@ const Conversations = ({ socket }) => {
         <Layout 
             style={{ 
                 height: "calc(100vh - 77px)", 
-                backgroundImage: darkMode ? "url('/images/whats-dark-dark.png')" : "url('/images/whats-dark-dark.png')",
+                backgroundImage: "url('/images/whats-dark-dark.PNG')",
                 backgroundColor: darkMode ? '#141414' : "#dedbd2",
             }}
         >
