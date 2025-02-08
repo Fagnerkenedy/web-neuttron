@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row, Skeleton, Space } from "antd";
+import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row, Skeleton, Space, Tabs } from "antd";
 import React, { useEffect, useState } from "react";
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
@@ -16,11 +16,15 @@ import styled from "styled-components";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
+const { TabPane } = Tabs;
 
 const ItemList = styled.div`
   padding: 5px;
   transition: background-color 0.3s;
   border-radius: 5px;
+  whiteSpace: 'nowrap';
+  overflow: 'hidden';
+  textOverflow: 'ellipsis';
   
   &:hover {
     background-color: ${(props) => props.darkMode === true ? "#333" : "#f5f5f5"};
@@ -51,6 +55,7 @@ function Chats({ socket }) {
     const [selectedKey, setSelectedKey] = useState(null);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
+    const [usuario, setUsuario] = useState(true);
 
     const fetchData = async () => {
         setLoading(true)
@@ -67,109 +72,6 @@ function Chats({ socket }) {
         setLoading(false)
         console.log("conversarioin:", conversations)
     }
-
-    // const filteredConversations = [
-    //     { name: "teste",
-    //         unread: 2
-    //      },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" },
-    //     { name: "teste" }
-    // ]
 
     useEffect(() => {
         fetchData()
@@ -249,17 +151,27 @@ function Chats({ socket }) {
         navigate(`/${org}/chats/${itemId}`)
     };
 
+    const handleSetUsuario = () => {
+        setUsuario(!usuario)
+    }
+
     return (
         <Layout>
             <Sider width={"22%"} theme="light">
                 <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
-                    <div style={{ textAlign: "center" }}>
-                        {/* <Avatar size={64} icon={<UserOutlined />} />
-                        <Title level={4} style={{ marginTop: "8px" }}>
-                            {user.name}
-                        </Title>
-                        <Text type="success">Disponível</Text> */}
-                        <WhatsAppQRCode />
+                    <div style={{ textAlign: "center", width: '100%' }}>
+                        <Tabs onChange={handleSetUsuario} defaultActiveKey="2" style={{ padding: '0 20px 0', marginBottom: "16px", width: '100%' }}>
+                            <TabPane tab="Usuário" key="1">
+                                <Avatar size={64} icon={<UserOutlined />} />
+                                <Title level={4} style={{ marginTop: "8px" }}>
+                                    {user.name}
+                                </Title>
+                                <Text type="success">Disponível</Text>
+                            </TabPane>
+                            <TabPane tab="QR Code" key="2">
+                                <WhatsAppQRCode />
+                            </TabPane>
+                        </Tabs>
                     </div>
                     <div style={{ width: "90%" }}>
                         <Input
@@ -275,7 +187,12 @@ function Chats({ socket }) {
                             id="scrollableDiv"
                             style={{
                                 width: "100%",
-                                maxHeight: darkMode ? "calc(100vh - 485px)" : "calc(100vh - 461px)",
+                                maxHeight: 
+                                    darkMode && usuario ? "calc(100vh - 337px)" : // É darkMode e está no usuário
+                                    darkMode && !usuario ? "calc(100vh - 518px)" : // É darkMode e está no qrCode
+                                    !darkMode && usuario ? "calc(100vh - 305px)" :  // É claro e está no usuário
+                                    !darkMode && !usuario ? "calc(100vh - 484px)" : // É claro e está no qrCode
+                                    null,
                                 overflow: 'auto',
                                 padding: '0 16px',
                             }}
@@ -327,7 +244,7 @@ function Chats({ socket }) {
                                                     <List.Item.Meta
                                                         avatar={<Avatar icon={<UserOutlined />} />}
                                                         title={<Text strong>{item.name}</Text>}
-                                                        description={<Text type="secondary">{item.last_message || "Sem mensagens"}</Text>}
+                                                        description={<Text type="secondary" ellipsis={{ tooltip: item.last_message }} >{item.last_message || "Sem mensagens"}</Text>}
                                                     />
                                                 </Skeleton>
                                             </List.Item>
@@ -339,7 +256,7 @@ function Chats({ socket }) {
                     )}
                 </Col>
             </Sider>
-            {conversationId ? <Outlet context={{ darkMode }}/> : (
+            {conversationId ? <Outlet context={{ darkMode }} /> : (
                 <Content
                     style={{
                         display: "flex",

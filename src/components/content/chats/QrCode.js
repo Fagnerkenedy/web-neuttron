@@ -11,9 +11,9 @@ const WhatsAppQRCode = () => {
   const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
+    <div style={{ textAlign: "center", padding: "0 15px 15px" }}>
       <div>
-        <Title level={4}>Escaneie o QR Code para falar no WhatsApp</Title>
+        <Title style={{ margin: 0, paddingBottom: 15 }} level={4}>Escaneie o QR Code para falar no WhatsApp</Title>
         <QRCodeSVG value={whatsappLink} size={200} />
       </div>
       <div>

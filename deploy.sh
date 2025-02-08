@@ -10,5 +10,5 @@ git commit -m "Enviado de forma automatica."
 echo "Pushing to git.."
 git push
 
-echo "Deploying files to server..."
-scp -r build/* ubuntu@crm.neuttron.com.br:/var/www/52.67.55.72
+# echo "Deploying files to server..."
+# scp -r build/* ubuntu@crm.neuttron.com.br:/var/www/52.67.55.72

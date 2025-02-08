@@ -149,7 +149,14 @@ const Conversations = ({ socket }) => {
     }
 
     return (
-        <Layout style={{ height: "calc(100vh - 94px)" }}>
+        <Layout style={{ height: "calc(100vh - 77px)", 
+            backgroundImage: darkMode ? "url('/images/whats-dark-dark.png')" : "url('/images/whats-dark-dark.png')", // Caminho da imagem
+            // backgroundSize: "cover", // Ajusta a imagem para cobrir toda a área
+            backgroundPosition: "center", // Centraliza a imagem
+            // backgroundRepeat: "no-repeat", // Não repete a imagem
+            backgroundColor: darkMode ? '#141414' : "#dedbd2",
+            // backgroundSize: 600,
+            }}>
             {/* Main Chat Area */}
             <Header style={{ height: '50px', backgroundColor: colorBgContainer, padding: "0 16px", alignContent: 'center' }}>
                 <Title level={4} style={{ margin: 0 }}>
@@ -171,6 +178,7 @@ const Conversations = ({ socket }) => {
                             overflow: 'auto',
                             padding: '0 16px',
                             display: "flex",
+                            flexDirection: "column-reverse",
                             flexDirection: "column-reverse",
                         }}
                         className='custom-scrollbar'
@@ -217,7 +225,7 @@ const Conversations = ({ socket }) => {
                                                     // backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff",
                                                     backgroundColor: 
                                                         isMyMessage && darkMode ? "#3A3F44" : 
-                                                        isMyMessage && !darkMode ? "#e6f7ff" : 
+                                                        isMyMessage && !darkMode ? "#a6a6a6" : 
                                                         !isMyMessage && darkMode ? "#2A2A2A" : 
                                                         !isMyMessage && !darkMode ? "" : null,
                                                     maxWidth: "70%",
@@ -231,7 +239,7 @@ const Conversations = ({ socket }) => {
                                                         style={{
                                                             width: 20,
                                                             fontSize: "11px",
-                                                            color: "#999",
+                                                            color: "#6d6d6d",
                                                             marginLeft: "10px", // Espaçamento entre mensagem e horário
                                                             whiteSpace: "nowrap", // Previne quebra de linha
                                                         }}
@@ -256,7 +264,7 @@ const Conversations = ({ socket }) => {
                     <div ref={messagesEndRef} />
                 </div>
 
-                <Col style={{ padding: '0 10px 0 10px', width: '100%', display: "flex", alignItems: "center" }}>
+                <Col style={{ padding: '0 15px 15px 15px', width: '100%', display: "flex", alignItems: "center" }}>
                     <Input
                         placeholder="Escreva sua mensagem..."
                         value={input}
