@@ -55,7 +55,7 @@ function Chats({ socket }) {
     const [selectedKey, setSelectedKey] = useState(null);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
-    const [usuario, setUsuario] = useState(true);
+    const [usuario, setUsuario] = useState(false);
 
     const fetchData = async () => {
         setLoading(true)

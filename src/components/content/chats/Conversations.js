@@ -149,14 +149,13 @@ const Conversations = ({ socket }) => {
     }
 
     return (
-        <Layout style={{ height: "calc(100vh - 77px)", 
-            backgroundImage: darkMode ? "url('/images/whats-dark-dark.png')" : "url('/images/whats-dark-dark.png')", // Caminho da imagem
-            // backgroundSize: "cover", // Ajusta a imagem para cobrir toda a área
-            backgroundPosition: "center", // Centraliza a imagem
-            // backgroundRepeat: "no-repeat", // Não repete a imagem
-            backgroundColor: darkMode ? '#141414' : "#dedbd2",
-            // backgroundSize: 600,
-            }}>
+        <Layout 
+            style={{ 
+                height: "calc(100vh - 77px)", 
+                backgroundImage: darkMode ? "url('/images/whats-dark-dark.png')" : "url('/images/whats-dark-dark.png')",
+                backgroundColor: darkMode ? '#141414' : "#dedbd2",
+            }}
+        >
             {/* Main Chat Area */}
             <Header style={{ height: '50px', backgroundColor: colorBgContainer, padding: "0 16px", alignContent: 'center' }}>
                 <Title level={4} style={{ margin: 0 }}>
@@ -164,11 +163,6 @@ const Conversations = ({ socket }) => {
                 </Title>
             </Header>
             <Content style={{ width: '100%', display: "flex", flexDirection: "column" }}>
-                {/* <Tabs defaultActiveKey="1" style={{ marginBottom: "16px" }}>
-                    <TabPane tab="Messages" key="1" />
-                    <TabPane tab="Participants" key="2" />
-                </Tabs> */}
-
                 <div style={{ flex: 1, overflowY: "auto" }}>
                     <div
                         id="scrollableDivMessages"
@@ -191,17 +185,6 @@ const Conversations = ({ socket }) => {
                             scrollableTarget="scrollableDivMessages"
                             inverse={true}
                         >
-                            {/* {hasMore && (
-                                <div style={{ textAlign: "center", marginBottom: "16px" }}>
-                                    <Skeleton
-                                        paragraph={{
-                                            rows: 1,
-                                        }}
-                                        active
-                                    />
-                                </div>
-                            )} */}
-
                             <List
                                 dataSource={messages}
                                 renderItem={(item) => {
@@ -222,7 +205,6 @@ const Conversations = ({ socket }) => {
                                                     paddingLeft: 10,
                                                     borderRadius: "8px",
                                                     border: 0,
-                                                    // backgroundColor: isMyMessage ? "#e6f7ff" : "#ffffff",
                                                     backgroundColor: 
                                                         isMyMessage && darkMode ? "#3A3F44" : 
                                                         isMyMessage && !darkMode ? "#a6a6a6" : 
@@ -240,8 +222,8 @@ const Conversations = ({ socket }) => {
                                                             width: 20,
                                                             fontSize: "11px",
                                                             color: "#6d6d6d",
-                                                            marginLeft: "10px", // Espaçamento entre mensagem e horário
-                                                            whiteSpace: "nowrap", // Previne quebra de linha
+                                                            marginLeft: "10px",
+                                                            whiteSpace: "nowrap",
                                                         }}
                                                     >
                                                         <span
@@ -250,7 +232,7 @@ const Conversations = ({ socket }) => {
                                                             }}
                                                         >
                                                             {console.log("time: ", item.created_at)}
-                                                            {formatTime(item.created_at)} {/* Exemplo: '18:16' */}
+                                                            {formatTime(item.created_at)}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -273,12 +255,6 @@ const Conversations = ({ socket }) => {
                         style={{  flex: 1, width: '100%' }}
                         onClick={() => updateUnread()}
                     />
-                    {/* <Button
-                        type="primary"
-                        shape="circle"
-                        icon={<SendOutlined />}
-                        onClick={sendMessage}
-                    /> */}
                 </Col>
             </Content>
         </Layout>
