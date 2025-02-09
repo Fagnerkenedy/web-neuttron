@@ -153,7 +153,7 @@ const Conversations = ({ socket }) => {
             style={{ 
                 height: "calc(100vh - 77px)", 
                 backgroundImage: "url('/images/whats-dark-dark.PNG')",
-                backgroundColor: darkMode ? '#141414' : "#dedbd2",
+                backgroundColor: darkMode ? '#0D0D0D' : "#dedbd2",
             }}
         >
             {/* Main Chat Area */}
