@@ -19,18 +19,21 @@ const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
 const ItemList = styled.div`
-  padding: 5px;
+  margin-bottom: 5px;
   transition: background-color 0.3s;
   border-radius: 5px;
   whiteSpace: 'nowrap';
   overflow: 'hidden';
   textOverflow: 'ellipsis';
+  background-color: ${(props) => props.darkMode === true && props.selected === true ? "#0D0D0D" : props.darkMode === false  && props.selected === true ? "#EDEDED" : "" };
   
   &:hover {
-    background-color: ${(props) => props.darkMode === true ? "#333" : "#f5f5f5"};
+    background-color: ${(props) => props.darkMode === true && props.selected === true ? "#0A0A0A" : props.darkMode === true  && props.selected === false ? "#101010" : props.darkMode === false  && props.selected === true ? "#E0E0E0" : props.darkMode === false  && props.selected === false ? "#f5f5f5" : "" }
   }
 `;
+const funcao = () => {
 
+}
 function Chats({ socket }) {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -217,7 +220,7 @@ function Chats({ socket }) {
                                     itemLayout="horizontal"
                                     dataSource={filteredConversations}
                                     renderItem={(item) => (
-                                        <ItemList className="itemList" darkMode={darkMode}>
+                                        <ItemList className="itemList" darkMode={darkMode} selected={selectedKey === item.id}>
 
                                             <List.Item
                                                 onClick={() => handleSelect(item.id)}
@@ -238,7 +241,15 @@ function Chats({ socket }) {
                                                         </Col>
                                                     ] : undefined
                                                 }
-                                                style={{ cursor: "pointer", padding: "10px 12px", borderRadius: 5, backgroundColor: selectedKey === item.id && darkMode ? "#000000" : selectedKey === item.id && !darkMode ? "#f5f5f5" : "transparent" }}
+                                                style={{ 
+                                                    cursor: "pointer", 
+                                                    padding: "10px 12px", 
+                                                    borderRadius: 5, 
+                                                    // backgroundColor: 
+                                                    //     selectedKey === item.id && darkMode ? "#101010" : 
+                                                    //     selectedKey === item.id && !darkMode ? "#f5f5f5" : 
+                                                    //     "transparent" 
+                                                }}
                                             >
                                                 <Skeleton avatar title={false} loading={loading} active>
                                                     <List.Item.Meta
@@ -262,7 +273,9 @@ function Chats({ socket }) {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        height: "100%",
+                        height: "calc(100vh - 79px)",
+                        backgroundImage: "url('/images/whats-dark-dark.PNG')",
+                        backgroundColor: darkMode ? '#0D0D0D' : "#dedbd2",
                     }}
                 >
                     <Space direction="vertical" align="center">

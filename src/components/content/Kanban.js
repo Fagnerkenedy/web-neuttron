@@ -6,6 +6,7 @@ import Link from 'antd/es/typography/Link';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import ColumnsOrder from './selection/ColumnsOrder';
+// import './styles.css'
 
 const KanbanBoard = ({ data }) => {
   const [columns, setColumns] = useState('');
@@ -234,87 +235,96 @@ const KanbanBoard = ({ data }) => {
         <div style={{ position: 'absolute', zIndex: 1000, right: 5, top: 5 }}>
           <ColumnsOrder reload={fetchStages} />
         </div>
-        <Row gutter={16} wrap={false} style={{ maxWidth: '100vw', width: '100vw', overflow: 'auto', height: 'calc(100vh - 127px)' }}>
+        <Row gutter={16} wrap={false} style={{ overflowY: 'auto', height: 'calc(100vh - 129px)' }} className='custom-scrollbar'>
+          {/* <Row gutter={16} wrap={false} style={{ maxWidth: '100vw', width: '100vw', overflow: 'auto', height: 'calc(100vh - 127px)' }}> */}
           {columns != '' && field != '' ? (Object.entries(columns).map(([columnId, column]) => (
             <Droppable droppableId={columnId} key={columnId}>
               {(provided, snapshot) => (
                 // <Tooltip title={column.name}>
-                <Card
-                  title={column.name
-                    // colors.map((color) => (
-                    //   <Badge key={color} color={color} text={color} />
-                    // ))
-                    // <Badge color="green" status='success' text={column.name} />
-                  }
-                  size='small'
-                  style={{
-                    // maxHeight: 'calc(100vh - 155px)',
-                    width: '100%',
-                    height: '100%',
-                    marginLeft: snapshot.isDraggingOver ? 4 : 5,
-                    marginRight: snapshot.isDraggingOver ? 4 : 5,
-                    marginBottom: 10,
-                    backgroundColor: snapshot.isDraggingOver
-                      ? (darkMode ? '#3a3a3c' : '#e6f7ff')
-                      : darkMode ? '' : '#e0e0e0',
-                    borderTop: snapshot.isDraggingOver
-                      // ? (darkMode ? '3px solid green' : '3px solid green')
-                      // : '3px solid green',
-                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                      : '',
-                    borderLeft: snapshot.isDraggingOver
-                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                      : '',
-                    borderRight: snapshot.isDraggingOver
-                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                      : '',
-                    borderBottom: snapshot.isDraggingOver
-                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                      : '',
-                  }}
-                  bordered={false}
-                // hoverable={true}
-                >
-                  <div style={{ minHeight: 'calc(100vh - 220px)', height: '100%', minWidth: 300 }} ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} {...provided.droppableProps}>
-                    {column.items && column.items.length > 0 ? (
-                      column.items.map((item, index) => (
-                        <Draggable key={item.id} draggableId={item.id} index={index}>
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={{
-                                transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition,
-                                ...provided.draggableProps.style,
-                                marginBottom: 8,
-                              }}
-                            >
-                              <Card
-                                size='small'
-                                hoverable={true}
-                                style={{ marginRight: 5, cursor: 'grab' }}
-                                onClick={() => navigate(`/${org}/${moduleName}/${item.id}`)}
-                              >
-                                {Object.entries(item.content).map(([key, value]) => {
-                                  return (
-                                    <Row>
-                                      <Text>
-                                        {key == 'id' ? '' : key == 'montante' ? ` R$ ${value.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")}` : value}
-                                      </Text>
-                                    </Row>
-                                  )
-                                })}
-                              </Card>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))) : (
-                      <Text type="secondary">Nenhum item disponível</Text>
-                    )}
-                    {provided.placeholder}
-                  </div>
-                </Card>
+                // <Layout>
+                  <Card
+                    title={column.name
+                      // colors.map((color) => (
+                      //   <Badge key={color} color={color} text={color} />
+                      // ))
+                      // <Badge color="green" status='success' text={column.name} />
+                    }
+                    ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} {...provided.droppableProps}
+                    size='small'
+                    className='custom-scrollbar'
+                    style={{
+                      paddingBottom: -8,
+                      overflowY: 'auto',
+                      overflowX: 'hidden',
+                      borderRadius: 4,
+                      maxHeight: 'calc(100vh - 155px)',
+                      minWidth: 340,
+                      height: '100%',
+                      marginLeft: snapshot.isDraggingOver ? 4 : 5,
+                      marginRight: snapshot.isDraggingOver ? 4 : 5,
+                      // marginBottom: 10,
+                      backgroundColor: snapshot.isDraggingOver
+                        ? (darkMode ? '#3a3a3c' : '#e6f7ff')
+                        : darkMode ? '' : '#e0e0e0',
+                      borderTop: snapshot.isDraggingOver
+                        // ? (darkMode ? '3px solid green' : '3px solid green')
+                        // : '3px solid green',
+                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                        : '',
+                      borderLeft: snapshot.isDraggingOver
+                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                        : '',
+                      borderRight: snapshot.isDraggingOver
+                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                        : '',
+                      borderBottom: snapshot.isDraggingOver
+                        ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                        : '',
+                    }}
+                    bordered={false}
+                  // hoverable={true}
+                  >
+                    {/* <div style={{ height: 'calc(100vh - 214px)', minWidth: 300, marginBottom: 10, padding: '0 0 15px 0' }} > */}
+                      {column.items && column.items.length > 0 ? (
+                        column.items.map((item, index) => (
+                          <Draggable key={item.id} draggableId={item.id} index={index}>
+                            {(provided) => (
+                              // <div
+                              // >
+                                <Card
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={{
+                                  transition: snapshot.isDropAnimating ? "transform 0.07s ease" : provided.draggableProps.style.transition,
+                                  ...provided.draggableProps.style,
+                                  marginBottom: 8,
+                                  cursor: 'grab'
+                                }}
+                                  size='small'
+                                  hoverable={true}
+                                  // style={{ cursor: 'grab' }}
+                                  onClick={() => navigate(`/${org}/${moduleName}/${item.id}`)}
+                                >
+                                  {Object.entries(item.content).map(([key, value]) => {
+                                    return (
+                                      <Row>
+                                        <Text>
+                                          {key == 'id' ? '' : key == 'montante' ? ` R$ ${value.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")}` : value}
+                                        </Text>
+                                      </Row>
+                                    )
+                                  })}
+                                </Card>
+                            )}
+                          </Draggable>
+                        ))) : (
+                        <Text type="secondary">Nenhum item disponível</Text>
+                      )}
+                      {provided.placeholder}
+                    {/* </div> */}
+                  </Card>
+                //* </Layout> */}
                 // </Tooltip> 
               )}
             </Droppable>
