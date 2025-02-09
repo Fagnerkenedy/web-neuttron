@@ -31,9 +31,7 @@ const ItemList = styled.div`
     background-color: ${(props) => props.darkMode === true && props.selected === true ? "#0A0A0A" : props.darkMode === true  && props.selected === false ? "#101010" : props.darkMode === false  && props.selected === true ? "#E0E0E0" : props.darkMode === false  && props.selected === false ? "#f5f5f5" : "" }
   }
 `;
-const funcao = () => {
 
-}
 function Chats({ socket }) {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
