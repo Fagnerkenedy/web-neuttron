@@ -151,9 +151,9 @@ const Conversations = ({ socket }) => {
     return (
         <Layout 
             style={{ 
-                height: "calc(100vh - 77px)", 
-                backgroundImage: "url('/images/whats-dark-dark.PNG')",
-                backgroundColor: darkMode ? '#0D0D0D' : "#dedbd2",
+                height: "calc(100vh - 79px)", 
+                // backgroundImage: "url('/images/whats-dark-dark.PNG')",
+                backgroundColor: darkMode ? '#1A1A1A' : "#EDEDED",
             }}
         >
             {/* Main Chat Area */}
@@ -203,11 +203,12 @@ const Conversations = ({ socket }) => {
                                                     padding: 5,
                                                     paddingRight: 15,
                                                     paddingLeft: 10,
+                                                    margin: darkMode ? '0' : '3px 0',
                                                     borderRadius: "8px",
                                                     border: 0,
                                                     backgroundColor: 
-                                                        isMyMessage && darkMode ? "#3A3F44" : 
-                                                        isMyMessage && !darkMode ? "#a6a6a6" : 
+                                                        isMyMessage && darkMode ? "#01294c" : 
+                                                        isMyMessage && !darkMode ? "#b3dbfe" : 
                                                         !isMyMessage && darkMode ? "#2A2A2A" : 
                                                         !isMyMessage && !darkMode ? "" : null,
                                                     maxWidth: "70%",
