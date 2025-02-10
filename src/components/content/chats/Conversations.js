@@ -8,6 +8,7 @@ import { formatTime, formatDateToISO } from "./formatNumbers"
 import './styles.css'
 import PdfDownload from "./PdfButton";
 import PdfMessage from "./PdfMessage";
+import TextoFormatado from "./TextoFormatado";
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text } = Typography;
@@ -121,11 +122,12 @@ const Conversations = ({ socket }) => {
             const date = new Date()
             date.setHours(date.getHours() - 3)
             const formattedDate = date.toISOString().replace("T", " ").replace("Z", "")
-            const newMessage = { senderName: user.name, body: input, created_at: formattedDate };
+            const newMessage = { senderName: user.name, body: input, created_at: formattedDate, contactNumber: "554599750447", };
             setMessages((prev) => [...prev, newMessage]);
             try {
                 await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",
+                    contactNumber: "554599750447",
                     to: messages[0]?.contactNumber,
                     message: input,
                     conversationId,
@@ -226,7 +228,9 @@ const Conversations = ({ socket }) => {
                                                         // <PdfMessage pdfUrl={item.pathFront} fileName={item.body}/>
                                                         <PdfDownload pdfUrl={item.pathFront} fileName={item.body}/>
                                                     ) : 
-                                                    <Text>{item.body}</Text>
+                                                    // <Text>{item.body}</Text>
+                                                    <TextoFormatado fileName={item.body} />
+
 
                                                     }
                                                     {/* <PdfDownload pdfUrl="file:///C:/Users/fagne/Downloads/2%20-%20Gest%C3%A3o%20Agricola%20(1).pdf" fileName="2 - Gestão Agricola.pdf"/> */}
