@@ -272,8 +272,8 @@ function Chats({ socket }) {
                         justifyContent: "center",
                         alignItems: "center",
                         height: "calc(100vh - 79px)",
-                        backgroundImage: "url('/images/whats-dark-dark.PNG')",
-                        backgroundColor: darkMode ? '#0D0D0D' : "#dedbd2",
+                        // backgroundImage: "url('/images/whats-dark-dark.PNG')",
+                        backgroundColor: darkMode ? '#1A1A1A' : "#EDEDED",
                     }}
                 >
                     <Space direction="vertical" align="center">

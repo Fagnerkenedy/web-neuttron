@@ -2,7 +2,7 @@ echo "Switching to branch master"
 git checkout master
 
 echo "Pulling app..."
-git pull
+git pull --no-rebase
 
 echo "Switching to folder build"
 cd build

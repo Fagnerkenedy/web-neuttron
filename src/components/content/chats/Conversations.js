@@ -6,6 +6,8 @@ import { useOutletContext, useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { formatTime, formatDateToISO } from "./formatNumbers"
 import './styles.css'
+import PdfDownload from "./PdfButton";
+import PdfMessage from "./PdfMessage";
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text } = Typography;
@@ -94,7 +96,8 @@ const Conversations = ({ socket }) => {
                 senderName: message?.senderName || "Desconhecido",
                 contactNumber: message?.contactNumber,
                 body: message?.body || "",
-                created_at: message?.updated_at
+                created_at: message?.updated_at,
+                pathFront: message?.pathFront
             };
 
             if (message?.conversationId === conversationId) {
@@ -217,7 +220,16 @@ const Conversations = ({ socket }) => {
                                                 bodyStyle={{ padding: 0 }}
                                             >
                                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                                                    
+                                                    {console.log("item: ", item)}
+                                                    { item.pathFront ? (
+                                                        // <PdfMessage pdfUrl={item.pathFront} fileName={item.body}/>
+                                                        <PdfDownload pdfUrl={item.pathFront} fileName={item.body}/>
+                                                    ) : 
                                                     <Text>{item.body}</Text>
+
+                                                    }
+                                                    {/* <PdfDownload pdfUrl="file:///C:/Users/fagne/Downloads/2%20-%20Gest%C3%A3o%20Agricola%20(1).pdf" fileName="2 - Gestão Agricola.pdf"/> */}
                                                     <div
                                                         style={{
                                                             width: 20,
@@ -232,7 +244,6 @@ const Conversations = ({ socket }) => {
 
                                                             }}
                                                         >
-                                                            {console.log("time: ", item.created_at)}
                                                             {formatTime(item.created_at)}
                                                         </span>
                                                     </div>
