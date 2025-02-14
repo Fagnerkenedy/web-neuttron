@@ -178,9 +178,9 @@ function Chats({ socket }) {
                                 </Title>
                                 <Text type="success">Disponível</Text>
                             </TabPane>
-                            <TabPane tab="QR Code" key="2">
+                            {/* <TabPane tab="QR Code" key="2">
                                 <WhatsAppQRCode />
-                            </TabPane>
+                            </TabPane> */}
                         </Tabs>
                     </div>
                     <div style={{ width: "90%" }}>
