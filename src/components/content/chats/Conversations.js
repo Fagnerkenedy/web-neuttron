@@ -23,6 +23,7 @@ const Conversations = ({ socket }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [chatList, setChatList] = useState([]);
+    const [conversationData, setConversationData] = useState([]);
     const { conversationId } = useParams();
     const localUser = localStorage.getItem("user");
     const user = JSON.parse(localUser);
@@ -73,12 +74,18 @@ const Conversations = ({ socket }) => {
                 params: { page: 1, limit: 30 },
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
+            const conversationData = await axios.get(`/chat/${org}/conversation/${conversationId}`, {
+                baseURL: process.env.REACT_APP_LINK_API,
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
             const conversation = response.data.conversation
             const hasMore = response.data.hasMore
             const pageServer = response.data.page
             console.log("convrsetion 3:", conversation)
+            console.log("convrsetion Data:", conversationData.data.data)
             conversation.reverse();
             setMessages(conversation);
+            setConversationData(conversationData.data.data)
             setHasMore(hasMore);
             setPage(parseInt(pageServer) + 1)
             // scrollToBottom()
@@ -128,7 +135,7 @@ const Conversations = ({ socket }) => {
                 await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",
                     contactNumber: "554599750447",
-                    to: messages[0]?.contactNumber,
+                    to: conversationData.wa_id_contact,
                     message: input,
                     conversationId,
                     userName: user.name,
@@ -164,7 +171,7 @@ const Conversations = ({ socket }) => {
             {/* Main Chat Area */}
             <Header style={{ height: '50px', backgroundColor: colorBgContainer, padding: "0 16px", alignContent: 'center' }}>
                 <Title level={4} style={{ margin: 0 }}>
-                    {messages[0]?.senderName}
+                    {conversationData.name}
                 </Title>
             </Header>
             <Content style={{ width: '100%', display: "flex", flexDirection: "column" }}>
