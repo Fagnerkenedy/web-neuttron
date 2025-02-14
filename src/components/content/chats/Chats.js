@@ -261,7 +261,8 @@ function Chats({ socket }) {
                                                 <Skeleton avatar title={false} loading={loading} active>
                                                     <List.Item.Meta
                                                         avatar={<Avatar icon={<UserOutlined />} />}
-                                                        title={<Text ellipsis={{ tooltip: conversationData.name }} strong>{conversationData.name}</Text>}
+                                                        title={<Text ellipsis={{ tooltip: item.name }} strong>{item.name}</Text>}
+                                                        // title={<Text ellipsis={{ tooltip: conversationData.name }} strong>{conversationData.name}</Text>}
                                                         description={<Text type="secondary" ellipsis={{ tooltip: item.last_message }}>{item.last_message || "Sem mensagens"}</Text>}
                                                     />
                                                 </Skeleton>
