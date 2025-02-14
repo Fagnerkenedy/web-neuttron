@@ -170,7 +170,7 @@ function Chats({ socket }) {
             <Sider width={"22%"} theme="light">
                 <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
                     <div style={{ textAlign: "center", width: '100%' }}>
-                        <Tabs onChange={handleSetUsuario} defaultActiveKey="1" style={{ padding: '0 20px 0', marginBottom: "16px", width: '100%' }}>
+                        <Tabs onChange={handleSetUsuario} defaultActiveKey="1"  style={{ padding: '0 20px 0', marginBottom: "16px", width: '100%' }}>
                             <TabPane tab="Usuário" key="1">
                                 <Avatar size={64} icon={<UserOutlined />} />
                                 <Title level={4} style={{ marginTop: "8px" }}>
