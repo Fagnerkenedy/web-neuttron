@@ -25,10 +25,10 @@ const ItemList = styled.div`
   whiteSpace: 'nowrap';
   overflow: 'hidden';
   textOverflow: 'ellipsis';
-  background-color: ${(props) => props.darkMode === true && props.selected === true ? "#0D0D0D" : props.darkMode === false  && props.selected === true ? "#EDEDED" : "" };
+  background-color: ${(props) => props.darkMode === true && props.selected === true ? "#0D0D0D" : props.darkMode === false && props.selected === true ? "#EDEDED" : ""};
   
   &:hover {
-    background-color: ${(props) => props.darkMode === true && props.selected === true ? "#0A0A0A" : props.darkMode === true  && props.selected === false ? "#101010" : props.darkMode === false  && props.selected === true ? "#E0E0E0" : props.darkMode === false  && props.selected === false ? "#f5f5f5" : "" }
+    background-color: ${(props) => props.darkMode === true && props.selected === true ? "#0A0A0A" : props.darkMode === true && props.selected === false ? "#101010" : props.darkMode === false && props.selected === true ? "#E0E0E0" : props.darkMode === false && props.selected === false ? "#f5f5f5" : ""}
   }
 `;
 
@@ -57,6 +57,7 @@ function Chats({ socket }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [usuario, setUsuario] = useState(false);
+    const [conversationData, setConversationData] = useState([]);
 
     const fetchData = async () => {
         setLoading(true)
@@ -135,6 +136,14 @@ function Chats({ socket }) {
             });
             setLoading(false)
         };
+        const getConversationData = async () => {
+            const conversationData = await axios.get(`/chat/${org}/conversation/${conversationId}`, {
+                baseURL: process.env.REACT_APP_LINK_API,
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
+            setConversationData(conversationData.data.data)
+        }
+        getConversationData()
 
         setSelectedKey(conversationId)
         setLoading(false)
@@ -188,12 +197,12 @@ function Chats({ socket }) {
                             id="scrollableDiv"
                             style={{
                                 width: "100%",
-                                maxHeight: 
+                                maxHeight:
                                     darkMode && usuario ? "calc(100vh - 337px)" : // É darkMode e está no usuário
-                                    darkMode && !usuario ? "calc(100vh - 518px)" : // É darkMode e está no qrCode
-                                    !darkMode && usuario ? "calc(100vh - 305px)" :  // É claro e está no usuário
-                                    !darkMode && !usuario ? "calc(100vh - 484px)" : // É claro e está no qrCode
-                                    null,
+                                        darkMode && !usuario ? "calc(100vh - 518px)" : // É darkMode e está no qrCode
+                                            !darkMode && usuario ? "calc(100vh - 305px)" :  // É claro e está no usuário
+                                                !darkMode && !usuario ? "calc(100vh - 484px)" : // É claro e está no qrCode
+                                                    null,
                                 overflow: 'auto',
                                 padding: '0 16px',
                             }}
@@ -239,10 +248,10 @@ function Chats({ socket }) {
                                                         </Col>
                                                     ] : undefined
                                                 }
-                                                style={{ 
-                                                    cursor: "pointer", 
-                                                    padding: "10px 12px", 
-                                                    borderRadius: 5, 
+                                                style={{
+                                                    cursor: "pointer",
+                                                    padding: "10px 12px",
+                                                    borderRadius: 5,
                                                     // backgroundColor: 
                                                     //     selectedKey === item.id && darkMode ? "#101010" : 
                                                     //     selectedKey === item.id && !darkMode ? "#f5f5f5" : 
@@ -252,7 +261,7 @@ function Chats({ socket }) {
                                                 <Skeleton avatar title={false} loading={loading} active>
                                                     <List.Item.Meta
                                                         avatar={<Avatar icon={<UserOutlined />} />}
-                                                        title={<Text  ellipsis={{ tooltip: item.name }} strong>{item.name}</Text>}
+                                                        title={<Text ellipsis={{ tooltip: conversationData.name }} strong>{conversationData.name}</Text>}
                                                         description={<Text type="secondary" ellipsis={{ tooltip: item.last_message }}>{item.last_message || "Sem mensagens"}</Text>}
                                                     />
                                                 </Skeleton>
