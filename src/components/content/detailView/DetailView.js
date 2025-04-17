@@ -1008,13 +1008,15 @@ const DetailView = ({ itemId }) => {
                                 background: colorBgContainer,
                                 position: 'fixed',
                                 zIndex: '900',
-                                width: '100%'
+                                width: '100%',
+                                padding: '0 15px 0 15px',
+                                borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' 
                             }}
                         >
-                            <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
-                                <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                            <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px', }}>
+                                <Col xs={8} style={{ alignItems: 'center', justifyContent: 'center' }}>
                                     <Tooltip title="Voltar">
-                                        <Button type='text' icon={<LeftOutlined />} style={{ margin: '0 15px', height: 40 }} href={`/${org}/${moduleName}`}>
+                                        <Button type='text' icon={<LeftOutlined />} style={{ height: 40 }} href={`/${org}/${moduleName}`}>
                                             <Title
                                                 style={{ fontSize: '22px', margin: '0' }}
                                             >
@@ -1024,8 +1026,8 @@ const DetailView = ({ itemId }) => {
                                         </Button>
                                     </Tooltip>
 
-                                </Row>
-                                <Col style={{ margin: '0 15px 0 0' }}>
+                                </Col>
+                                <Col xs={16} style={{ textAlign: 'right' }}>
                                     <Can I='create' a={moduleName} ability={ability}>
                                         <Button
                                             onClick={handleAccess}

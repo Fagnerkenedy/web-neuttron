@@ -32,7 +32,7 @@ function Charts() {
         <>
             <Row>
                 {charts.map((chart, index) => (
-                    <Col span={12} key={index}>
+                    <Col xs={24} sm={24} md={24} lg={12} xl={12} span={12} key={index}>
                         <Layout
                             style={{
                                 background: colorBgContainer,

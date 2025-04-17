@@ -177,15 +177,6 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             <Logo fontSize={19} />
           </Row>
         </Link>
-        <Col style={{ marginLeft: '15px'}}>
-          <Link
-            href={`/${org}/chats`}
-          >
-            <Tooltip title="Mensagens">
-              <Button type={activeModule === 'chats' ? "text" : "link"} icon={<MessageOutlined />}></Button>
-            </Tooltip>
-          </Link>
-        </Col>
 
         <HeaderModules
           modules={modules}
@@ -195,7 +186,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           setActiveModule={setActiveModule}
           ability={ability}
         />
-        <div style={{ marginLeft: 'auto', minWidth: '215px' }}>
+        <div style={{ marginLeft: 'auto' }}>
           <Row span={24}>
             <Col style={{ alignItems: 'center', alignContent: 'center', marginRight: 5 }} span={14} >
               <ConfigProvider
@@ -209,6 +200,15 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
                   </Button>
                 </Can>
               </ConfigProvider>
+            </Col>
+            <Col style={{ marginLeft: '15px' }}>
+              <Link
+                href={`/${org}/chats`}
+              >
+                <Tooltip title="Mensagens">
+                  <Button type="text" shape="circle" icon={<MessageOutlined />} />
+                </Tooltip>
+              </Link>
             </Col>
             <Col ref={ref3}>
               <Tooltip title="Configurações">
