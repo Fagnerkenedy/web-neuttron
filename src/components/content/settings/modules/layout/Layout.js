@@ -1766,12 +1766,6 @@ const DragAndDrop = () => {
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
-              name="api_name"
-              label="Nome lógico"
-            >
-              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
-            </Form.Item>
-            <Form.Item
               name="char"
               label="Número de caracteres permitidos (Máximo 16000)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
@@ -1784,6 +1778,12 @@ const DragAndDrop = () => {
               rules={[{ required: false, message: 'Insira um valor!' }]}
             >
               <InputNumber changeOnWheel style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1816,17 +1816,17 @@ const DragAndDrop = () => {
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
-              name="api_name"
-              label="Nome lógico"
-            >
-              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
-            </Form.Item>
-            <Form.Item
               name="char"
               label="Número de caracteres permitidos (Máximo 19)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <InputNumber changeOnWheel max={19} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -1889,17 +1889,17 @@ const DragAndDrop = () => {
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
-              name="api_name"
-              label="Nome lógico"
-            >
-              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
-            </Form.Item>
-            <Form.Item
               name="char"
               label="Número de caracteres permitidos (Máximo 19)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <InputNumber max={19} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="required"
