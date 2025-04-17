@@ -181,7 +181,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <>
-      <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '49px', padding: "25px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
+      <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '49px', padding: "10px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
         <Link
           href={`/${org}/home`}
         >
@@ -199,20 +199,20 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           ability={ability}
         />
         <Row style={{ marginLeft: 'auto' }}>
-          <Col style={{ alignItems: 'center', alignContent: 'center', marginRight: 5 }} >
+          <Col>
             <ConfigProvider
               button={{
                 className: linearGradientButton,
               }}
             >
-              <Can I='read' a='checkout' ability={ability}>
+              {/* <Can I='read' a='checkout' ability={ability}> */}
               <Tooltip title="Fazer Upgrade">
                 <Button type="primary" shape="circle" href={`/${org}/checkout`} icon={<StarFilled />} />
               </Tooltip>
-              </Can>
+              {/* </Can> */}
             </ConfigProvider>
           </Col>
-          <Col style={{ marginLeft: '15px' }}>
+          <Col style={{ marginLeft: '5px' }}>
             <Link
               href={`/${org}/chats`}
             >
@@ -224,15 +224,14 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           <Col ref={ref3} style={{ marginLeft: '5px' }}>
             <Tooltip title="Configurações">
               <Button type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} />
-              {/* <Button style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} /> */}
             </Tooltip>
           </Col>
           <Col ref={ref4} style={{ marginLeft: '5px' }}>
             <Tooltip title="Perfil">
-              <Link type="text" onClick={showDrawer}>
+              {/* <Link type="text" onClick={showDrawer}>
                 <Avatar icon={<UserOutlined />} />
-              </Link>
-              {/* <Button onClick={showDrawer} icon={<UserOutlined />} /> */}
+              </Link> */}
+              <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} />
             </Tooltip>
             <Drawer
               open={open}
