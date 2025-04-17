@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'antd/es/typography/Link';
-import { Col } from 'antd';
+import { Button, Col, Tooltip } from 'antd';
 import { Can } from '../../contexts/AbilityContext';
 import CustomDropdown from './CustomDropdown';
+import { HomeOutlined } from '@ant-design/icons';
 
 const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, ability }) => {
     const ref2 = useRef(null);
@@ -59,14 +60,17 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
 
     return (
         <Col xs={2} sm={10} md={16} lg={16} xl={16} span={16} ref={ref2} style={{ margin: "15px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
-            <Link
-                className={`modules ${activeModule === 'home' ? 'active' : ''}`}
-                style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}
-                href={`/${org}/home`}
-                onClick={() => setActiveModule('home')}
-            >
-                Página Inicial
-            </Link>
+            <Tooltip title="Página Inicial">
+                <Button
+                    type="text"
+                    shape="circle"
+                    style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}
+                    href={`/${org}/home`}
+                    onClick={() => setActiveModule('home')}
+                    icon={<HomeOutlined />}
+                >
+                </Button>
+            </Tooltip>
             {/* <Link
                 className={`modules ${activeModule === 'chats' ? 'active' : ''}`}
                 style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}

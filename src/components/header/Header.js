@@ -6,8 +6,7 @@ import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
 import AuthContext from '../../contexts/auth';
-import { DeleteOutlined, ExclamationOutlined, LogoutOutlined, MessageOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import ButtonDarkMode from './ButtonDarkMode';
+import { CaretUpOutlined, DeleteOutlined, ExclamationOutlined, LogoutOutlined, MessageOutlined, MoonFilled, QuestionCircleOutlined, SettingOutlined, StarFilled, SunFilled, UserOutlined } from '@ant-design/icons';
 import './styles.css'
 import Logo from '../utils/Logo';
 import { Can } from "../../contexts/AbilityContext.js";
@@ -125,7 +124,20 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
         <Row style={{ justifyContent: 'center', paddingBottom: '15px' }}>
           <Text>{user.email}</Text>
         </Row>
-        <ButtonDarkMode darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <Row style={{ alignItems: "center", padding: "10px 0" }}>
+          <Button
+            type='text'
+            title={darkMode ? "Ativar Modo Claro" : "Ativar Modo Noturno"}
+            style={{ width: '100%', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}
+            onClick={() => {
+              closeDrawer()
+              toggleDarkMode()
+            }}
+            icon={darkMode ? <SunFilled /> : <MoonFilled />}
+          >
+            {darkMode ? "Modo Claro" : "Modo Noturno"}
+          </Button>
+        </Row>
         <Button icon={<LogoutOutlined />} type='primary' style={{ width: '100%' }} title={'Sair da conta'} onClick={logout}>Sair</Button>
       </Col>
       <Col style={{ bottom: 0 }}>
@@ -173,7 +185,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
         <Link
           href={`/${org}/home`}
         >
-          <Row>
+          <Row span={2}>
             <Logo fontSize={19} />
           </Row>
         </Link>
@@ -186,66 +198,64 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           setActiveModule={setActiveModule}
           ability={ability}
         />
-        <div style={{ marginLeft: 'auto' }}>
-          <Row span={24}>
-            <Col style={{ alignItems: 'center', alignContent: 'center', marginRight: 5 }} span={14} >
-              <ConfigProvider
-                button={{
-                  className: linearGradientButton,
-                }}
-              >
-                <Can I='read' a='checkout' ability={ability}>
-                  <Button type="primary" href={`/${org}/checkout`}>
-                    Fazer Upgrade
-                  </Button>
-                </Can>
-              </ConfigProvider>
-            </Col>
-            <Col style={{ marginLeft: '15px' }}>
-              <Link
-                href={`/${org}/chats`}
-              >
-                <Tooltip title="Mensagens">
-                  <Button type="text" shape="circle" icon={<MessageOutlined />} />
-                </Tooltip>
+        <Row style={{ marginLeft: 'auto' }}>
+          <Col style={{ alignItems: 'center', alignContent: 'center', marginRight: 5 }} >
+            <ConfigProvider
+              button={{
+                className: linearGradientButton,
+              }}
+            >
+              <Can I='read' a='checkout' ability={ability}>
+              <Tooltip title="Fazer Upgrade">
+                <Button type="primary" shape="circle" href={`/${org}/checkout`} icon={<StarFilled />} />
+              </Tooltip>
+              </Can>
+            </ConfigProvider>
+          </Col>
+          <Col style={{ marginLeft: '15px' }}>
+            <Link
+              href={`/${org}/chats`}
+            >
+              <Tooltip title="Mensagens">
+                <Button type="text" shape="circle" icon={<MessageOutlined />} />
+              </Tooltip>
+            </Link>
+          </Col>
+          <Col ref={ref3} style={{ marginLeft: '5px' }}>
+            <Tooltip title="Configurações">
+              <Button type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} />
+              {/* <Button style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} /> */}
+            </Tooltip>
+          </Col>
+          <Col ref={ref4} style={{ marginLeft: '5px' }}>
+            <Tooltip title="Perfil">
+              <Link type="text" onClick={showDrawer}>
+                <Avatar icon={<UserOutlined />} />
               </Link>
-            </Col>
-            <Col ref={ref3}>
-              <Tooltip title="Configurações">
-                <Button type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} />
-                {/* <Button style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} /> */}
-              </Tooltip>
-            </Col>
-            <Col ref={ref4} offset={1}>
-              <Tooltip title="Perfil">
-                <Link type="text" onClick={showDrawer}>
-                  <Avatar icon={<UserOutlined />} />
-                </Link>
-                {/* <Button onClick={showDrawer} icon={<UserOutlined />} /> */}
-              </Tooltip>
-              <Drawer
-                open={open}
-                title="Perfil"
-                onClose={closeDrawer}
-                extra={
-                  <Tooltip title="Visualizar tour">
-                    <Button
-                      type="text"
-                      shape="circle"
-                      onClick={() => {
-                        closeDrawer()
-                        setOpenTour(true)
-                      }}
-                      icon={<QuestionCircleOutlined />}
-                    />
-                  </Tooltip>
-                }
-              >
-                {Content}
-              </Drawer>
-            </Col>
-          </Row>
-        </div>
+              {/* <Button onClick={showDrawer} icon={<UserOutlined />} /> */}
+            </Tooltip>
+            <Drawer
+              open={open}
+              title="Perfil"
+              onClose={closeDrawer}
+              extra={
+                <Tooltip title="Visualizar tour">
+                  <Button
+                    type="text"
+                    shape="circle"
+                    onClick={() => {
+                      closeDrawer()
+                      setOpenTour(true)
+                    }}
+                    icon={<QuestionCircleOutlined />}
+                  />
+                </Tooltip>
+              }
+            >
+              {Content}
+            </Drawer>
+          </Col>
+        </Row>
       </Col>
       <Row style={{ height: '50px' }}></Row>
       <Tour
