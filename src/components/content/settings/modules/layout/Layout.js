@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import styled, { createGlobalStyle } from 'styled-components';
 import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip, ConfigProvider, InputNumber } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { CalendarOutlined, CloseOutlined, EditOutlined, EllipsisOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { CalendarOutlined, CloseOutlined, CopyOutlined, EditOutlined, EllipsisOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import './styles.css'
 import InputOutlined from '../../../../../../src/img/text.png'
@@ -20,8 +20,9 @@ import DateTimeOutlined from '../../../../../../src/img/datetime.png'
 import { useOutletContext } from 'react-router-dom';
 import { getModulesTour, updateModulesTour } from './modulesTour';
 import { fetchModules } from '../../../selection/fetchModules';
+import TextToCopyButton from './TextToCopyButton';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 const { Content } = Layout;
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -1726,6 +1727,13 @@ const DragAndDrop = () => {
             >
               <InputNumber changeOnWheel max={255} style={{ width: '100%' }} />
             </Form.Item>
+
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
+            </Form.Item>
             <Form.Item
               name="required"
               valuePropName="checked"
@@ -1738,6 +1746,7 @@ const DragAndDrop = () => {
             >
               <Checkbox>Desabilitar</Checkbox>
             </Form.Item>
+
           </Form>
         )}
         {form.getFieldValue('field_type') === 'multi_line' && (
@@ -1755,6 +1764,12 @@ const DragAndDrop = () => {
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="char"
@@ -1801,6 +1816,12 @@ const DragAndDrop = () => {
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
+            </Form.Item>
+            <Form.Item
               name="char"
               label="Número de caracteres permitidos (Máximo 19)"
               rules={[{ required: true, message: 'Insira um valor!' }]}
@@ -1838,6 +1859,12 @@ const DragAndDrop = () => {
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
+            </Form.Item>
+            <Form.Item
               name="disabled"
               valuePropName="checked"
             >
@@ -1860,6 +1887,12 @@ const DragAndDrop = () => {
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="char"
@@ -1946,6 +1979,12 @@ const DragAndDrop = () => {
                 ))}
               </Select>
               {/* </ConfigProvider> */}
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -2058,6 +2097,12 @@ const DragAndDrop = () => {
 
             </Layout>
             <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
+            </Form.Item>
+            <Form.Item
               name="required"
               valuePropName="checked"
             >
@@ -2088,6 +2133,12 @@ const DragAndDrop = () => {
               <Input ref={inputRef} />
             </Form.Item>
             <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
+            </Form.Item>
+            <Form.Item
               name="required"
               valuePropName="checked"
             >
@@ -2116,6 +2167,12 @@ const DragAndDrop = () => {
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <Input ref={inputRef} />
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="required"
@@ -2155,6 +2212,12 @@ const DragAndDrop = () => {
               <InputNumber changeOnWheel max={255} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
+            </Form.Item>
+            <Form.Item
               name="required"
               valuePropName="checked"
             >
@@ -2190,6 +2253,12 @@ const DragAndDrop = () => {
               rules={[{ required: true, message: 'Insira um valor!' }]}
             >
               <InputNumber changeOnWheel max={255} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="api_name"
+              label="Nome lógico"
+            >
+              <TextToCopyButton textToCopy={clickedItem.item.api_name} />
             </Form.Item>
             <Form.Item
               name="required"

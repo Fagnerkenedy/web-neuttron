@@ -8,6 +8,7 @@ import Charts from '../charts/Charts'
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
 import { useOutletContext } from 'react-router-dom';
+import DrilldownChart from '../charts/DrilldownChart.js'
 
 const { Text } = Typography;
 
@@ -35,6 +36,7 @@ function Home() {
         <Layout style={{ padding: '15px 15px 0 15px' }}>
             <Text style={{ fontSize: '20px', marginBottom: '15px' }} level={1} strong>Bem-vindo(a) {userName.name}</Text>
             <Charts />
+            {/* <DrilldownChart /> */}
             {/* <Row gutter={16}>
                 {modules.map((module, index) => (
                     <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>

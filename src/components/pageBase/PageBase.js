@@ -3,10 +3,13 @@ import AppHeader from "../header/Header";
 import AppFooter from "../footer/Footer";
 import { Outlet } from "react-router-dom";
 import { ConfigProvider, theme } from 'antd';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import apiURI from "../../Utility/userApiURI.js"
+import axios from "axios";
+import AuthContext from '../../contexts/auth';
 const updateDarkMode = apiURI.updateDarkMode
 const { defaultAlgorithm, darkAlgorithm, compactAlgorithm, } = theme;
+const linkApi = process.env.REACT_APP_LINK_API
 
 function PageBase() {
     const currentPath = window.location.pathname;
@@ -36,7 +39,6 @@ function PageBase() {
             }}
         >
             <Layout style={{ minHeight: '100vh' }}>
-                {/* <AppHeader /> */}
                 <AppHeader darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} />
                 <Outlet context={{ darkMode }} />
                 <AppFooter darkMode={darkMode} />
