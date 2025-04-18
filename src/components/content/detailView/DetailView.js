@@ -1020,7 +1020,6 @@ const DetailView = ({ itemId }) => {
                                             <Title
                                                 style={{ fontSize: '22px', margin: '0' }}
                                             >
-                                                {/* {data[0].field_value} */}
                                                 Detalhes
                                             </Title>
                                         </Button>

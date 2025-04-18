@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.83d69b3d.css",
-    "main.js": "/static/js/main.25d24b7a.js",
+    "main.js": "/static/js/main.c1a1482e.js",
     "static/media/neuttron_preto_sem_fundo.png": "/static/media/neuttron_preto_sem_fundo.1cf2d21445c5b52689d0.png",
     "static/media/datetime.png": "/static/media/datetime.fa42a01e2c43d08300fc.png",
     "static/media/dollar.png": "/static/media/dollar.78da48ac6f68577dcbd0.png",
@@ -13,6 +13,6 @@
   },
   "entrypoints": [
     "static/css/main.83d69b3d.css",
-    "static/js/main.25d24b7a.js"
+    "static/js/main.c1a1482e.js"
   ]
 }
