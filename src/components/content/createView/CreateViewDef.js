@@ -1086,13 +1086,14 @@ const CreateView = ({ itemId }) => {
                                     borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
                                     position: 'fixed',
                                     zIndex: '900',
-                                    width: '100%'
+                                    width: '100%',
+                                    padding: '0 0 0 10px',
                                 }}
                             >
                                 <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
                                     <Col>
                                         <Title
-                                            style={{ paddingLeft: '30px', fontSize: '22px', margin: 0 }}
+                                            style={{  fontSize: '22px', margin: 0 }}
                                         >
                                             Criar {moduleName == "users" ? ("Usuário") :
                                                 moduleName == "profiles" ? ("Perfil") :
@@ -1101,7 +1102,7 @@ const CreateView = ({ itemId }) => {
                                                             (toSingular(activeModule))}
                                         </Title>
                                     </Col>
-                                    <Col style={{ margin: '0 15px 0 0' }}>
+                                    <Col>
                                         <Button href={`/${org}/${moduleName}`}>Cancelar</Button>
                                         <Button style={{ margin: '0 15px' }} type='primary' htmlType="submit">Salvar</Button>
                                     </Col>

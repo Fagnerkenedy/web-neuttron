@@ -1009,12 +1009,12 @@ const DetailView = ({ itemId }) => {
                                 position: 'fixed',
                                 zIndex: '900',
                                 width: '100%',
-                                padding: '0 15px 0 15px',
+                                padding: '0 5px 0 5px',
                                 borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' 
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px', }}>
-                                <Col xs={8} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <Col xs={7} style={{ alignItems: 'center', justifyContent: 'center' }}>
                                     <Tooltip title="Voltar">
                                         <Button type='text' icon={<LeftOutlined />} style={{ height: 40 }} href={`/${org}/${moduleName}`}>
                                             <Title
@@ -1026,21 +1026,21 @@ const DetailView = ({ itemId }) => {
                                     </Tooltip>
 
                                 </Col>
-                                <Col xs={16} style={{ textAlign: 'right' }}>
+                                <Col xs={17} style={{ textAlign: 'right' }}>
                                     <Can I='create' a={moduleName} ability={ability}>
                                         <Button
                                             onClick={handleAccess}
                                             icon={<PlusOutlined />}
                                             type='primary'
-                                        >{moduleName == "users" ? ("Novo Usuário") :
-                                            moduleName == "profiles" ? ("Novo Perfil") :
-                                                moduleName == "functions" ? ("Nova Função") :
-                                                    moduleName == "charts" ? ("Novo Painel") :
-                                                        ("Novo " + toSingular(activeModule))}
+                                        >{moduleName == "users" ? ("Usuário") :
+                                            moduleName == "profiles" ? ("Perfil") :
+                                                moduleName == "functions" ? ("Função") :
+                                                    moduleName == "charts" ? ("Painel") :
+                                                        (toSingular(activeModule))}
                                         </Button>
                                     </Can>
                                     <Can I='update' a={moduleName} ability={ability}>
-                                        <Button style={{ marginLeft: '15px' }} type='primary' href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
+                                        <Button style={{ marginLeft: '10px' }} type='primary' href={`/${org}/${moduleName}/${record_id}/edit`}>Editar</Button>
                                     </Can>
                                     <Can I='delete' a={moduleName} ability={ability}>
                                         <Popconfirm
@@ -1050,7 +1050,7 @@ const DetailView = ({ itemId }) => {
                                             okText="Sim"
                                             cancelText="Cancelar"
                                         >
-                                            <Button style={{ margin: '0 15px' }} danger>Excluir</Button>
+                                            <Button style={{ margin: '0 10px' }} danger>Excluir</Button>
                                         </Popconfirm>
                                     </Can>
                                 </Col>
@@ -1162,3 +1162,70 @@ const DetailView = ({ itemId }) => {
 };
 
 export default DetailView;
+
+{/* <Col span={24}>
+    {Array.from({ length: Math.max(section.left.length, section.right.length) }).map((_, index) => {
+        const leftField = section.left[index];
+        const rightField = section.right[index];
+
+        return (
+            <Row key={index}>
+                <Col xs={24} sm={10} md={12} lg={12} xl={12}>
+                    {leftField && (
+                        <Form
+                            form={form}
+                            name="LeftForm"
+                            initialValues={
+                                leftField.field_type === "date" || leftField.field_type === "date_time"
+                                    ? { [leftField.api_name]: dayjs(leftField.field_value) }
+                                    : { [leftField.api_name]: leftField.field_value }
+                            }
+                            // labelCol={{ flex: '100px' }}
+                            // wrapperCol={{ flex: 1 }}
+                            colon={false}
+                            layout="horizontal"
+                            onFinish={handleSave}
+                        >
+                            {renderField(
+                                leftField,
+                                index,
+                                (newValue) =>
+                                    handleFieldChange(sectionIndex, index, newValue, leftField.api_name, 'left'),
+                                (newValue) =>
+                                    handleFieldChangeRelatedModule(sectionIndex, index, newValue, leftField.api_name, 'left')
+                            )}
+                        </Form>
+                    )}
+                </Col>
+
+                <Col xs={24} sm={10} md={12} lg={12} xl={12}>
+                    {rightField && (
+                        <Form
+                            form={form}
+                            name="RightForm"
+                            initialValues={
+                                rightField.field_type === "date" || rightField.field_type === "date_time"
+                                    ? { [rightField.api_name]: dayjs(rightField.field_value) }
+                                    : { [rightField.api_name]: rightField.field_value }
+                            }
+                            // labelCol={{ flex: '100px' }}
+                            // wrapperCol={{ flex: 1 }}
+                            colon={false}
+                            layout="horizontal"
+                            onFinish={handleSave}
+                        >
+                            {renderField(
+                                rightField,
+                                index,
+                                (newValue) =>
+                                    handleFieldChange(sectionIndex, index, newValue, rightField.api_name, 'right'),
+                                (newValue) =>
+                                    handleFieldChangeRelatedModule(sectionIndex, index, newValue, rightField.api_name, 'right')
+                            )}
+                        </Form>
+                    )}
+                </Col>
+            </Row>
+        );
+    })}
+</Col> */}
