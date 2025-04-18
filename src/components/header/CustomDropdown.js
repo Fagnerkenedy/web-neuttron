@@ -5,7 +5,7 @@ import Link from 'antd/es/typography/Link';
 import { Can } from '../../contexts/AbilityContext';
 const { useToken } = theme;
 
-const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability }) => {
+const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability, activeModule }) => {
     const [searchValue, setSearchValue] = useState('');
     const ref = useRef(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -64,6 +64,7 @@ const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability 
                                 padding: '8px 16px',
                                 cursor: 'pointer',
                             }}
+                            className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
                         >
                             <span style={{ color: darkMode ? '#fff' : '#000', display: 'block', width: '100%' }}>
                                 {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
@@ -117,7 +118,7 @@ const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability 
                     </div>
                 )}
             >
-                <Button type='text' onClick={openSelect} icon={<EllipsisOutlined />} />
+                <Button type='text' shape='circle' onClick={openSelect} icon={<EllipsisOutlined />} />
             </Dropdown>
         </div>
     );

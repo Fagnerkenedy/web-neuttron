@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message, Typography, Dropdown, Checkbox, Table, Menu, notification } from 'antd';
+import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message, Typography, Dropdown, Checkbox, Table, Menu, notification, Col, Row, Space, Divider, Tooltip } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { Option } from 'antd/es/mentions';
 import apiURI from '../../../Utility/recordApiURI.js';
 import { fetchModules } from './fetchModules.js';
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
-import { EllipsisOutlined, SwapOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { EllipsisOutlined, PlusCircleFilled, PlusCircleOutlined, PlusOutlined, SwapOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import userApiURI from '../../../Utility/userApiURI.js';
 import { useNavigate } from 'react-router-dom';
@@ -128,8 +128,8 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   };
 
   return (
-    <Flex justify={'space-between'} style={{ height: '50px' }}>
-      <Flex justify={'flex-start'} align={'center'}>
+    <Row justify={'space-between'} style={{ height: '40px', display: 'flex', alignItems: 'center' }}>
+      <Col xs={5} sm={12} md={12} lg={12} xl={12} justify={'flex-start'} align={'center'}>
         {moduleName == "users" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Usuários</Text>) :
           moduleName == "profiles" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Perfis</Text>) :
             moduleName == "functions" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Funções</Text>) :
@@ -138,10 +138,11 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
         <Breadcrumb>
           {hasSelected ? (
             <Breadcrumb.Item>
-              {`${selectedRowKeys.length} Registro(s) selecionado(s) `}
-              <Link onClick={start} disabled={!hasSelected} style={{ margin: '15px' }}>
+              {`Registros selecionados: ${selectedRowKeys.length}`}
+              <Divider type="vertical" style={{ marginLeft: '15px' }} />
+              <Button type='text' onClick={start} disabled={!hasSelected}>
                 Limpar
-              </Link>
+              </Button>
               <Can I='delete' a={moduleName} ability={ability}>
                 <Popconfirm
                   title="Excluir"
@@ -150,39 +151,26 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
                   okText="Sim"
                   cancelText="Cancelar"
                 >
-                  <Button type="text" danger>Excluir</Button>
+                  <Button type="text" danger style={{ marginLeft: '5px' }}>Excluir</Button>
                 </Popconfirm>
               </Can>
             </Breadcrumb.Item>
           ) : null}
-          {!hasSelected && <Breadcrumb.Item>{`Total de registros ${totalItems}`}</Breadcrumb.Item>}
+          {!hasSelected && <Breadcrumb.Item>{`Registros: ${totalItems}`}</Breadcrumb.Item>}
         </Breadcrumb>
-      </Flex>
-      <Flex justify={'flex-end'} align={'center'}>
-        <Can I='create' a={moduleName} ability={ability}>
-          <Flex style={{ paddingRight: '15px' }}>
-            <Button
-              onClick={handleAccess}
-              type='primary'
-              // href={`/${org}/${moduleName}/create`}
-            >Criar {
-                moduleName == "users" ? ("Usuário") :
-                  moduleName == "profiles" ? ("Perfil") :
-                    moduleName == "functions" ? ("Função") :
-                      moduleName == "charts" ? ("Painel") :
-                        moduleName == "kanban" ? ("Kanban") :
-                        (toSingular(activeModule))}
-            </Button>
-          </Flex>
-        </Can>
-        <Flex align={'center'}>
+      </Col>
+      <Row xs={19} sm={12} md={12} lg={12} xl={12} justify={'flex-end'} align={'center'}>
+        
+        <Col align={'center'}>
+          {layoutType == 'tabela' && (
           <Select defaultValue={pageSize} onChange={onPageSizeChange} style={{ marginRight: '8px' }}>
             {[5, 10, 20, 50, 100, 200, 500, 1000].map((option) => (
               <Option key={option} value={option}>
-                {option} Registros por página
+                {option}/página
               </Option>
             ))}
           </Select>
+          )}
           <Select
             value={layoutType}
             options={
@@ -202,9 +190,41 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
           {totalItems > pageSize && (
             <Pagination simple={{ readOnly: true }} responsive={true} size='small' current={currentPage} pageSize={pageSize} total={totalItems} onChange={onPageChange} />
           )}
-        </Flex>
-      </Flex>
-    </Flex>
+        </Col>
+        <Col style={{ marginLeft: '8px' }}>
+          <Can I='create' a={moduleName} ability={ability}>
+            {/* <Flex style={{ paddingRight: '15px' }}> */}
+            <Tooltip
+              title={
+                `Novo ${moduleName == "users" ? ("Usuário") :
+                  moduleName == "profiles" ? ("Perfil") :
+                    moduleName == "functions" ? ("Função") :
+                      moduleName == "charts" ? ("Painel") :
+                        moduleName == "kanban" ? ("Kanban") :
+                          (toSingular(activeModule))}`}
+            >
+              <Button
+                onClick={handleAccess}
+                type='primary'
+                // shape='circle'
+                // href={`/${org}/${moduleName}/create`}
+                icon={<PlusOutlined />}
+              >
+                {
+                  moduleName == "users" ? ("Usuário") :
+                    moduleName == "profiles" ? ("Perfil") :
+                      moduleName == "functions" ? ("Função") :
+                        moduleName == "charts" ? ("Painel") :
+                          moduleName == "kanban" ? ("Kanban") :
+                            (toSingular(activeModule))}
+              </Button>
+            </Tooltip>
+            {/* </Flex> */}
+          </Can>
+        </Col>
+
+      </Row>
+    </Row>
   );
 };
 

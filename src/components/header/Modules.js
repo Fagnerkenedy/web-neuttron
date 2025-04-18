@@ -59,7 +59,7 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
     }, [modules, activeModule]);
 
     return (
-        <Col xs={2} sm={10} md={16} lg={16} xl={16} span={16} ref={ref2} style={{ margin: "15px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
+        <Col xs={8} sm={10} md={16} lg={16} xl={16} span={16} ref={ref2} style={{ marginLeft: "5px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
             <Tooltip title="Página Inicial">
                 <Button
                     type="text"
@@ -93,7 +93,7 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
                 </Can>
             ))}
 
-            <CustomDropdown extraModules={extraModules} org={org} setActiveModule={setActiveModule} darkMode={darkMode} ability={ability} />
+            <CustomDropdown extraModules={extraModules} org={org} setActiveModule={setActiveModule} darkMode={darkMode} ability={ability} activeModule={activeModule} />
         </Col>
     );
 };
