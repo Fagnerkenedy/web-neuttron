@@ -130,11 +130,11 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
   return (
     <Row justify={'space-between'} style={{ height: '40px', display: 'flex', alignItems: 'center' }}>
       <Col xs={5} sm={12} md={12} lg={12} xl={12} justify={'flex-start'} align={'center'}>
-        {moduleName == "users" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Usuários</Text>) :
+        {/* {moduleName == "users" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Usuários</Text>) :
           moduleName == "profiles" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Perfis</Text>) :
             moduleName == "functions" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Funções</Text>) :
               moduleName == "charts" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Painéis</Text>) :
-                (<Text></Text>)}
+                (<Text></Text>)} */}
         <Breadcrumb>
           {hasSelected ? (
             <Breadcrumb.Item>
@@ -195,6 +195,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
           <Can I='create' a={moduleName} ability={ability}>
             {/* <Flex style={{ paddingRight: '15px' }}> */}
             <Tooltip
+              placement="left"
               title={
                 `Novo ${moduleName == "users" ? ("Usuário") :
                   moduleName == "profiles" ? ("Perfil") :
@@ -210,13 +211,13 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
                 // href={`/${org}/${moduleName}/create`}
                 icon={<PlusOutlined />}
               >
-                {
+                {/* {
                   moduleName == "users" ? ("Usuário") :
                     moduleName == "profiles" ? ("Perfil") :
                       moduleName == "functions" ? ("Função") :
                         moduleName == "charts" ? ("Painel") :
                           moduleName == "kanban" ? ("Kanban") :
-                            (toSingular(activeModule))}
+                            (toSingular(activeModule))} */}
               </Button>
             </Tooltip>
             {/* </Flex> */}

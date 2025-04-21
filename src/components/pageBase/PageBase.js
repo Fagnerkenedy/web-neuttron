@@ -28,8 +28,8 @@ function PageBase() {
     return (
         <ConfigProvider
             theme={{
-                // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
-                algorithm: darkMode ? darkAlgorithm : compactAlgorithm, // compactAlgorithm defaultAlgorithm
+                algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
+                // algorithm: darkMode ? darkAlgorithm : compactAlgorithm, // compactAlgorithm defaultAlgorithm
                 token: {
                     colorPrimary: '#1a73e8', // #1a73e8 #004E99
                     colorLink: darkMode ? '#ffffff' : '#000000',
