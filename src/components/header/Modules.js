@@ -59,8 +59,8 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
     }, [modules, activeModule]);
 
     return (
-        <Col xs={8} sm={10} md={16} lg={16} xl={16} span={16} ref={ref2} style={{ marginLeft: "5px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
-            <Tooltip title="Página Inicial">
+        <Col xs={12} sm={16} md={16} lg={18} xl={20} ref={ref2} style={{ marginLeft: "5px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
+            {/* <Tooltip title="Página Inicial">
                 <Button
                     type="text"
                     shape="circle"
@@ -70,7 +70,7 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
                     icon={<HomeOutlined />}
                 >
                 </Button>
-            </Tooltip>
+            </Tooltip> */}
             {/* <Link
                 className={`modules ${activeModule === 'chats' ? 'active' : ''}`}
                 style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}

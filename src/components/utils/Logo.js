@@ -6,10 +6,10 @@ const Logo = ({fontSize, color, text}) => {
     return (
         <>
             <span>
-                <Title style={{ fontWeight: 'bold', color: "#0267C1", fontFamily: "Poppins", fontSize: fontSize }}>N</Title>
+                <Title style={{ fontWeight: 'bold', color: "#0267C1", fontFamily: "Poppins", fontSize: fontSize }}></Title>
             </span>
             <span>
-                <Title style={{ fontWeight: 'bold', color: color, fontFamily: "Poppins", fontSize: fontSize }}>euttron {text}</Title>
+                <Title style={{ fontWeight: 'bold', color: color, fontFamily: "Poppins", fontSize: fontSize }}>CRM {text}</Title>
             </span>
         </>
     )

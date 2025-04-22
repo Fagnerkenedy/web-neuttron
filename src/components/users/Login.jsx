@@ -54,7 +54,7 @@ const Login = () => {
                 <Content>
                     <div className='user-row-cadastro'>
                         <Row>
-                            <Col xs={{ span: 20, offset: 2 }}
+                            <Col xs={{ span: 24, offset: 0 }}
                                 sm={{ span: 15, offset: 5 }}
                                 md={{ span: 10, offset: 7 }}
                                 lg={{ span: 6, offset: 9 }}>

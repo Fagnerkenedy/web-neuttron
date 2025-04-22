@@ -182,13 +182,16 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   return (
     <>
       <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '50px', padding: "10px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
-        <Link
-          href={`/${org}/home`}
-        >
-          <Row span={2}>
-            <Logo fontSize={19} />
-          </Row>
-        </Link>
+        
+        <Tooltip title="Página Inicial">
+          <Link
+            href={`/${org}/home`}
+          >
+            <Row span={2}>
+              <Logo fontSize={19} />
+            </Row>
+          </Link>
+        </Tooltip>
 
         <HeaderModules
           modules={modules}
