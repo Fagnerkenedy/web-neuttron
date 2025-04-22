@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification, Table } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification, Table, Grid } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -12,6 +12,7 @@ import { useOutletContext } from 'react-router-dom';
 import { fetchModules } from '../selection/fetchModules.js';
 import dayjs from 'dayjs';
 import userApiURI from '../../../Utility/userApiURI.js';
+const { useBreakpoint } = Grid;
 
 const { TextArea } = Input;
 const { deleteRecord } = apiURI;
@@ -57,6 +58,7 @@ const CreateView = ({ itemId }) => {
     const [dataSource, setDataSource] = useState([]);
     const localUser = localStorage.getItem('user')
     const user = JSON.parse(localUser)
+    const screens = useBreakpoint();
 
     const linkApi = process.env.REACT_APP_LINK_API;
     const handleInputChange = (newValue) => {
@@ -1065,16 +1067,20 @@ const CreateView = ({ itemId }) => {
         <div>
             <Form
                 name="Form"
-                labelCol={{
-                    flex: '200px',
-                }}
+                labelCol={
+                    screens.xs
+                        ? undefined
+                        : { flex: '200px' }
+                }
                 labelAlign="right"
                 labelWrap
-                wrapperCol={{
-                    flex: 1,
-                }}
+                wrapperCol={
+                    screens.xs
+                        ? undefined
+                        : { flex: 1 }
+                }
                 colon={false}
-                layout="horizontal"
+                layout={screens.xs ? 'vertical' : 'horizontal'}
                 onFinish={handleSave}
             >
                 {data && (
@@ -1090,7 +1096,7 @@ const CreateView = ({ itemId }) => {
                                     padding: '0 0 0 10px',
                                 }}
                             >
-                                <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
+                                <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '40px' }}>
                                     <Col>
                                         <Title
                                             style={{  fontSize: '22px', margin: 0 }}
@@ -1108,7 +1114,7 @@ const CreateView = ({ itemId }) => {
                                     </Col>
                                 </Row>
                             </Layout>
-                            <Row style={{ height: '52px' }}></Row>
+                            <Row style={{ height: '40px' }}></Row>
                         </div>
                         <div style={{ padding: '15px 0' }}>
                             <Content className='content'>
@@ -1123,13 +1129,13 @@ const CreateView = ({ itemId }) => {
                                     {/* <Text style={{ padding: '15px 25px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}
                                     <Row>
                                         <Col span={24}>
-                                            <Row gutter={16} style={{ paddingTop: '15px' }}>
+                                            <Row gutter={16} style={{ paddingTop: '15px', paddingLeft: '15px', paddingRight: '15px' }}>
                                                 {sections.map((section, sectionIndex) => (
-                                                    <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
+                                                    <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 24)}>
                                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
                                                         {section.field_type == "subform" && (
                                                             <Row gutter={16} style={{ paddingTop: '15px', paddingBottom: '25px' }}>
-                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                <Col span={(moduleName == "functions" ? 22 : 24)} offset={(moduleName == "functions" ? 1 : 1)}>
                                                                     <Table
                                                                         dataSource={dataSource}
                                                                         columns={[
@@ -1202,7 +1208,7 @@ const CreateView = ({ itemId }) => {
                                                                                 {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                             </Col> */}
-                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                <Col span={(moduleName == "functions" ? 22 : 24)} offset={(moduleName == "functions" ? 1 : 0)}>
                                                                                     {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
                                                                                 </Col>
                                                                             </Row>
@@ -1216,7 +1222,7 @@ const CreateView = ({ itemId }) => {
                                                                                 {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                             </Col> */}
-                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                <Col span={(moduleName == "functions" ? 22 : 24)} offset={(moduleName == "functions" ? 1 : 0)}>
                                                                                     {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
                                                                                 </Col>
                                                                             </Row>

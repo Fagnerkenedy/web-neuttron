@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tag, Table } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tag, Table, Grid, Divider } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 import CodeEditor from '../functionEditor/index.js';
@@ -17,6 +17,7 @@ const pluralize = require('pluralize')
 dayjs().format()
 const { Option } = Select;
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const EditView = ({ itemId }) => {
     const currentPath = window.location.pathname;
@@ -39,6 +40,7 @@ const EditView = ({ itemId }) => {
     const [selectedModule, setSelectedModule] = useState(null);
     const [secondSelectValue, setSecondSelectValue] = useState('')
     const [dataSource, setDataSource] = useState([]);
+    const screens = useBreakpoint();
 
     const localUser = localStorage.getItem('user')
     const user = JSON.parse(localUser)
@@ -974,16 +976,20 @@ const EditView = ({ itemId }) => {
                     }
                     return acc;
                 }, {})}
-                labelCol={{
-                    flex: '200px',
-                }}
+                labelCol={
+                    screens.xs
+                        ? undefined
+                        : { flex: '200px' }
+                }
                 labelAlign="right"
                 labelWrap
-                wrapperCol={{
-                    flex: 1,
-                }}
+                wrapperCol={
+                    screens.xs
+                        ? undefined
+                        : { flex: 1 }
+                }
                 colon={false}
-                layout="horizontal"
+                layout={screens.xs ? 'vertical' : 'horizontal'}
                 // requiredMark={customizeRequiredMark}
                 onFinish={handleSave}
             >
@@ -1000,7 +1006,7 @@ const EditView = ({ itemId }) => {
                                     padding: '0 0 0 10px',
                                 }}
                             >
-                                <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
+                                <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '40px' }}>
                                     <Col>
                                         <Title
                                             style={{ fontSize: '22px', margin: 0 }}
@@ -1022,7 +1028,7 @@ const EditView = ({ itemId }) => {
                                     </Col>
                                 </Row>
                             </Layout>
-                            <Row style={{ height: '52px' }}></Row>
+                            <Row style={{ height: '40px' }}></Row>
                         </div>
                         <div style={{ padding: '15px 0' }}>
                             <Content className='content'>
@@ -1030,17 +1036,18 @@ const EditView = ({ itemId }) => {
                                 <Layout
                                     style={{
                                         background: colorBgContainer,
-                                        borderRadius: borderRadiusLG,
+                                        // borderRadius: borderRadiusLG,
                                         minHeight: 'calc(100vh - 161px)',
                                         border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                     }}
                                 >
                                     <Row>
                                         <Col span={24}>
-                                            <Row gutter={16} style={{ paddingTop: '15px' }}>
+                                            <Row gutter={16} style={{ paddingTop: '15px', paddingLeft: '15px', paddingRight: '15px' }}>
                                                 {sections.map((section, sectionIndex) => (
-                                                    <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 21)}>
+                                                    <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 24)}>
                                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
+                                                        <Divider style={{ margin: '0px 0 10px 0' }} />
                                                         {section.field_type == "subform" && (
                                                             <Row gutter={16} style={{ paddingTop: '15px', paddingBottom: '25px' }}>
                                                                 <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
@@ -1116,7 +1123,7 @@ const EditView = ({ itemId }) => {
                                                                                 {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}> */}
                                                                                 {/* <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text> */}
                                                                                 {/* </Col> */}
-                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                <Col span={(moduleName == "functions" ? 22 : 24)} offset={(moduleName == "functions" ? 1 : 0)}>
                                                                                     {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'left'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'left'))}
                                                                                 </Col>
                                                                             </Row>
@@ -1130,7 +1137,7 @@ const EditView = ({ itemId }) => {
                                                                                 {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                                 <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                             </Col> */}
-                                                                                <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
+                                                                                <Col span={(moduleName == "functions" ? 22 : 24)} offset={(moduleName == "functions" ? 1 : 0)}>
                                                                                     {renderField(field, fieldIndex, (newValue) => handleFieldChange(sectionIndex, fieldIndex, newValue, field.api_name, 'right'), (newValue) => handleFieldChangeRelatedModule(sectionIndex, fieldIndex, newValue, field.api_name, 'right'))}
                                                                                 </Col>
                                                                             </Row>

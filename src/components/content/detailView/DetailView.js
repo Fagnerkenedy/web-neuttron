@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip, notification } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip, notification, Grid, Divider } from 'antd';
 import EditableCell from './EditableCell.js';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -54,6 +54,8 @@ const DetailView = ({ itemId }) => {
     const inputRef = useRef(null);
     const [inputValue, setInputValue] = useState('');
     const [activeModule, setActiveModule] = useState("");
+    const { useBreakpoint } = Grid;
+    const screens = useBreakpoint();
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -1029,40 +1031,40 @@ const DetailView = ({ itemId }) => {
                                 <Col xs={17} style={{ textAlign: 'right' }}>
                                     <Can I='create' a={moduleName} ability={ability}>
                                         <Tooltip title="Criar">
-                                        <Button
-                                            onClick={handleAccess}
-                                            icon={<PlusOutlined />}
-                                            type='primary'
-                                        >
-                                            {/* {moduleName == "users" ? ("Usuário") :
+                                            <Button
+                                                onClick={handleAccess}
+                                                icon={<PlusOutlined />}
+                                                type='primary'
+                                            >
+                                                {/* {moduleName == "users" ? ("Usuário") :
                                             moduleName == "profiles" ? ("Perfil") :
                                                 moduleName == "functions" ? ("Função") :
                                                     moduleName == "charts" ? ("Painel") :
                                                         (toSingular(activeModule))} */}
-                                        </Button>
+                                            </Button>
                                         </Tooltip>
                                     </Can>
                                     <Can I='update' a={moduleName} ability={ability}>
                                         <Tooltip title="Editar">
-                                        <Button 
-                                            style={{ marginLeft: '10px' }} 
-                                            color="default"
-                                            icon={<EditOutlined />}
-                                            href={`/${org}/${moduleName}/${record_id}/edit`}
-                                        ></Button>
+                                            <Button
+                                                style={{ marginLeft: '10px' }}
+                                                color="default"
+                                                icon={<EditOutlined />}
+                                                href={`/${org}/${moduleName}/${record_id}/edit`}
+                                            ></Button>
                                         </Tooltip>
                                     </Can>
                                     <Can I='delete' a={moduleName} ability={ability}>
                                         <Tooltip title="Excluir">
-                                        <Popconfirm
-                                            title="Excluir"
-                                            description="Deseja excluir este(s) registro(s)?"
-                                            onConfirm={() => confirm()}
-                                            okText="Sim"
-                                            cancelText="Cancelar"
-                                        >
-                                            <Button style={{ margin: '0 10px' }} danger icon={<DeleteOutlined />}></Button>
-                                        </Popconfirm>
+                                            <Popconfirm
+                                                title="Excluir"
+                                                description="Deseja excluir este(s) registro(s)?"
+                                                onConfirm={() => confirm()}
+                                                okText="Sim"
+                                                cancelText="Cancelar"
+                                            >
+                                                <Button style={{ margin: '0 10px' }} danger icon={<DeleteOutlined />}></Button>
+                                            </Popconfirm>
                                         </Tooltip>
                                     </Can>
                                 </Col>
@@ -1086,29 +1088,34 @@ const DetailView = ({ itemId }) => {
                                     <Col span={24}>
                                         <Row>
                                             {sections.map((section, sectionIndex) => (
-                                                <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 20)}>
+                                                <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 24)}>
                                                     <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
+                                                    <Divider style={{ margin: '0px 0 10px 0' }} />
                                                     <Row gutter={16}>
-                                                        <Col xs={24} sm={10} md={12} lg={12} xl={12} span={(moduleName == "functions" ? 24 : 12)}>
+                                                        <Col xs={12} sm={10} md={12} lg={12} xl={12} span={(moduleName == "functions" ? 24 : 12)}>
                                                             {section.left.map((field, fieldIndex) => (
                                                                 <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
                                                                     <Form
                                                                         form={form}
                                                                         name="Form"
                                                                         initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
-                                                                        // labelCol={{
-                                                                        //     flex: '200px',
-                                                                        // }}
+                                                                        labelCol={
+                                                                            screens.xs
+                                                                                ? undefined
+                                                                                : { flex: '200px' }
+                                                                        }
                                                                         labelWrap
-                                                                        wrapperCol={{
-                                                                            flex: 1,
-                                                                        }}
+                                                                        wrapperCol={
+                                                                            screens.xs
+                                                                                ? undefined
+                                                                                : { flex: 1 }
+                                                                        }
                                                                         colon={false}
-                                                                        layout="vertical"
+                                                                        layout={screens.xs ? 'vertical' : 'horizontal'}
                                                                         onFinish={handleSave}
                                                                     >
                                                                         <Row>
-                                                                        {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                            {/* <Col span={(moduleName == "functions" ? 3 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                               <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                             </Col> */}
                                                                             <Col span={(moduleName == "functions" ? 22 : 24)} offset={(moduleName == "functions" ? 1 : 0)}>
@@ -1119,26 +1126,30 @@ const DetailView = ({ itemId }) => {
                                                                 </div>
                                                             ))}
                                                         </Col>
-                                                        <Col xs={24} sm={10} md={12} lg={12} xl={12} span={(moduleName == "functions" ? 24 : 12)}>
+                                                        <Col xs={12} sm={10} md={12} lg={12} xl={12} span={(moduleName == "functions" ? 24 : 12)}>
                                                             {section.right.map((field, fieldIndex) => (
                                                                 <div key={field.id} style={{ padding: '5px 0', minHeight: '50px' }}>
                                                                     <Form
                                                                         form={form}
                                                                         name="Form"
                                                                         initialValues={(field.field_type == "date" || field.field_type == "date_time" ? { [field.api_name]: dayjs(field.field_value) } : { [field.api_name]: field.field_value })}
-                                                                        // labelCol={{
-                                                                        //     flex: '200px',
-                                                                        // }}
+                                                                        labelCol={
+                                                                            screens.xs
+                                                                                ? undefined
+                                                                                : { flex: '200px' }
+                                                                        }
                                                                         labelWrap
-                                                                        wrapperCol={{
-                                                                            flex: 1,
-                                                                        }}
+                                                                        wrapperCol={
+                                                                            screens.xs
+                                                                                ? undefined
+                                                                                : { flex: 1 }
+                                                                        }
                                                                         colon={false}
-                                                                        layout="vertical"
+                                                                        layout={screens.xs ? 'vertical' : 'horizontal'}
                                                                         onFinish={handleSave}
                                                                     >
                                                                         <Row>
-                                                                         {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                                                                            {/* <Col span={(moduleName == "functions" ? 0 : 10)} style={{ textAlign: 'right', paddingRight: '10px' }}>
                                                                               <Text style={{ fontSize: '16px', color: '#838da1' }}>{field.name}</Text>
                                                                             </Col> */}
                                                                             <Col span={(moduleName == "functions" ? 22 : 22)} offset={(moduleName == "functions" ? 1 : 2)}>
