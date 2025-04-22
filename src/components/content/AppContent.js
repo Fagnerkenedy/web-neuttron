@@ -28,7 +28,7 @@ const AppContent = () => {
     const [layoutType, setLayoutVisualization] = useState('tabela')
 
     return (
-        <Content className='content'>
+        <Content style={{ overflow: 'hidden' }}>
             <TableControls
                 hasSelected={hasSelected}
                 selectedRowKeys={selectedRowKeys}
@@ -55,7 +55,7 @@ const AppContent = () => {
                         <SearchInputField onSearch={onSearch} />
                     </Sider> */}
 
-                    <Content style={{ border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }} className='dataTable'>
+                    <Content className='dataTable'>
                         <DataTableWithSearch
                             columns={columns}
                             data={tableData}

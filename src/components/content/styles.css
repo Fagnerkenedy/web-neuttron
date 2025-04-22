@@ -29,7 +29,7 @@
 .dataTable {
     overflow-x: auto;
     overflow-y: auto;
-    height: calc(100vh - 129px);
+    height: calc(100vh - 117px);
 }
 
 /* .ant_input {

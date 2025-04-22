@@ -315,21 +315,22 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
     >
       <Table
         className='antd-table'
+        style={{
+          // padding: '0 15px 0 15px'
+        }}
         rowSelection={rowSelection}
         columns={modifiedColumns}
         dataSource={currentData}
         onChange={() => { }}
         pagination={false}
-        size="small"
         scroll={{
           x: totalTableWidth,
-          y: 'calc(100vh - 189px)',
+          y: 'calc(100vh - 191px)',
         }}
         locale={{ emptyText: emptyText }}
         onRow={(record) => ({
           onClick: () => window.location.href = `/${org}/${moduleName}/${record.key}`
         })}
-        // footer={() => `Total de registros: ${data.length}`}
         footer={() => (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>Total de registros: {totalItems}</span>

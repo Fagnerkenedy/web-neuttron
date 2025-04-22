@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message, Typography, Dropdown, Checkbox, Table, Menu, notification, Col, Row, Space, Divider, Tooltip } from 'antd';
+import { Breadcrumb, Flex, Select, Pagination, Button, Popconfirm, message, Typography, Dropdown, Checkbox, Table, Menu, notification, Col, Row, Space, Divider, Tooltip, Grid } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { Option } from 'antd/es/mentions';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -10,6 +10,7 @@ import { EllipsisOutlined, PlusCircleFilled, PlusCircleOutlined, PlusOutlined, S
 import axios from 'axios';
 import userApiURI from '../../../Utility/userApiURI.js';
 import { useNavigate } from 'react-router-dom';
+import { Columns2, Kanban, SquareKanban } from 'lucide-react';
 const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
 const { Title, Text } = Typography;
@@ -27,6 +28,8 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSi
   const [activeModule, setActiveModule] = useState("");
   const [layoutType, setLayoutType] = useState("");
   let navigate = useNavigate()
+  const { useBreakpoint } = Grid
+  const screens = useBreakpoint()
 
   const confirm = async (e) => {
     await deleteRecord(org, moduleName, selectedRowKeys)
@@ -128,73 +131,83 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSi
   };
 
   return (
-    <Row justify={'space-between'} style={{ height: '40px', display: 'flex', alignItems: 'center' }}>
+    <Row justify={'space-between'} style={{ height: '40px', display: 'flex', alignItems: 'center', paddingLeft: 10, paddingRight: 10 }}>
       <Col justify={'flex-start'} align={'center'}>
-        {/* {moduleName == "users" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Usuários</Text>) :
-          moduleName == "profiles" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Perfis</Text>) :
-            moduleName == "functions" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Funções</Text>) :
-              moduleName == "charts" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Painéis</Text>) :
-                (<Text></Text>)} */}
-        <Breadcrumb>
-          {hasSelected ? (
-            <Breadcrumb.Item>
-              {`Selecionados: ${selectedRowKeys.length}`}
-              <Divider type="vertical" style={{ marginLeft: '15px' }} />
-              <Button type='text' onClick={start} disabled={!hasSelected}>
-                Limpar
-              </Button>
-              <Can I='delete' a={moduleName} ability={ability}>
-                <Popconfirm
-                  title="Excluir"
-                  description="Tem certeza de que deseja excluir o(s) registro(s) selecionado(s)?"
-                  onConfirm={() => confirm()}
-                  okText="Sim"
-                  cancelText="Cancelar"
-                >
-                  <Button type="text" danger style={{ marginLeft: '5px' }}>Excluir</Button>
-                </Popconfirm>
-              </Can>
-            </Breadcrumb.Item>
-          ) : null}
-          {/* {!hasSelected && <Breadcrumb.Item>{`Registros: ${totalItems}`}</Breadcrumb.Item>} */}
-        </Breadcrumb>
+        <Row align="middle" wrap={false}>
+          {(!screens.xs || !hasSelected) && (
+            <Text strong style={{ fontSize: '15px', fontFamily: 'poppins', marginRight: '15px' }}>
+              {moduleName === "users" && "Usuários"}
+              {moduleName === "profiles" && "Perfis"}
+              {moduleName === "functions" && "Funções"}
+              {moduleName === "charts" && "Painéis"}
+              {moduleName === "kanban" && "Kanbans"}
+            </Text>
+          )}
+          <Breadcrumb>
+            {hasSelected ? (
+              <Breadcrumb.Item>
+                {`Selecionados: ${selectedRowKeys.length}`}
+                <Divider type="vertical" style={{ marginLeft: '15px' }} />
+                <Button type='text' onClick={start} disabled={!hasSelected}>
+                  Limpar
+                </Button>
+                <Can I='delete' a={moduleName} ability={ability}>
+                  <Popconfirm
+                    title="Excluir"
+                    description="Tem certeza de que deseja excluir o(s) registro(s) selecionado(s)?"
+                    onConfirm={() => confirm()}
+                    okText="Sim"
+                    cancelText="Cancelar"
+                  >
+                    <Button type="text" danger style={{ marginLeft: '5px' }}>Excluir</Button>
+                  </Popconfirm>
+                </Can>
+              </Breadcrumb.Item>
+            ) : null}
+            {/* {!hasSelected && <Breadcrumb.Item>{`Registros: ${totalItems}`}</Breadcrumb.Item>} */}
+          </Breadcrumb>
+        </Row>
       </Col>
       <Row justify={'flex-end'} align={'center'}>
-        
-        <Col align={'center'}>
-          {!hasSelected && layoutType == 'tabela' && (
-          <Select defaultValue={pageSize} onChange={onPageSizeChange} style={{ marginRight: '8px' }}>
-            {[5, 10, 20, 50, 100, 200, 500, 1000].map((option) => (
-              <Option key={option} value={option}>
-                {option}/página
-              </Option>
-            ))}
-          </Select>
+
+        <Col style={{ display: 'flex', alignItems: 'center' }}>
+          {!(screens.xs && hasSelected) && layoutType != 'kanban' && (
+            <Select defaultValue={pageSize} onChange={onPageSizeChange} style={{ width: '120px', marginRight: '8px' }}>
+              {[5, 10, 20, 50, 100, 200, 500, 1000].map((option) => (
+                <Option key={option} value={option}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Columns2 style={{ width: 15, marginRight: 6 }} />
+                    {option}/página
+                  </div>
+                </Option>
+              ))}
+            </Select>
           )}
-          {!hasSelected &&
-          <Select
-            value={layoutType}
-            options={
-              [
-                {
-                  value: 'tabela',
-                  label: <div><UnorderedListOutlined /> Tabela</div>,
-                },
-                {
-                  value: 'kanban',
-                  label: <div><SwapOutlined /> Kanban</div>,
-                }
-              ]
-            }
-            onChange={(value) => handleChange(value)}
-          />
+          {!(screens.xs && hasSelected) && !(moduleName == "users" || moduleName == "profiles" || moduleName == "functions" || moduleName == "charts" || moduleName == "kanban") &&
+            <Select
+              value={layoutType}
+              style={{ width: '90px', marginRight: '8px' }}
+              options={
+                [
+                  {
+                    value: 'tabela',
+                    label: <div style={{ display: 'flex', alignItems: 'center' }}><UnorderedListOutlined style={{ width: '15px', marginRight: 3 }} />Lista</div>,
+                  },
+                  {
+                    value: 'kanban',
+                    label: <div style={{ display: 'flex', alignItems: 'center' }}><SquareKanban style={{ width: '15px', marginRight: 3 }} />Kanban</div>,
+                  }
+                ]
+              }
+              onChange={(value) => handleChange(value)}
+            />
           }
           {/* {totalItems > pageSize && (
             <Pagination simple={{ readOnly: true }} responsive={true} size='small' current={currentPage} pageSize={pageSize} total={totalItems} onChange={onPageChange} />
           )} */}
         </Col>
-        
-        <Col style={{ marginLeft: '8px' }}>
+
+        <Col>
           <Can I='create' a={moduleName} ability={ability}>
             {/* <Flex style={{ paddingRight: '15px' }}> */}
             <Tooltip

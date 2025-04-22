@@ -1016,17 +1016,16 @@ const DetailView = ({ itemId }) => {
                             }}
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '40px', }}>
-                                <Col xs={12} style={{ display: 'flex', alignItems: 'center',  }}>
-                                    <Tooltip title="Fechar">
-                                        <Button type='text' icon={<CloseOutlined />} href={`/${org}/${moduleName}`}>
+                                <Col xs={12} style={{ display: 'flex', alignItems: 'center', }}>
+                                    <Tooltip placement="right" title="Fechar">
+                                        <Button style={{ marginLeft: 5 }} type='text' icon={<CloseOutlined />} href={`/${org}/${moduleName}`}>
                                         </Button>
                                     </Tooltip>
-                                            <Title
-                                                style={{ fontSize: '22px', margin: '0' }}
-                                            >
-                                                Detalhes
-                                            </Title>
-
+                                    <Title
+                                        style={{ fontSize: '22px', margin: '0', marginLeft: 5 }}
+                                    >
+                                        Detalhes
+                                    </Title>
                                 </Col>
                                 <Col xs={12} style={{ textAlign: 'right' }}>
                                     <Can I='create' a={moduleName} ability={ability}>

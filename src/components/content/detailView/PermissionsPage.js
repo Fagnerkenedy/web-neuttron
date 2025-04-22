@@ -50,8 +50,8 @@ function PermissionRow({ module, permissions, setPermissions, profileId, handleP
     };
 
     return (
-        <Row gutter={16} style={{ marginBottom: '10px', padding: '5px' }}>
-            <Col span={4}>
+        <Row style={{ marginBottom: '10px' }}>
+            <Col span={5}>
                 <Switch
                     style={{ marginRight: '10px' }}
                     checked={Object.values(permissions[module.api_name]).every(status => status.checked)}
@@ -78,7 +78,7 @@ function PermissionRow({ module, permissions, setPermissions, profileId, handleP
                 })()}
                 {/* <Text><b>{module.name === 'users' ? 'Usuários' : module.name}</b></Text> */}
             </Col>
-            <Col span={5}>
+            <Col span={6}>
                 <Checkbox
                     checked={permissions[module.api_name].read.checked}
                     onChange={() => handlePermissionChange(module.api_name, 'read')}
@@ -86,7 +86,7 @@ function PermissionRow({ module, permissions, setPermissions, profileId, handleP
                     Visualizar
                 </Checkbox>
             </Col>
-            <Col span={5}>
+            <Col span={4}>
                 <Checkbox
                     checked={permissions[module.api_name].create.checked}
                     onChange={() => handlePermissionChange(module.api_name, 'create')}
@@ -94,7 +94,7 @@ function PermissionRow({ module, permissions, setPermissions, profileId, handleP
                     Criar
                 </Checkbox>
             </Col>
-            <Col span={5}>
+            <Col span={4}>
                 <Checkbox
                     checked={permissions[module.api_name].update.checked}
                     onChange={() => handlePermissionChange(module.api_name, 'update')}
@@ -261,13 +261,13 @@ function PermissionsPage() {
     }
 
     return (
-        <Layout style={{ padding: '0 0 0 35px' }}>
-            <Title level={2}>Gerenciamento de Permissões</Title>
-            <Row gutter={16} style={{ padding: '25px' }}>
-                <Col span={4}><Text><b>Módulo</b></Text></Col>
-                <Col span={5}><Text><b>Visualizar</b></Text></Col>
-                <Col span={5}><Text><b>Criar</b></Text></Col>
-                <Col span={5}><Text><b>Editar</b></Text></Col>
+        <Col>
+            <Title level={3}>Gerenciamento de Permissões</Title>
+            <Row>
+                <Col span={5}><Text><b>Módulo</b></Text></Col>
+                <Col span={6}><Text><b>Visualizar</b></Text></Col>
+                <Col span={4}><Text><b>Criar</b></Text></Col>
+                <Col span={4}><Text><b>Editar</b></Text></Col>
                 <Col span={5}><Text><b>Deletar</b></Text></Col>
             </Row>
             <PermissionRow
@@ -304,8 +304,7 @@ function PermissionsPage() {
                     handlePermissionUpdate={handlePermissionUpdate}
                 />
             ))}
-            <Row style={{ marginTop: '20px' }}></Row>
-        </Layout>
+        </Col>
     );
 }
 

@@ -208,11 +208,11 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
                 className: linearGradientButton,
               }}
             >
-              {/* <Can I='read' a='checkout' ability={ability}> */}
+              <Can I='read' a='checkout' ability={ability}>
               <Tooltip title="Fazer Upgrade">
                 <Button type="primary" shape="circle" href={`/${org}/checkout`} icon={<StarFilled />} />
               </Tooltip>
-              {/* </Can> */}
+              </Can>
             </ConfigProvider>
           </Col>
           <Col style={{ marginLeft: '5px' }}>

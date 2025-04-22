@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
-import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification, Table, Grid } from 'antd';
+import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification, Table, Grid, Divider } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
@@ -1133,6 +1133,7 @@ const CreateView = ({ itemId }) => {
                                                 {sections.map((section, sectionIndex) => (
                                                     <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 24)}>
                                                         <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>
+                                                        <Divider style={{ margin: '0px 0 10px 0' }} />
                                                         {section.field_type == "subform" && (
                                                             <Row gutter={16} style={{ paddingTop: '15px', paddingBottom: '25px' }}>
                                                                 <Col span={(moduleName == "functions" ? 22 : 24)} offset={(moduleName == "functions" ? 1 : 1)}>
