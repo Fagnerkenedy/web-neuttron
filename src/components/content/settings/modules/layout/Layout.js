@@ -960,7 +960,7 @@ const DragAndDrop = () => {
             zIndex: 1000,
             top: 0,
             left: 0,
-            width: 250,
+            // width: 250,
             height: `calc(100vh - 130px)`,
             marginTop: 102,
             // paddingTop: 5,
@@ -972,11 +972,11 @@ const DragAndDrop = () => {
           className='custom-scrollbar'
           ref={ref1}
         >
-          <Collapse defaultActiveKey={['1']} ghost accordion size="small" style={{ width: 242 }}>
+          <Collapse defaultActiveKey={['1']} ghost accordion size="small">
             <Panel
               header="Novos campos"
               key="1"
-              style={{ width: 242 }}
+
             >
               <Droppable droppableId="section-draggable" type="section">
                 {(provided, snapshot) => (
@@ -1102,7 +1102,7 @@ const DragAndDrop = () => {
               </Droppable>
             </Panel>
 
-            <Panel header="Campos não utilizados" key="2" style={{ width: 242 }}>
+            <Panel header="Campos não utilizados" key="2">
               <Droppable droppableId="unusedFields" isDropDisabled={true}>
                 {(provided, snapshot) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -1193,7 +1193,6 @@ const DragAndDrop = () => {
             </Panel>
           </Collapse>
         </Card>
-
         <ContentContainer>
           <Row
             style={{
@@ -1245,7 +1244,7 @@ const DragAndDrop = () => {
                 {...provided.droppableProps}
                 style={{
                   position: 'fixed',
-                  width: `calc(100% - 270px)`,
+                  width: `calc(100% - 220px)`,
                   height: `calc(100vh - 145px)`,
                   marginTop: '50px',
                   overflowY: 'auto',
