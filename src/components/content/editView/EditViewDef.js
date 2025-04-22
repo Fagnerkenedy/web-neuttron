@@ -977,8 +977,7 @@ const EditView = ({ itemId }) => {
                     return acc;
                 }, {})}
                 labelCol={
-                    screens.xs
-                        ? undefined
+                    screens.xs ? undefined
                         : { flex: '200px' }
                 }
                 labelAlign="right"
