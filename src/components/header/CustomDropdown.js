@@ -3,6 +3,7 @@ import { Dropdown, Input, Button, Menu, Space, Divider, theme } from 'antd';
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
 import { Can } from '../../contexts/AbilityContext';
+
 const { useToken } = theme;
 
 const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability, activeModule }) => {
@@ -57,19 +58,30 @@ const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability,
                 filteredModules.map((module) => (
 
                     // <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability}>
-                        <Menu.Item
-                            key={module.name}
-                            onClick={() => handleModuleSelect(module)}
-                            style={{
-                                padding: '8px 16px',
-                                cursor: 'pointer',
-                            }}
-                            className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
-                        >
+                    <Menu.Item
+                        key={module.name}
+                        onClick={() => handleModuleSelect(module)}
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                        }}
+                        className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ color: darkMode ? '#fff' : '#000', display: 'block', width: '100%' }}>
                                 {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
                             </span>
-                        </Menu.Item>
+                            <Button
+                                // type="text"
+                                icon={<PlusOutlined />}
+                                size="small"
+                                onClick={(e) => {
+                                    window.location.href = `/${org}/${module.name}/create`
+                                    e.stopPropagation()
+                                }}
+                            />
+                        </div>
+                    </Menu.Item>
                     // </Can> 
                 ))
             ) : (

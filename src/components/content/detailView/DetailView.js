@@ -1015,20 +1015,20 @@ const DetailView = ({ itemId }) => {
                                 borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                             }}
                         >
-                            <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '52px', }}>
-                                <Col xs={7} style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                    <Tooltip title="Voltar">
-                                        <Button type='text' icon={<LeftOutlined />} style={{ height: 40 }} href={`/${org}/${moduleName}`}>
+                            <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '40px', }}>
+                                <Col xs={12} style={{ display: 'flex', alignItems: 'center',  }}>
+                                    <Tooltip title="Fechar">
+                                        <Button type='text' icon={<CloseOutlined />} href={`/${org}/${moduleName}`}>
+                                        </Button>
+                                    </Tooltip>
                                             <Title
                                                 style={{ fontSize: '22px', margin: '0' }}
                                             >
                                                 Detalhes
                                             </Title>
-                                        </Button>
-                                    </Tooltip>
 
                                 </Col>
-                                <Col xs={17} style={{ textAlign: 'right' }}>
+                                <Col xs={12} style={{ textAlign: 'right' }}>
                                     <Can I='create' a={moduleName} ability={ability}>
                                         <Tooltip title="Criar">
                                             <Button
@@ -1070,17 +1070,17 @@ const DetailView = ({ itemId }) => {
                                 </Col>
                             </Row>
                         </Layout>
-                        <Row style={{ height: '52px' }}></Row>
+                        <Row style={{ height: '40px' }}></Row>
                     </div>
                     <div style={{ padding: '0px 0' }}>
-                        <Content className='content'>
+                        <Content style={{ overflow: 'hidden' }}>
                             <Layout
                                 style={{
                                     background: colorBgContainer,
                                     // borderRadius: borderRadiusLG,
-                                    minHeight: (relatedList.length === 0 ? 'calc(100vh - 161px)' : 'calc(80vh - 205px)'),
+                                    minHeight: (relatedList.length === 0 ? 'calc(100vh - 118px)' : 'calc(80vh - 205px)'),
                                     padding: '20px',
-                                    border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
+                                    // border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                 }}
                             >
                                 {/* <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}

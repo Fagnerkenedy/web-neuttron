@@ -1070,7 +1070,7 @@ const CreateView = ({ itemId }) => {
                 labelCol={
                     screens.xs
                         ? undefined
-                        : { flex: '200px' }
+                        : { flex: '150px' }
                 }
                 labelAlign="right"
                 labelWrap
@@ -1116,14 +1116,14 @@ const CreateView = ({ itemId }) => {
                             </Layout>
                             <Row style={{ height: '40px' }}></Row>
                         </div>
-                        <div style={{ padding: '15px 0' }}>
-                            <Content className='content'>
+                        <div>
+                            <Content style={{ overflow: 'hidden' }}>
                                 <Layout
                                     style={{
                                         background: colorBgContainer,
                                         borderRadius: borderRadiusLG,
-                                        minHeight: 'calc(100vh - 161px)',
-                                        border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
+                                        minHeight: 'calc(100vh - 118px)',
+                                        // border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                     }}
                                 >
                                     {/* <Text style={{ padding: '15px 25px', fontSize: '18px' }}>{toSingular(moduleName)} Informações</Text> */}
