@@ -59,7 +59,7 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
     }, [modules, activeModule]);
 
     return (
-        <Col xs={12} sm={16} md={16} lg={18} xl={20} ref={ref2} style={{ marginLeft: "5px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
+        <Col xs={10} sm={16} md={16} lg={18} xl={20} ref={ref2} style={{ marginLeft: "5px", display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
             {/* <Tooltip title="Página Inicial">
                 <Button
                     type="text"
