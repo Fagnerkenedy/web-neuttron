@@ -14,7 +14,7 @@ const { deleteRecord } = apiURI;
 const pluralize = require('pluralize')
 const { Title, Text } = Typography;
 
-const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSize, onPageChange, onPageSizeChange, currentPage, setLayoutVisualization }) => {
+const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSizeChange, setLayoutVisualization }) => {
   const currentPath = window.location.pathname;
   const pathParts = currentPath.split('/');
   const org = pathParts[1]
@@ -129,7 +129,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
 
   return (
     <Row justify={'space-between'} style={{ height: '40px', display: 'flex', alignItems: 'center' }}>
-      <Col xs={5} sm={12} md={12} lg={12} xl={12} justify={'flex-start'} align={'center'}>
+      <Col justify={'flex-start'} align={'center'}>
         {/* {moduleName == "users" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Usuários</Text>) :
           moduleName == "profiles" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Perfis</Text>) :
             moduleName == "functions" ? (<Text strong style={{ fontSize: '30px', fontFamily: 'poppins', marginRight: '15px', marginLeft: '15px' }}>Funções</Text>) :
@@ -138,7 +138,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
         <Breadcrumb>
           {hasSelected ? (
             <Breadcrumb.Item>
-              {`Registros selecionados: ${selectedRowKeys.length}`}
+              {`Selecionados: ${selectedRowKeys.length}`}
               <Divider type="vertical" style={{ marginLeft: '15px' }} />
               <Button type='text' onClick={start} disabled={!hasSelected}>
                 Limpar
@@ -156,13 +156,13 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
               </Can>
             </Breadcrumb.Item>
           ) : null}
-          {!hasSelected && <Breadcrumb.Item>{`Registros: ${totalItems}`}</Breadcrumb.Item>}
+          {/* {!hasSelected && <Breadcrumb.Item>{`Registros: ${totalItems}`}</Breadcrumb.Item>} */}
         </Breadcrumb>
       </Col>
-      <Row xs={19} sm={12} md={12} lg={12} xl={12} justify={'flex-end'} align={'center'}>
+      <Row justify={'flex-end'} align={'center'}>
         
         <Col align={'center'}>
-          {layoutType == 'tabela' && (
+          {!hasSelected && layoutType == 'tabela' && (
           <Select defaultValue={pageSize} onChange={onPageSizeChange} style={{ marginRight: '8px' }}>
             {[5, 10, 20, 50, 100, 200, 500, 1000].map((option) => (
               <Option key={option} value={option}>
@@ -171,6 +171,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
             ))}
           </Select>
           )}
+          {!hasSelected &&
           <Select
             value={layoutType}
             options={
@@ -187,10 +188,12 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, totalItems, pageSi
             }
             onChange={(value) => handleChange(value)}
           />
-          {totalItems > pageSize && (
+          }
+          {/* {totalItems > pageSize && (
             <Pagination simple={{ readOnly: true }} responsive={true} size='small' current={currentPage} pageSize={pageSize} total={totalItems} onChange={onPageChange} />
-          )}
+          )} */}
         </Col>
+        
         <Col style={{ marginLeft: '8px' }}>
           <Can I='create' a={moduleName} ability={ability}>
             {/* <Flex style={{ paddingRight: '15px' }}> */}

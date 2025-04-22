@@ -1,6 +1,6 @@
 // DataTable.js
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, ConfigProvider, Button, Input, Space, Spin, Layout, Empty, Typography, Checkbox, Select } from 'antd';
+import { Table, ConfigProvider, Button, Input, Space, Spin, Layout, Empty, Typography, Checkbox, Select, Pagination } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseCircleOutlined, CheckOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
@@ -10,7 +10,7 @@ const pluralize = require('pluralize')
 
 const { Title, Text } = Typography;
 
-const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, loading }) => {
+const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, loading, totalItems, pageSize, onPageChange, currentPage }) => {
   const currentPath = window.location.pathname;
   const pathParts = currentPath.split('/');
   const org = pathParts[1]
@@ -247,7 +247,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
           ) : (
             <Link href={`${moduleName}/${productId}`}>{formatDate(text)}</Link>
           )
-          case 'date_time':
+        case 'date_time':
           return searchedColumn === dataIndex ? (
             <Link href={`${moduleName}/${productId}`}><Highlighter
               highlightStyle={{
@@ -261,7 +261,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
           ) : (
             <Link href={`${moduleName}/${productId}`}>{formatDateTime(text)}</Link>
           )
-          default:
+        default:
           return searchedColumn === dataIndex ? (
             <Link href={`${moduleName}/${productId}`}><Highlighter
               highlightStyle={{
@@ -320,15 +320,32 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
         dataSource={currentData}
         onChange={() => { }}
         pagination={false}
-        size="middle"
+        size="small"
         scroll={{
           x: totalTableWidth,
-          y: 'calc(100vh - 177px)',
+          y: 'calc(100vh - 189px)',
         }}
         locale={{ emptyText: emptyText }}
         onRow={(record) => ({
           onClick: () => window.location.href = `/${org}/${moduleName}/${record.key}`
         })}
+        // footer={() => `Total de registros: ${data.length}`}
+        footer={() => (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Total de registros: {totalItems}</span>
+            {totalItems > pageSize && (
+              <Pagination 
+                simple={{ readOnly: true }} 
+                responsive={true} 
+                size='small' 
+                current={currentPage} 
+                pageSize={pageSize} 
+                total={totalItems} 
+                onChange={onPageChange} 
+              />
+            )}
+          </div>
+        )}
       />
     </ConfigProvider>
   );

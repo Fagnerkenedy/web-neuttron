@@ -33,11 +33,8 @@ const AppContent = () => {
                 hasSelected={hasSelected}
                 selectedRowKeys={selectedRowKeys}
                 start={start}
-                totalItems={tableData.length}
                 pageSize={pageSize}
-                onPageChange={onPageChange}
                 onPageSizeChange={onPageSizeChange}
-                currentPage={currentPage}
                 setLayoutVisualization={setLayoutVisualization}
             />
             {layoutType == 'tabela' ? (
@@ -66,6 +63,10 @@ const AppContent = () => {
                             currentData={currentData}
                             totalTableWidth={totalTableWidth}
                             loading={loading}
+                            totalItems={tableData.length}
+                            pageSize={pageSize}
+                            onPageChange={onPageChange}
+                            currentPage={currentPage}
                         />
                     </Content>
                 </Layout >

@@ -4,19 +4,23 @@ let columns = []
 
 export const fetchColumns = async (org, moduleName) => {
   try {
-    const token = localStorage.getItem('token');    
+    const token = localStorage.getItem('token');
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
-    const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);    const columnsData = response.data;
+    const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config); const columnsData = response.data;
     columns = columnsData.map((column) => ({
       title: column.name,
       dataIndex: column.api_name,
       field_type: column.field_type,
-      //sorter: (a, b) => a.name.localeCompare(b.name),
-      width: 200,
+      sorter: (a, b) => {
+        const aValue = a[column.api_name] || '';
+        const bValue = b[column.api_name] || '';
+        return String(aValue).localeCompare(String(bValue));
+      },
+      width: 150,
       ellipsis: true,
     }));
     return columns;
@@ -28,7 +32,7 @@ export const fetchColumns = async (org, moduleName) => {
 
 export const fetchData = async (org, moduleName) => {
   try {
-    const token = localStorage.getItem('token');    const config = {
+    const token = localStorage.getItem('token'); const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
