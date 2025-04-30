@@ -42,10 +42,11 @@ const Login = () => {
             theme={{
                 // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
                 // algorithm: darkAlgorithm, // compactAlgorithm
+                algorithm: [theme.darkAlgorithm, theme.compactAlgorithm], // darkAlgorithm and compactAlgorithm
                 token: {
                     colorPrimary: '#1a73e8', // #1a73e8 #004E99
                     // colorLink: '#ffffff' : '#000000',
-                    colorLinkHover: '#004E99', // Cor legal: 277AF7
+                    colorLinkHover: '#004E99', // Cor legal: #277AF7
                     colorSuccess: '#6aaf35'
                 },
             }}
@@ -73,7 +74,7 @@ const Login = () => {
                                                     <Image src={Logo} preview={false} style={{ width: '120px' }} />
                                                 </Link>
                                             </Row>
-                                            <Title level={4} className='user-cadastro-title'>Informe os dados de acesso</Title>
+                                            <Title level={4} className='user-cadastro-title'>Fazer login</Title>
 
                                             {/* MENSAGEM DE ALERTA CASO RETORNE ERRO NO CADASTRO */}
                                             {alertMessage}

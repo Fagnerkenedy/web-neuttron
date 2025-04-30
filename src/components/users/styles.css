@@ -1,7 +1,11 @@
 .user-row-cadastro {
     height: 100vh;
     width: 100vw;
-    background: #F7F7F7;
+    /* background: #F7F7F7; */
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(/public/images/backgroundSite.jpg);
+    background-repeat: no-repeat;
+    background-size:cover;
+    background-position: top;
 }
 
 .user-content-cadastro {
@@ -9,7 +13,8 @@
     margin-top: 10vh;
     padding-top: 10px;
     padding-bottom: 10px;
-    background: #fff;
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3));
+    /* background: #fff; */
     border-radius: 5px;
     box-shadow: 1px 2px 5px 0px #272929;
 }

@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result, InputNumber } from 'antd';
+import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result, InputNumber, theme, ConfigProvider } from 'antd';
 import { PasswordInput } from 'antd-password-input-strength';
 import { React, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -121,53 +121,66 @@ function Cadastro() {
     }
 
     return (
-        <Layout className="layout">
-            <Content>
-                <div className='user-row-cadastro'>
-                    <Row>
-                        <Col xs={{ span: 22, offset: 1 }}
-                            sm={{ span: 16, offset: 4 }}
-                            md={{ span: 12, offset: 6 }}
-                            lg={{ span: 10, offset: 6 }}
-                            xl={{ span: 6, offset: 9 }}>
-                            <div className='user-content-cadastro'>
-                                <Row>
-                                    <Col span={20} offset={2}>
-                                        {/* <Row>
+        <ConfigProvider
+            theme={{
+                // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
+                // algorithm: darkAlgorithm, // compactAlgorithm
+                algorithm: [theme.darkAlgorithm, theme.compactAlgorithm], // darkAlgorithm and compactAlgorithm
+                token: {
+                    colorPrimary: '#1a73e8', // #1a73e8 #004E99
+                    // colorLink: '#ffffff' : '#000000',
+                    colorLinkHover: '#004E99', // Cor legal: #277AF7
+                    colorSuccess: '#6aaf35'
+                },
+            }}
+        >
+            <Layout className="layout">
+                <Content>
+                    <div className='user-row-cadastro'>
+                        <Row>
+                            <Col xs={{ span: 22, offset: 1 }}
+                                sm={{ span: 16, offset: 4 }}
+                                md={{ span: 12, offset: 6 }}
+                                lg={{ span: 10, offset: 6 }}
+                                xl={{ span: 6, offset: 9 }}>
+                                <div className='user-content-cadastro'>
+                                    <Row>
+                                        <Col span={20} offset={2}>
+                                            {/* <Row>
                                             <Col span={22} offset={1}>
                                                 <img alt='Logo' className='user-cadastro-logo' src={logo} />
                                             </Col>
                                         </Row> */}
-                                        <Title level={4} className='user-cadastro-title'>Faça seu cadastro</Title>
+                                            <Title level={4} className='user-cadastro-title'>Faça seu cadastro</Title>
 
-                                        {/* MENSAGEM DE ALERTA CASO RETORNE ERRO NO CADASTRO */}
-                                        {alertMessage}
+                                            {/* MENSAGEM DE ALERTA CASO RETORNE ERRO NO CADASTRO */}
+                                            {alertMessage}
 
-                                        <Divider />
-                                        <Form
-                                            form={form}
-                                            name="cadastro-usuario"
-                                            className="login-form"
-                                            initialValues={{
-                                                remember: true,
+                                            <Divider />
+                                            <Form
+                                                form={form}
+                                                name="cadastro-usuario"
+                                                className="login-form"
+                                                initialValues={{
+                                                    remember: true,
 
-                                            }}
-                                            validateMessages={validateMessages}
-                                            onFinish={onFinish}
-                                        >
-
-                                            <Form.Item
-                                                name="name"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                ]}
-                                            // style={{ display: 'inline-block', width: 'calc(50% - 10px)' }}
+                                                }}
+                                                validateMessages={validateMessages}
+                                                onFinish={onFinish}
                                             >
-                                                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Nome" autoFocus />
-                                            </Form.Item>
-                                            {/* <Form.Item
+
+                                                <Form.Item
+                                                    name="name"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    ]}
+                                                // style={{ display: 'inline-block', width: 'calc(50% - 10px)' }}
+                                                >
+                                                    <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Nome" autoFocus />
+                                                </Form.Item>
+                                                {/* <Form.Item
                                                 name="lastname"
                                                 rules={[
                                                     {
@@ -178,120 +191,121 @@ function Cadastro() {
                                             >
                                                 <Input size='large' prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Sobrenome" />
                                             </Form.Item> */}
-                                            <Form.Item
-                                                name="email"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                    {
-                                                        type: 'email',
-                                                        message: 'E-mail Inválido!',
-                                                    }
-                                                ]}
-                                            >
-                                                <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-mail" />
-                                            </Form.Item>
-
-                                            <Form.Item
-                                                name="CPF"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                ]}
-                                            >
-                                                <InputMask mask="999.999.999-99" placeholder="CPF">
-                                                    {(inputProps) => <Input {...inputProps} />}
-                                                </InputMask>
-                                            </Form.Item>
-
-                                            <Form.Item
-                                                name="empresa"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                ]}
-                                            >
-                                                <Input placeholder="Nome da Empresa" />
-                                            </Form.Item>
-
-                                            <Form.Item
-                                                name="phone"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                ]}
-                                            >
-                                                <Input addonBefore={'+55'} placeholder="Celular" />
-                                            </Form.Item>
-
-                                            <Form.Item
-                                                name="password"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                    { min: 6, message: 'A senha deve ter pelo menos 6 caracteres.' }
-                                                ]}
-                                                hasFeedback
-                                            >
-                                                <PasswordInput
-                                                    prefix={<LockOutlined className="site-form-item-icon" />}
-                                                    type="password"
-                                                    placeholder="Senha"
-                                                    iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                                                />
-                                            </Form.Item>
-                                            <Form.Item
-                                                name="password-confirm"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                    ({ getFieldValue }) => ({
-                                                        validator(_, value) {
-                                                            if (!value || getFieldValue('password') === value) {
-                                                                return Promise.resolve();
-                                                            }
-                                                            return Promise.reject(new Error('As senhas não conferem!'));
+                                                <Form.Item
+                                                    name="email"
+                                                    rules={[
+                                                        {
+                                                            required: true,
                                                         },
-                                                    }),
-                                                ]}
-                                                hasFeedback
-                                            >
-                                                <PasswordInput
-                                                    prefix={<LockOutlined className="site-form-item-icon" />}
-                                                    type="password"
-                                                    placeholder="Confirme a Senha"
-                                                    iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                                                />
-                                            </Form.Item>
+                                                        {
+                                                            type: 'email',
+                                                            message: 'E-mail Inválido!',
+                                                        }
+                                                    ]}
+                                                >
+                                                    <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-mail" />
+                                                </Form.Item>
 
-                                            <Form.Item>
-                                                <Button type="primary" htmlType="submit" className="login-form-button cad-button">
-                                                    Cadastrar
-                                                </Button>
-                                            </Form.Item>
-                                        </Form>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={15} offset={6}>
-                                        <Text className='text-center'>
-                                            Já possui conta? Faça o <Link to="/login">Login.</Link>
-                                        </Text>
-                                    </Col>
-                                </Row>
-                            </div>
-                            <FooterText />
-                        </Col>
-                    </Row>
-                </div>
-            </Content>
-        </Layout>
+                                                <Form.Item
+                                                    name="CPF"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    ]}
+                                                >
+                                                    <InputMask mask="999.999.999-99" placeholder="CPF">
+                                                        {(inputProps) => <Input {...inputProps} />}
+                                                    </InputMask>
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    name="empresa"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input placeholder="Nome da Empresa" />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    name="phone"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input addonBefore={'+55'} placeholder="Celular" />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    name="password"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                        { min: 6, message: 'A senha deve ter pelo menos 6 caracteres.' }
+                                                    ]}
+                                                    hasFeedback
+                                                >
+                                                    <PasswordInput
+                                                        prefix={<LockOutlined className="site-form-item-icon" />}
+                                                        type="password"
+                                                        placeholder="Senha"
+                                                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    name="password-confirm"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                        ({ getFieldValue }) => ({
+                                                            validator(_, value) {
+                                                                if (!value || getFieldValue('password') === value) {
+                                                                    return Promise.resolve();
+                                                                }
+                                                                return Promise.reject(new Error('As senhas não conferem!'));
+                                                            },
+                                                        }),
+                                                    ]}
+                                                    hasFeedback
+                                                >
+                                                    <PasswordInput
+                                                        prefix={<LockOutlined className="site-form-item-icon" />}
+                                                        type="password"
+                                                        placeholder="Confirme a Senha"
+                                                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                                                    />
+                                                </Form.Item>
+
+                                                <Form.Item>
+                                                    <Button type="primary" htmlType="submit" className="login-form-button cad-button">
+                                                        Cadastrar
+                                                    </Button>
+                                                </Form.Item>
+                                            </Form>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col span={15} offset={6}>
+                                            <Text className='text-center'>
+                                                Já possui conta? Faça o <Link to="/login">Login.</Link>
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                </div>
+                                <FooterText />
+                            </Col>
+                        </Row>
+                    </div>
+                </Content>
+            </Layout>
+        </ConfigProvider>
     )
 };
 
