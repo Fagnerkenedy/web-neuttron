@@ -158,7 +158,7 @@ const Login = () => {
                                         </Col>
                                     </Row>
                                 </div>
-                                <FooterText />
+                                {/* <FooterText /> */}
                             </Col>
                         </Row>
                     </div>

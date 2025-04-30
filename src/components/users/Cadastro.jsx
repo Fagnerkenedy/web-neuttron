@@ -138,7 +138,7 @@ function Cadastro() {
                 <Content>
                     <div className='user-row-cadastro'>
                         <Row>
-                            <Col xs={{ span: 22, offset: 1 }}
+                            <Col xs={{ span: 24, offset: 0 }}
                                 sm={{ span: 16, offset: 4 }}
                                 md={{ span: 12, offset: 6 }}
                                 lg={{ span: 10, offset: 6 }}
@@ -299,7 +299,7 @@ function Cadastro() {
                                         </Col>
                                     </Row>
                                 </div>
-                                <FooterText />
+                                {/* <FooterText /> */}
                             </Col>
                         </Row>
                     </div>
