@@ -22,7 +22,7 @@
 @media (max-width: 852px) {
     .user-content-cadastro {
         /* width: 100%; */
-        height: 100vh;
+        min-height: 100vh;
         margin-top: 0;
         /* padding-top: 10px; */
         /* padding-bottom: 10px; */
