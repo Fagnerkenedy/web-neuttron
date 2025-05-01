@@ -1,9 +1,10 @@
 import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result, InputNumber, theme, ConfigProvider } from 'antd';
+import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result, InputNumber, theme, ConfigProvider, Image } from 'antd';
 import { PasswordInput } from 'antd-password-input-strength';
 import { React, useState } from 'react';
 import { Link } from 'react-router-dom';
 import InputMask from 'react-input-mask';
+import Logo from './neuttron_preto_sem_fundo.png';
 
 import userApiURI from '../../Utility/userApiURI';
 // import logo from '../../img/logo.jpeg';
@@ -151,7 +152,14 @@ function Cadastro() {
                                                 <img alt='Logo' className='user-cadastro-logo' src={logo} />
                                             </Col>
                                         </Row> */}
-                                            <Title level={4} className='user-cadastro-title'>Faça seu cadastro</Title>
+                                            <Row span={12}>
+                                                {/* <Logo color="black" text="" /> */}
+
+                                                <Link to="http://neuttron.com.br">  {/* Colocar o link da página inicial do site, para quando o usuário quiser retornar para o site basta clicar na logo */}
+                                                    <Image src={Logo} preview={false} style={{ width: '120px' }} />
+                                                </Link>
+                                            </Row>
+                                            <Title level={4} className='user-cadastro-title'>Cadastre-se</Title>
 
                                             {/* MENSAGEM DE ALERTA CASO RETORNE ERRO NO CADASTRO */}
                                             {alertMessage}
@@ -292,9 +300,9 @@ function Cadastro() {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col span={15} offset={6}>
-                                            <Text className='text-center'>
-                                                Já possui conta? Faça o <Link to="/login">Login.</Link>
+                                        <Col style={{ textAlign: 'center', width: '100%' }}>
+                                            <Text>
+                                                Já possui conta? <Link to="/login">Entrar</Link>
                                             </Text>
                                         </Col>
                                     </Row>

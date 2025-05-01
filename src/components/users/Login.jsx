@@ -74,7 +74,7 @@ const Login = () => {
                                                     <Image src={Logo} preview={false} style={{ width: '120px' }} />
                                                 </Link>
                                             </Row>
-                                            <Title level={4} className='user-cadastro-title'>Fazer login</Title>
+                                            <Title level={4} className='user-cadastro-title'>Entrar</Title>
 
                                             {/* MENSAGEM DE ALERTA CASO RETORNE ERRO NO CADASTRO */}
                                             {alertMessage}
@@ -151,9 +151,9 @@ const Login = () => {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col span={15} offset={5}>
+                                        <Col style={{ textAlign: 'center', width: '100%'}}>
                                             <Text>
-                                                Não possui conta? Faça o <Link to="/cadastro">Cadastro.</Link>
+                                                Não possui conta? <Link to="/cadastro">Cadastre-se</Link>
                                             </Text>
                                         </Col>
                                     </Row>

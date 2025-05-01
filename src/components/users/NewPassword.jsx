@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Divider, Form, Input, Layout, Result, Row, Typography } from 'antd';
+import { Alert, Button, Col, ConfigProvider, Divider, Form, Input, Layout, Result, Row, theme, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -93,89 +93,103 @@ function ConfirmedEmail() {
 
   {/* {msgRetorno} */ }
   return (
-    <Layout className="layout">
-      <Content>
-        <div className='user-row-cadastro'>
-          <Row>
-            <Col xs={{ span: 22, offset: 1 }}
-              sm={{ span: 16, offset: 4 }}
-              md={{ span: 12, offset: 6 }}
-              lg={{ span: 10, offset: 6 }}
-              xl={{ span: 6, offset: 9 }}>
-              {/* <div className='user-content-cadastro'> */}
-              <Row>
-                <Col span={20} offset={2}>
-                  <Title level={4} className='user-cadastro-title'>Cadastre sua senha</Title>
-                  {alertMessage}
+    <ConfigProvider
+      theme={{
+        // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
+        // algorithm: darkAlgorithm, // compactAlgorithm
+        algorithm: [theme.darkAlgorithm, theme.compactAlgorithm], // darkAlgorithm and compactAlgorithm
+        token: {
+          colorPrimary: '#1a73e8', // #1a73e8 #004E99
+          // colorLink: '#ffffff' : '#000000',
+          colorLinkHover: '#004E99', // Cor legal: #277AF7
+          colorSuccess: '#6aaf35'
+        },
+      }}
+    >
+      <Layout className="layout">
+        <Content>
+          <div className='user-row-cadastro'>
+            <Row>
+              <Col xs={{ span: 24, offset: 0 }}
+                sm={{ span: 16, offset: 4 }}
+                md={{ span: 12, offset: 6 }}
+                lg={{ span: 10, offset: 6 }}
+                xl={{ span: 6, offset: 9 }}>
+                <div className='user-content-cadastro'>
+                  <Row>
+                    <Col span={20} offset={2}>
+                      <Title level={4} className='user-cadastro-title'>Cadastre sua nova senha</Title>
+                      {alertMessage}
 
-                  <Divider />
-                  <Form
-                    form={form}
-                    name="cadastro-usuario"
-                    className="login-form"
-                    initialValues={{
-                      remember: true,
+                      <Divider />
+                      <Form
+                        form={form}
+                        name="cadastro-usuario"
+                        className="login-form"
+                        initialValues={{
+                          remember: true,
 
-                    }}
-                    validateMessages={validateMessages}
-                    onFinish={onFinish}
-                  >
-                    <Form.Item
-                      name="password"
-                      rules={[
-                        {
-                          required: true,
-                        },
-                        { min: 6, message: 'A senha deve ter pelo menos 6 caracteres.' }
-                      ]}
-                      hasFeedback
-                    >
-                      <PasswordInput
-                        prefix={<LockOutlined className="site-form-item-icon" />}
-                        type="password"
-                        placeholder="Senha"
-                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      name="password-confirm"
-                      rules={[
-                        {
-                          required: true,
-                        },
-                        ({ getFieldValue }) => ({
-                          validator(_, value) {
-                            if (!value || getFieldValue('password') === value) {
-                              return Promise.resolve();
-                            }
-                            return Promise.reject(new Error('As senhas não são iguais!'));
-                          },
-                        }),
-                      ]}
-                      hasFeedback
-                    >
-                      <PasswordInput
-                        prefix={<LockOutlined className="site-form-item-icon" />}
-                        type="password"
-                        placeholder="Confirme a Senha"
-                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                      />
-                    </Form.Item>
+                        }}
+                        validateMessages={validateMessages}
+                        onFinish={onFinish}
+                      >
+                        <Form.Item
+                          name="password"
+                          rules={[
+                            {
+                              required: true,
+                            },
+                            { min: 6, message: 'A senha deve ter pelo menos 6 caracteres.' }
+                          ]}
+                          hasFeedback
+                        >
+                          <PasswordInput
+                            prefix={<LockOutlined className="site-form-item-icon" />}
+                            type="password"
+                            placeholder="Senha"
+                            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          name="password-confirm"
+                          rules={[
+                            {
+                              required: true,
+                            },
+                            ({ getFieldValue }) => ({
+                              validator(_, value) {
+                                if (!value || getFieldValue('password') === value) {
+                                  return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('As senhas não são iguais!'));
+                              },
+                            }),
+                          ]}
+                          hasFeedback
+                        >
+                          <PasswordInput
+                            prefix={<LockOutlined className="site-form-item-icon" />}
+                            type="password"
+                            placeholder="Confirme a Senha"
+                            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                          />
+                        </Form.Item>
 
-                    <Form.Item>
-                      <Button type="text" htmlType="submit" className="login-form-button cad-button">
-                        Salvar
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </Col>
-              </Row>
-              {/* </div> */}
-            </Col>
-          </Row>
-        </div>
-      </Content>
-    </Layout>
+                        <Form.Item>
+                          <Button type="text" htmlType="submit" className="login-form-button cad-button">
+                            Salvar
+                          </Button>
+                        </Form.Item>
+                      </Form>
+                    </Col>
+                  </Row>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </Content>
+      </Layout>
+    </ConfigProvider>
   )
 };
 
