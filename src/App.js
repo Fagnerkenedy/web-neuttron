@@ -8,7 +8,7 @@ const App = () => {
   const ability = useAbility()
   return (
     <AbilityProvider value={ability}>
-      <div className="App">
+      <div className="App" style={{ backgroundColor: '#1b1b1b' }}>
         <RoutesPage />
       </div>
     </AbilityProvider>

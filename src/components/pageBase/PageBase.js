@@ -31,6 +31,7 @@ function PageBase() {
                 algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
                 // algorithm: darkMode ? darkAlgorithm : compactAlgorithm, // compactAlgorithm defaultAlgorithm
                 token: {
+                    colorBgBase: darkMode ? '#1b1b1b' : '#f5f5f5',
                     colorPrimary: '#1a73e8', // #1a73e8 #004E99
                     colorLink: darkMode ? '#ffffff' : '#000000',
                     colorLinkHover: '#004E99', // Cor legal: 277AF7

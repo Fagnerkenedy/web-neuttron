@@ -113,8 +113,9 @@ function ConfirmedEmail() {
               <Col xs={{ span: 24, offset: 0 }}
                 sm={{ span: 16, offset: 4 }}
                 md={{ span: 12, offset: 6 }}
-                lg={{ span: 10, offset: 6 }}
-                xl={{ span: 6, offset: 9 }}>
+                lg={{ span: 10, offset: 7 }}
+                xl={{ span: 6, offset: 9 }}
+                xxl={{ span: 4, offset: 10 }}>
                 <div className='user-content-cadastro'>
                   <Row>
                     <Col span={20} offset={2}>

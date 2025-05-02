@@ -32,9 +32,9 @@ function RoutesPage() {
   const pathParts = currentPath.split('/')
   const org = pathParts[1]
   const moduleName = pathParts[2]
-  const userString = localStorage.getItem('user');
-  const user = JSON.parse(userString)
-  const [darkMode, setDarkMode] = useState(user.dark_mode);
+  // const userString = localStorage.getItem('user');
+  // const user = JSON.parse(userString)
+  // const [darkMode, setDarkMode] = useState(user.dark_mode);
 
   const Private = ({ children }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -72,8 +72,9 @@ function RoutesPage() {
         <ConfigProvider
           locale={ptBR}
           theme={{
-            algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
+            // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
             token: {
+              colorBgBase: '#1b1b1b',
               colorPrimary: '#1a73e8', // #1a73e8 #004E99
               // colorLinkHover: '#004E99', // Cor legal: 277AF7
               colorSuccess: '#6aaf35'
