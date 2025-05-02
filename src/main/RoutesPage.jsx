@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Cadastro from '../components/users/Cadastro'
 import Login from "../components/users/Login"
@@ -19,7 +19,7 @@ import Modules from '../components/content/settings/modules/Modules';
 import Layout from '../components/content/settings/modules/layout/Layout';
 import Payment from '../components/checkout/Payment';
 import { useAbility } from '../contexts/AbilityContext.js'
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, theme } from 'antd';
 import ptBR from 'antd/lib/locale/pt_BR';
 import NewPassword from '../components/users/NewPassword.jsx';
 import { io } from 'socket.io-client';
@@ -32,6 +32,9 @@ function RoutesPage() {
   const pathParts = currentPath.split('/')
   const org = pathParts[1]
   const moduleName = pathParts[2]
+  const userString = localStorage.getItem('user');
+  const user = JSON.parse(userString)
+  const [darkMode, setDarkMode] = useState(user.dark_mode);
 
   const Private = ({ children }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -69,6 +72,7 @@ function RoutesPage() {
         <ConfigProvider
           locale={ptBR}
           theme={{
+            algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
             token: {
               colorPrimary: '#1a73e8', // #1a73e8 #004E99
               // colorLinkHover: '#004E99', // Cor legal: 277AF7
