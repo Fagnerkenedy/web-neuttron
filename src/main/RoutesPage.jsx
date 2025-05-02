@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Cadastro from '../components/users/Cadastro'
 import Login from "../components/users/Login"
@@ -32,9 +32,15 @@ function RoutesPage() {
   const pathParts = currentPath.split('/')
   const org = pathParts[1]
   const moduleName = pathParts[2]
-  // const userString = localStorage.getItem('user');
-  // const user = JSON.parse(userString)
-  // const [darkMode, setDarkMode] = useState(user.dark_mode);
+  const [darkMode, setDarkMode] = useState(false);
+  
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+    if(userString != null) {
+      const user = JSON.parse(userString)
+      setDarkMode(user.dark_mode)
+    }
+  },[])
 
   const Private = ({ children }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -72,9 +78,9 @@ function RoutesPage() {
         <ConfigProvider
           locale={ptBR}
           theme={{
-            // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
+            algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
             token: {
-              colorBgBase: '#1b1b1b',
+              colorBgBase: darkMode ? '#1b1b1b' : '#f5f5f5',
               colorPrimary: '#1a73e8', // #1a73e8 #004E99
               // colorLinkHover: '#004E99', // Cor legal: 277AF7
               colorSuccess: '#6aaf35'
