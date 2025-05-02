@@ -32,7 +32,7 @@ function RoutesPage() {
   const pathParts = currentPath.split('/')
   const org = pathParts[1]
   const moduleName = pathParts[2]
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   
   useEffect(() => {
     const userString = localStorage.getItem('user');

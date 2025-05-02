@@ -32,14 +32,14 @@ function Charts() {
         <>
             <Row>
                 {charts.map((chart, index) => (
-                    <Col xs={24} sm={24} md={24} lg={12} xl={12} span={12} key={index}>
+                    <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={8} key={index}>
                         <Layout
                             style={{
                                 background: colorBgContainer,
-                                margin: '10px'
+                                margin: '5px'
                             }}
                         >
-                            <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '15px' }}>
+                            <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '10px' }}>
                                 {chart.query.type === 'barra' && (
                                     <Col style={{ height: 500 }}>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
