@@ -46,7 +46,7 @@ function RoutesPage() {
     const { authenticated, loading } = useContext(AuthContext);
 
     if (loading) {
-      return <Loading />
+      return
     }
 
     if (!authenticated) {

@@ -150,7 +150,7 @@ const ColumnsOrder = ({ reload }) => {
     return (
         <Dropdown
             overlay={menu}
-            style={{ padding: 5, position: 'absolute', display: 'flex' }}
+            style={{ padding: 5, display: 'flex' }}
             onVisibleChange={(visible) => setIsOpen(visible)}
             visible={isOpen}
             trigger={['click']}
@@ -164,7 +164,7 @@ const ColumnsOrder = ({ reload }) => {
             )}
         >
             <Tooltip title="Configurar campos" placement="left">
-                <Button style={{ marginLeft: 10 }} variant="filled" onClick={openSelect} icon={<EllipsisOutlined />} />
+                <Button style={{ marginLeft: 10, marginRight: 7 }} variant="filled" onClick={openSelect} icon={<EllipsisOutlined />} />
             </Tooltip>
         </Dropdown>
     );

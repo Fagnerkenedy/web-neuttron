@@ -235,7 +235,7 @@ const KanbanBoard = ({ data }) => {
         <div style={{ position: 'absolute', zIndex: 1000, right: 5, top: 5 }}>
           <ColumnsOrder reload={fetchStages} />
         </div>
-        <Row gutter={16} wrap={false} style={{ overflowY: 'auto', height: 'calc(100vh - 129px)' }} className='custom-scrollbar'>
+        <Row gutter={16} wrap={false} style={{ overflowY: 'auto', height: 'calc(100vh - 129px)', padding: '0 10px 0 10px' }} className='custom-scrollbar'>
           {/* <Row gutter={16} wrap={false} style={{ maxWidth: '100vw', width: '100vw', overflow: 'auto', height: 'calc(100vh - 127px)' }}> */}
           {columns != '' && field != '' ? (Object.entries(columns).map(([columnId, column]) => (
             <Droppable droppableId={columnId} key={columnId}>
