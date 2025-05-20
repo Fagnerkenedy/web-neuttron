@@ -56,6 +56,7 @@ const DetailView = ({ itemId }) => {
     const [activeModule, setActiveModule] = useState("");
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
+    const isDesktop = screens.md
 
     let navigate = useNavigate()
     const toSingular = (plural) => {
@@ -1029,42 +1030,70 @@ const DetailView = ({ itemId }) => {
                                 </Col>
                                 <Col xs={12} style={{ textAlign: 'right' }}>
                                     <Can I='create' a={moduleName} ability={ability}>
-                                        <Tooltip title="Criar">
+                                        {/* <Tooltip title="Criar"> */}
+                                        {isDesktop ? (
                                             <Button
                                                 onClick={handleAccess}
                                                 icon={<PlusOutlined />}
                                                 type='primary'
                                             >
                                                 {/* {moduleName == "users" ? ("Usuário") :
-                                            moduleName == "profiles" ? ("Perfil") :
-                                                moduleName == "functions" ? ("Função") :
-                                                    moduleName == "charts" ? ("Painel") :
-                                                        (toSingular(activeModule))} */}
+                                                moduleName == "profiles" ? ("Perfil") :
+                                                    moduleName == "functions" ? ("Função") :
+                                                        moduleName == "charts" ? ("Painel") :
+                                                            (toSingular(activeModule))} */}
+                                                Novo
                                             </Button>
-                                        </Tooltip>
+                                        ) : (
+                                            <Button
+                                                onClick={handleAccess}
+                                                icon={<PlusOutlined />}
+                                                type='primary'
+                                            ></Button>
+                                        )}
+                                        {/* </Tooltip> */}
                                     </Can>
                                     <Can I='update' a={moduleName} ability={ability}>
-                                        <Tooltip title="Editar">
+                                        {/* <Tooltip title="Editar"> */}
+                                        {isDesktop ? (
                                             <Button
                                                 style={{ marginLeft: '10px' }}
                                                 color="default"
                                                 icon={<EditOutlined />}
                                                 href={`/${org}/${moduleName}/${record_id}/edit`}
-                                            ></Button>
-                                        </Tooltip>
+                                            >
+                                                Editar
+                                            </Button> 
+                                        ) : (
+                                            <Button
+                                                style={{ marginLeft: '10px' }}
+                                                color="default"
+                                                icon={<EditOutlined />}
+                                                href={`/${org}/${moduleName}/${record_id}/edit`}
+                                            >
+                                            </Button>
+                                        )}
+                                        {/* </Tooltip> */}
                                     </Can>
                                     <Can I='delete' a={moduleName} ability={ability}>
-                                        <Tooltip title="Excluir">
-                                            <Popconfirm
-                                                title="Excluir"
-                                                description="Deseja excluir este(s) registro(s)?"
-                                                onConfirm={() => confirm()}
-                                                okText="Sim"
-                                                cancelText="Cancelar"
-                                            >
-                                                <Button style={{ margin: '0 10px' }} danger icon={<DeleteOutlined />}></Button>
-                                            </Popconfirm>
-                                        </Tooltip>
+                                        {/* <Tooltip title="Excluir"> */}
+                                        <Popconfirm
+                                            title="Excluir"
+                                            description="Deseja excluir este(s) registro(s)?"
+                                            onConfirm={() => confirm()}
+                                            okText="Sim"
+                                            cancelText="Cancelar"
+                                        >
+                                            {isDesktop ? ( 
+                                                <Button style={{ margin: '0 10px' }} danger icon={<DeleteOutlined />}>
+                                                    Excluir
+                                                </Button>
+                                            ):(
+                                                <Button style={{ margin: '0 10px' }} danger icon={<DeleteOutlined />}>
+                                                </Button>
+                                            )}
+                                        </Popconfirm>
+                                        {/* </Tooltip> */}
                                     </Can>
                                 </Col>
                             </Row>
@@ -1087,7 +1116,7 @@ const DetailView = ({ itemId }) => {
                                     <Col span={24}>
                                         <Row>
                                             <Col span={24} style={{ textAlign: 'right' }}>
-                                                <Button type='link' onClick={() => navigate(`/${org}/settings/modules/${moduleName}`)}>Editar Layout</Button>
+                                                <Button icon={<EditOutlined />} type='text' onClick={() => navigate(`/${org}/settings/modules/${moduleName}`)}>Editar Layout</Button>
                                             </Col>
                                             {sections.map((section, sectionIndex) => (
                                                 <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 24)}>

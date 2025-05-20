@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm, Space, Divider } from 'antd';
+import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm, Space, Divider, Grid } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
@@ -33,6 +33,9 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const closeDrawer = () => setOpen(false);
   const [openTour, setOpenTour] = useState(false);
   let navigate = useNavigate()
+  const { useBreakpoint } = Grid
+  const screens = useBreakpoint()
+  const isDesktop = screens.md
 
   const updateTour = async () => {
     const updateTour = await updateOpenTour(org, user.id)
@@ -277,12 +280,10 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             </Tooltip>
           </Col>
           <Col ref={ref4} style={{ marginLeft: '5px' }}>
-            <Tooltip title="Perfil">
-              {/* <Link type="text" onClick={showDrawer}>
-                <Avatar icon={<UserOutlined />} />
-              </Link> */}
+            {isDesktop ? (<Tooltip title="Perfil"> <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} /> </Tooltip>) : (
               <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} />
-            </Tooltip>
+            )}
+            
             <Drawer
               open={open}
               title="Perfil"
