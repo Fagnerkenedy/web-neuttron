@@ -1,0 +1,12 @@
+.buttonHome{
+    background-color: #ea7e02;
+    color: white;
+    border-color: #ea7e02;
+    width: 100%;
+}
+
+.buttonHome:hover{
+    background-color: #FFD101;
+    border-color: #FFD101;
+    color: white;
+}

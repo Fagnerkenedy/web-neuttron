@@ -34,7 +34,7 @@ function Home() {
 
     return (
         <Layout style={{ padding: '5px 5px 5px 5px' }}>
-            <Text style={{ fontSize: '20px', marginLeft: '5px', marginBottom: '5px' }} level={1} strong>Bem-vindo {userName.name}</Text>
+            <Text style={{ fontSize: '20px', marginLeft: '5px', marginBottom: '5px' }} level={1} strong>{userName.organization}</Text>
             <Charts />
             {/* <DrilldownChart /> */}
             {/* <Row gutter={16}>

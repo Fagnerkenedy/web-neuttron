@@ -1,0 +1,15 @@
+.buttonUpload {
+    padding: 30px 80px;
+    display: flex;
+    line-height: 0px;
+    /* background-color: #ea7e02; */
+    /* color: white; */
+    border: none;
+    border-radius: 5px;
+    font-size: 25px;
+}
+
+.buttonUpload:hover {
+    /* background-color: #FFD101; */
+    /* color: white; */
+}

@@ -1,6 +1,6 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Image, theme, ConfigProvider } from 'antd';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles.css'
 // import logo from '../../img/logo.jpeg';
@@ -16,15 +16,21 @@ const { Title, Text } = Typography;
 const Login = () => {
     const { user, login, loading, alertMessage } = useContext(AuthContext);
     const navigate = useNavigate();
-    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
 
     const handleSubmit = (e) => {
         const data = { email, password }
         login(data)
     }
+
+    useEffect(() => {
+        if (user != null) {
+            const recoveredOrg = localStorage.getItem('org');
+            navigate(`/${recoveredOrg}/home`);
+        }
+    }, [user, navigate]);
 
     if (loading) {
         return (
@@ -32,10 +38,10 @@ const Login = () => {
         )
     }
 
-    if (user != null) {
-        const recoveredOrg = localStorage.getItem('org');
-        navigate(`/${recoveredOrg}/home`);
-    }
+    // if (user != null) {
+    //     const recoveredOrg = localStorage.getItem('org');
+    //     navigate(`/${recoveredOrg}/home`);
+    // }
 
     return (
         <ConfigProvider
@@ -153,7 +159,7 @@ const Login = () => {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col style={{ textAlign: 'center', width: '100%'}}>
+                                        <Col style={{ textAlign: 'center', width: '100%' }}>
                                             <Text>
                                                 Não possui conta? <Link to="/cadastro">Cadastre-se</Link>
                                             </Text>

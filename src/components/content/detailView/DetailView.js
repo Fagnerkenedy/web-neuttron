@@ -1078,7 +1078,7 @@ const DetailView = ({ itemId }) => {
                                     background: colorBgContainer,
                                     // borderRadius: borderRadiusLG,
                                     minHeight: (relatedList.length === 0 ? 'calc(100vh - 118px)' : 'calc(80vh - 205px)'),
-                                    padding: '20px',
+                                    padding: '5px 20px 20px 20px',
                                     // border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid'
                                 }}
                             >
@@ -1086,6 +1086,9 @@ const DetailView = ({ itemId }) => {
                                 <Row>
                                     <Col span={24}>
                                         <Row>
+                                            <Col span={24} style={{ textAlign: 'right' }}>
+                                                <Button type='link' onClick={() => navigate(`/${org}/settings/modules/${moduleName}`)}>Editar Layout</Button>
+                                            </Col>
                                             {sections.map((section, sectionIndex) => (
                                                 <Col key={sectionIndex} span={(moduleName == "functions" ? 24 : 24)}>
                                                     <Text style={{ padding: '0px 25px 10px', fontSize: '18px' }}>{section.name}</Text>

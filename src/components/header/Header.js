@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm } from 'antd';
+import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm, Space, Divider } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
 import AuthContext from '../../contexts/auth';
-import { CaretUpOutlined, DeleteOutlined, ExclamationOutlined, LogoutOutlined, MessageOutlined, MoonFilled, QuestionCircleOutlined, SettingOutlined, StarFilled, SunFilled, UserOutlined } from '@ant-design/icons';
+import { CaretUpOutlined, DeleteOutlined, ExclamationOutlined, LogoutOutlined, MessageOutlined, MoonFilled, QuestionCircleOutlined, SettingOutlined, StarFilled, SunFilled, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import './styles.css'
 import Logo from '../utils/Logo';
 import { Can } from "../../contexts/AbilityContext.js";
@@ -118,17 +118,24 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const Content = (
     <Col style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
       <Col>
-        <Row span={24} style={{ justifyContent: 'center', paddingBottom: '15px' }}>
-          <Avatar size={64} icon={<UserOutlined />} />
-        </Row>
-        <Row style={{ justifyContent: 'center', paddingBottom: '15px' }}>
-          <Text>{user.email}</Text>
-        </Row>
-        <Row style={{ alignItems: "center", padding: "10px 0" }}>
+        <Space direction="vertical" style={{ width: "100%" }} align="center">
+          <Avatar size={80} icon={<UserOutlined />} />
+          <Title level={5} style={{ margin: 0 }}>
+            {user.email}
+          </Title>
+        </Space>
+        <Divider style={{ marginTop: 24, marginBottom: 16 }} />
+        <Space direction="vertical" style={{ width: "100%" }} size="middle">
           <Button
-            type='text'
-            title={darkMode ? "Ativar Modo Claro" : "Ativar Modo Noturno"}
-            style={{ width: '100%', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}
+            title={darkMode ? "Modo Claro" : "Modo Noturno"}
+            // style={{ width: '100%', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}
+            block
+            style={{
+              justifyContent: "start",
+              paddingLeft: 16,
+              height: 44,
+              fontWeight: 500,
+            }}
             onClick={() => {
               closeDrawer()
               toggleDarkMode()
@@ -137,10 +144,39 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           >
             {darkMode ? "Modo Claro" : "Modo Noturno"}
           </Button>
-        </Row>
-        <Button icon={<LogoutOutlined />} type='primary' style={{ width: '100%' }} title={'Sair da conta'} onClick={logout}>Sair</Button>
-      </Col>
-      <Col style={{ bottom: 0 }}>
+          <Button
+            icon={<WhatsAppOutlined />}
+            target='_blank'
+            href='https://api.whatsapp.com/send/?phone=5545999792202&text=Ol%C3%A1+tudo+bem%3F&app_absent=0'
+            block
+            style={{
+              justifyContent: "start",
+              paddingLeft: 16,
+              height: 44,
+              fontWeight: 500,
+            }}
+            title={'Fale conosco'}
+          >
+            Fale conosco
+          </Button>
+          <Button icon={<LogoutOutlined />} block
+            color="primary" variant="outlined"
+            style={{
+              justifyContent: "start",
+              paddingLeft: 16,
+              height: 44,
+              fontWeight: 500,
+              // backgroundColor: "#e6f4ff",
+              // color: "#1677ff",
+              // borderColor: "#91caff",
+            }}
+            title={'Sair da conta'}
+            onClick={logout}
+          >
+            Sair
+          </Button>
+        </Space>
+        <Divider style={{ marginTop: 32, marginBottom: 16 }} />
         <Popconfirm
           title="Tem certeza que deseja excluir esta conta? Essa ação excluirá todos os dados e é irreversível!"
           okText="Sim"
@@ -158,7 +194,18 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             navigate('/login')
           }}
         >
-          <Button icon={<DeleteOutlined />} type="text" danger style={{ width: '100%' }} title={'Excluir conta'}>Excluir conta</Button>
+          <Button icon={<DeleteOutlined />} danger
+            block
+            style={{
+              // backgroundColor: "#fff1f0",
+              // borderColor: "#ffa39e",
+              fontWeight: 500,
+              height: 44,
+            }}
+            title={'Excluir conta'}
+          >
+            Excluir conta
+          </Button>
         </Popconfirm>
       </Col>
     </Col>
@@ -182,7 +229,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   return (
     <>
       <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '50px', padding: "10px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
-        
+
         <Tooltip title="Página Inicial">
           <Link
             href={`/${org}/home`}
@@ -202,7 +249,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           ability={ability}
         />
         <Row style={{ marginLeft: 'auto' }}>
-          <Col>
+          {/* <Col>
             <ConfigProvider
               button={{
                 className: linearGradientButton,
@@ -214,7 +261,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
               </Tooltip>
               </Can>
             </ConfigProvider>
-          </Col>
+          </Col> */}
           <Col style={{ marginLeft: '5px' }}>
             <Link
               href={`/${org}/chats`}

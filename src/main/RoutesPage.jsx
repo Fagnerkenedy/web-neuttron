@@ -24,6 +24,14 @@ import ptBR from 'antd/lib/locale/pt_BR';
 import NewPassword from '../components/users/NewPassword.jsx';
 import { io } from 'socket.io-client';
 // import PermissionsPage from '../components/content/detailView/PermissionsPage.js';
+import { MainProvider } from "../components/upload/providers/MainContext";
+import HomeUpload from "../components/upload/pages/Home";
+import Fields from "../components/upload/pages/Field/teste";
+import Mapping from "../components/upload/pages/Mapping";
+import Processing from "../components/upload/pages/Processing";
+import NotFound from "../components/upload/pages/NotFound";
+import Result from "../components/upload/pages/Result";
+
 
 const socket = io(process.env.REACT_APP_LINK_API);
 
@@ -33,14 +41,14 @@ function RoutesPage() {
   const org = pathParts[1]
   const moduleName = pathParts[2]
   const [darkMode, setDarkMode] = useState(true);
-  
+
   useEffect(() => {
     const userString = localStorage.getItem('user');
-    if(userString != null) {
+    if (userString != null) {
       const user = JSON.parse(userString)
       setDarkMode(user.dark_mode)
     }
-  },[])
+  }, [])
 
   const Private = ({ children }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -87,29 +95,40 @@ function RoutesPage() {
             },
           }}
         >
-          <Routes>
-            {/* <Route path="/" element={<Navigate to="/login" />} /> */}
-            <Route path="/:org" element={<Private><PageBase /></Private>}>
-              <Route path="/:org/home" element={<Home />} />
-              <Route path="/:org/chats" element={<Chats socket={socket} />}>
-                <Route path="/:org/chats/:conversationId" element={<Conversations socket={socket} />} />
+          <MainProvider>
+
+            <Routes>
+              {/* <Route path="/" element={<Navigate to="/login" />} /> */}
+              <Route path="/:org" element={<Private><PageBase /></Private>}>
+                <Route path="/:org/home" element={<Home />} />
+                <Route path="/:org/chats" element={<Chats socket={socket} />}>
+                  <Route path="/:org/chats/:conversationId" element={<Conversations socket={socket} />} />
+                </Route>
+                <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
+                <Route path="/:org/:module/:recordId" element={<AuthorizedRoute action="read" subject={moduleName}><DetailView /></AuthorizedRoute>} />
+                <Route path="/:org/:module/create" element={<AuthorizedRoute action="create" subject={moduleName}><CreateView /></AuthorizedRoute>} />
+                <Route path="/:org/:module/:recordId/edit" element={<AuthorizedRoute action="update" subject={moduleName}><EditView /></AuthorizedRoute>} />
+                {/* <Route path="/:org/:module/upload">
+                  <Route path="/:org/:module/upload/home" element={<HomeUpload></HomeUpload>}></Route>
+                  <Route path="/:org/:module/upload/fields" element={<Fields></Fields>}></Route>
+                  <Route path="/:org/:module/upload/mapping" element={<Mapping></Mapping>}></Route>
+                  <Route path="/:org/:module/upload/processing/:filename" element={<Processing></Processing>}></Route>
+                  <Route path="/:org/:module/upload/result" element={<Result></Result>}></Route>
+                  <Route path="/:org/:module/upload/*" element={<NotFound />}></Route>
+                </Route> */}
+                <Route path="/:org/settings" element={<Settings />} />
+                <Route path="/:org/settings/modules" element={<Modules />} />
+                {/* <Route path="/:org/settings/roles" element={<PermissionsPage />} /> */}
+                <Route path="/:org/settings/modules/:module" element={<Layout />} />
               </Route>
-              <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
-              <Route path="/:org/:module/:recordId" element={<AuthorizedRoute action="read" subject={moduleName}><DetailView /></AuthorizedRoute>} />
-              <Route path="/:org/:module/create" element={<AuthorizedRoute action="create" subject={moduleName}><CreateView /></AuthorizedRoute>} />
-              <Route path="/:org/:module/:recordId/edit" element={<AuthorizedRoute action="update" subject={moduleName}><EditView /></AuthorizedRoute>} />
-              <Route path="/:org/settings" element={<Settings />} />
-              <Route path="/:org/settings/modules" element={<Modules />} />
-              {/* <Route path="/:org/settings/roles" element={<PermissionsPage />} /> */}
-              <Route path="/:org/settings/modules/:module" element={<Layout />} />
-            </Route>
-            <Route path="/:org/checkout" element={<AuthorizedRoute action="read" subject={moduleName}><Payment /></AuthorizedRoute>} />
-            <Route path="/cadastro" element={<Cadastro />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />} />
-            <Route path="/:orgId/cadastro/nova_senha/:uuid" element={<NewPassword />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
+              <Route path="/:org/checkout" element={<AuthorizedRoute action="read" subject={moduleName}><Payment /></AuthorizedRoute>} />
+              <Route path="/cadastro" element={<Cadastro />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />} />
+              <Route path="/:orgId/cadastro/nova_senha/:uuid" element={<NewPassword />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </MainProvider>
         </ConfigProvider>
         {/* </AbilityProvider> */}
       </AuthProvider>
