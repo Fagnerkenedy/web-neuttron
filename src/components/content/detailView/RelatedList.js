@@ -45,9 +45,9 @@ function RelatedList({ related_module, related_id }) {
     )
 
     return (
-        <Content className='content' style={{ paddingTop: '20px' }}>
+        <Content className='content' style={{ paddingTop: '10px' }}>
             <Layout>
-                <Card style={{ paddingLeft: '10px' }} size="small" title={related_module == 'users' ? "Usuários" : related_module} extra={<Can I='create' a={related_module} ability={ability}><Button style={{ margin: '10px' }} icon={<PlusOutlined />} href={`/${org}/${related_module}/create`}>Novo</Button></Can>}>
+                <Card size="small" title={related_module == 'users' ? "Usuários" : related_module} extra={<Can I='create' a={related_module} ability={ability}><Button style={{ margin: '10px' }} icon={<PlusOutlined />} href={`/${org}/${related_module}/create`}>Novo</Button></Can>}>
                     <Table
                         size="small"
                         columns={(tableData.length > 0 ? columns : '')}

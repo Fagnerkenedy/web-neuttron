@@ -35,6 +35,7 @@ const DetailView = ({ itemId }) => {
     const [relatedModuleData, setRelatedModuleData] = useState([]);
     const [selectedValue, setSelectedValue] = useState(null);
     const [isChecked, setIsChecked] = useState(false);
+    const [relatedModule, setRelatedModule] = useState('');
     const [relatedList, setRelatedModuleList] = useState('');
     const [options, setOptions] = useState([]);
     const [relatedFieldData, setRelatedFieldData] = useState([]);
@@ -234,6 +235,23 @@ const DetailView = ({ itemId }) => {
         setSelectedValue({ value: value, id: option.key });
     };
 
+    const hasRelatedModule = async () => {
+        const token = localStorage.getItem('token');
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+        const currentPath = window.location.pathname;
+        const pathParts = currentPath.split('/');
+        const org = pathParts[1];
+        const moduleName = pathParts[2];
+        console.log("hskasoiiaiaiaiiai")
+        const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedModuleList`, config);
+        console.log("retorno related module module: ", response.data)
+        setRelatedModule(response.data)
+    }
+
     const relatedModuleList = async () => {
         const token = localStorage.getItem('token');
         const config = {
@@ -267,6 +285,7 @@ const DetailView = ({ itemId }) => {
 
     useEffect(() => {
         fetchData();
+        hasRelatedModule()
         relatedModuleList();
         async function fetchModulesData() {
             const fetchedModules = await fetchModules(org);
@@ -1063,7 +1082,7 @@ const DetailView = ({ itemId }) => {
                                                 href={`/${org}/${moduleName}/${record_id}/edit`}
                                             >
                                                 Editar
-                                            </Button> 
+                                            </Button>
                                         ) : (
                                             <Button
                                                 style={{ marginLeft: '10px' }}
@@ -1084,11 +1103,11 @@ const DetailView = ({ itemId }) => {
                                             okText="Sim"
                                             cancelText="Cancelar"
                                         >
-                                            {isDesktop ? ( 
+                                            {isDesktop ? (
                                                 <Button style={{ margin: '0 10px' }} danger icon={<DeleteOutlined />}>
                                                     Excluir
                                                 </Button>
-                                            ):(
+                                            ) : (
                                                 <Button style={{ margin: '0 10px' }} danger icon={<DeleteOutlined />}>
                                                 </Button>
                                             )}
@@ -1204,9 +1223,13 @@ const DetailView = ({ itemId }) => {
                                 </Row>
                             </Layout>
                         </Content>
-                        {relatedList && relatedList.map((item, index) => (
-                            <RelatedList key={index} related_module={item.module_name} related_id={record_id} />
-                        ))}
+                        {relatedModule && (
+                            <Col style={{ paddingBottom: '10px' }}>
+                                {relatedModule.map((item, index) => (
+                                    <RelatedList key={index} related_module={item.module_name} related_id={record_id} />
+                                ))}
+                            </Col>
+                        )}
                     </div>
                 </div>
             )}
