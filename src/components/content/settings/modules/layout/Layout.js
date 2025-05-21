@@ -960,7 +960,7 @@ const DragAndDrop = () => {
             zIndex: 1000,
             top: 0,
             left: 0,
-            // width: 250,
+            width: 250,
             height: `calc(100vh - 130px)`,
             marginTop: 102,
             // paddingTop: 5,
