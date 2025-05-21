@@ -51,7 +51,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const steps = [
     {
       title: 'Seja muito bem vindo(a)',
-      description: 'Este é o primeiro passo do tour. Vamos guiá-lo(a) pelos principais recursos do sistema.',
+      description: 'Vamos guiá-lo(a) pelos principais recursos do sistema.',
       target: () => ref1.current,
       nextButtonProps: {
         children: 'Próximo',
@@ -59,7 +59,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
     },
     {
       title: 'Módulos',
-      description: 'Cadastre seus Leads, Empresas, Contatos, Negócios e muito mais. Gerencie de forma eficaz todo o processo de relacionamento com o seu cliente.',
+      description: 'Cadastre seus Leads, Empresas, Contatos, Negócios e muito mais.',
       target: () => ref2.current,
       prevButtonProps: {
         children: 'Voltar',
@@ -70,7 +70,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
     },
     {
       title: 'Configurações',
-      description: 'Crie módulos personalizados para armazenar qualquer tipo de informação usando campos customizáveis. Gerencie os usuários do sistema e envie convites para adicionar novos membros. Controle o perfil de cada usuário e defina suas permissões de acesso no sistema e crie automações poderosas para automatizar processos repetitivos do dia a dia.',
+      description: 'Crie novos módulos e campos personalizados. Gerencie os usuários do sistema. Crie automações poderosas para automatizar processos repetitivos do dia a dia.',
       target: () => ref3.current,
       prevButtonProps: {
         children: 'Voltar',
@@ -242,8 +242,8 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             </Row>
           </Link>
         </Tooltip>
-
         <HeaderModules
+          ref2={ref2}
           modules={modules}
           org={org}
           darkMode={darkMode}
@@ -283,7 +283,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             {isDesktop ? (<Tooltip title="Perfil"> <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} /> </Tooltip>) : (
               <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} />
             )}
-            
+
             <Drawer
               open={open}
               title="Perfil"

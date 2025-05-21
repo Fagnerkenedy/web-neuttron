@@ -5,8 +5,8 @@ import { Can } from '../../contexts/AbilityContext';
 import CustomDropdown from './CustomDropdown';
 import { HomeOutlined } from '@ant-design/icons';
 
-const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, ability }) => {
-    const ref2 = useRef(null);
+const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, ability, ref2 }) => {
+    // const refModules = useRef(null);
     const [visibleModules, setVisibleModules] = useState([]);
     const [extraModules, setExtraModules] = useState([]);
 
