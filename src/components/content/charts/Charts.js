@@ -2,10 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Col, Row, Layout, theme } from "antd";
 import { Typography } from 'antd';
 import { fetchCharts } from './fetchCharts'
-import { Column } from '@ant-design/plots';
 import Barra from './Barra'
 import Linha from './Linha'
 import Funil from './Funil'
+import Column from './Column.js'
+import Line from "./Line.js";
+import Funnel from "./Funnel.js"
+import Area from "./Area.js"
+import Bar from "./Bar.js"
+import Pie from "./Pie.js"
+import Donut from "./Donut.js"
+import Rose from "./Rose.js"
+import Gauge from "./Gauge.js"
 const { Text } = Typography;
 
 function Charts() {
@@ -39,23 +47,59 @@ function Charts() {
                                 margin: '5px'
                             }}
                         >
-                            <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '10px' }}>
+                            <div style={{ borderRadius: '5px', padding: '10px' }}>
                                 {chart.query.type === 'barra' && (
-                                    <Col style={{ height: 500 }}>
+                                    <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                        <Barra xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                        <Column xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
                                 {chart.query.type === 'linha' && (
-                                    <Col style={{ height: 500 }}>
+                                    <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                        <Linha xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                        <Line xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
                                 {chart.query.type === 'funil' && (
-                                    <Col style={{ height: 500 }}>
+                                    <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                        <Funil xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                        <Funnel xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </Col>
+                                )}
+                                {chart.query.type === 'area' && (
+                                    <Col>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Area xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </Col>
+                                )}
+                                {chart.query.type === 'bar' && (
+                                    <Col>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Bar xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </Col>
+                                )}
+                                {chart.query.type === 'pie' && (
+                                    <Col>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Pie xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </Col>
+                                )}
+                                {chart.query.type === 'donut' && (
+                                    <Col>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Donut xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </Col>
+                                )}
+                                {chart.query.type === 'rose' && (
+                                    <Col>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Rose xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
+                                    </Col>
+                                )}
+                                {chart.query.type === 'gauge' && (
+                                    <Col>
+                                        <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                        <Gauge xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
                             </div>

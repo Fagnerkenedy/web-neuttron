@@ -1,0 +1,44 @@
+import { Column } from '@antv/g2plot';
+import { useEffect, useRef } from 'react';
+import { useOutletContext } from 'react-router-dom';
+
+const ColumnChart = ({ xField, yField, data }) => {
+    const chartRef = useRef(null)
+    const { darkMode } = useOutletContext();
+    
+    useEffect(() => {
+
+        const columnPlot = new Column(chartRef.current, {
+            data,
+            xField: xField,
+            yField: yField,
+            // theme: darkMode ? 'dark' : '',
+            label: {
+                position: 'middle', // 'top', 'bottom', 'middle',
+                style: {
+                    // fill: '#FFFFFF',
+                    opacity: 0.6,
+                },
+            },
+            xAxis: {
+                label: {
+                    autoHide: true,
+                    autoRotate: true,
+                },
+            },
+        });
+
+        columnPlot.render();
+
+        return () => {
+            columnPlot.destroy();
+        };
+    }, [])
+
+    return (
+        <div style={{ padding: 10 }} ref={chartRef}></div>
+    )
+
+}
+
+export default ColumnChart;

@@ -43,6 +43,7 @@ const DrilldownChart = () => {
                 style: { fill: "#fff" },
             },
             interactions: [{ type: "element-active" }],
+            
         });
 
         chart.render();
@@ -65,7 +66,7 @@ const DrilldownChart = () => {
                     Voltar
                 </button>
             )}
-            <div ref={chartRef} style={{ width: "50%", height: 400 }} />
+            <div ref={chartRef} />
         </div>
     );
 };
