@@ -587,12 +587,20 @@ const CreateView = ({ itemId }) => {
 
             const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
             console.log("o que retornou fields? ", response)
-            const matchingResponse = response.data.filter(item => item.field_type === "select").map(item => {
-                return {
-                    field_value: item.name,
-                    api_name: item.api_name
-                };
-            });
+            const matchingResponse = response.data
+                .filter(item => {
+                    if (moduleName == "kanban") {
+                        return item.field_type === "select"
+                    } else {
+                        return true
+                    }
+                })
+                .map(item => {
+                    return {
+                        field_value: item.name,
+                        api_name: item.api_name
+                    };
+                });
             setRelatedFields(matchingResponse);
         }
     }
@@ -1099,7 +1107,7 @@ const CreateView = ({ itemId }) => {
                                 <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '40px' }}>
                                     <Col>
                                         <Title
-                                            style={{  fontSize: '22px', margin: 0 }}
+                                            style={{ fontSize: '22px', margin: 0 }}
                                         >
                                             Criar {moduleName == "users" ? ("Usuário") :
                                                 moduleName == "profiles" ? ("Perfil") :

@@ -8,9 +8,9 @@ const BarChart = ({ xField, yField, data }) => {
 
         const barPlot = new Bar(chartRef.current, {
             data,
-            xField: xField,
-            yField: yField,
-            seriesField: yField,
+            xField: yField,
+            yField: xField,
+            seriesField: xField,
             legend: {
                 position: 'top-left',
             },

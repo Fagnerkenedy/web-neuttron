@@ -48,49 +48,49 @@ function Charts() {
                             }}
                         >
                             <div style={{ borderRadius: '5px', padding: '10px' }}>
-                                {chart.query.type === 'barra' && (
+                                {chart.query.type === 'Coluna' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Column xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
-                                {chart.query.type === 'linha' && (
+                                {chart.query.type === 'Linha' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Line xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
-                                {chart.query.type === 'funil' && (
+                                {chart.query.type === 'Funil' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Funnel xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
-                                {chart.query.type === 'area' && (
+                                {chart.query.type === 'Área' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Area xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
-                                {chart.query.type === 'bar' && (
+                                {chart.query.type === 'Barra' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Bar xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
-                                {chart.query.type === 'pie' && (
+                                {chart.query.type === 'Pizza' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Pie xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
-                                {chart.query.type === 'donut' && (
+                                {chart.query.type === 'Rosca' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Donut xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />
                                     </Col>
                                 )}
-                                {chart.query.type === 'rose' && (
+                                {chart.query.type === 'Rosa' && (
                                     <Col>
                                         <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
                                         <Rose xField={chart.query.xField} yField={chart.query.yField} data={chart.data} />

@@ -10,6 +10,7 @@ const FunnelChart = ({ xField, yField, data }) => {
             data,
             xField: xField,
             yField: yField,
+            dynamicHeight: true,
             legend: true,
             // shapeField: 'pyramid',
         });
