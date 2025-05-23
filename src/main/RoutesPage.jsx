@@ -86,7 +86,7 @@ function RoutesPage() {
         <ConfigProvider
           locale={ptBR}
           theme={{
-            algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
+            // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
             token: {
               colorBgBase: darkMode ? '#1b1b1b' : '#f5f5f5',
               colorPrimary: '#1a73e8', // #1a73e8 #004E99

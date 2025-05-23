@@ -1,4 +1,4 @@
-import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone, BankOutlined } from '@ant-design/icons';
 import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result, InputNumber, theme, ConfigProvider, Image } from 'antd';
 import { PasswordInput } from 'antd-password-input-strength';
 import { React, useState } from 'react';
@@ -12,6 +12,7 @@ import Loading from '../utils/Loading';
 import FooterText from '../utils/FooterText';
 import './styles.css'
 import Paragraph from 'antd/es/typography/Paragraph';
+import { Building } from 'lucide-react';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -126,7 +127,7 @@ function Cadastro() {
             theme={{
                 // algorithm: darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : [theme.defaultAlgorithm, theme.compactAlgorithm], // compactAlgorithm
                 // algorithm: darkAlgorithm, // compactAlgorithm
-                algorithm: [theme.darkAlgorithm, theme.compactAlgorithm], // darkAlgorithm and compactAlgorithm
+                algorithm: [theme.darkAlgorithm], // darkAlgorithm and compactAlgorithm
                 token: {
                     colorPrimary: '#1a73e8', // #1a73e8 #004E99
                     // colorLink: '#ffffff' : '#000000',
@@ -140,11 +141,11 @@ function Cadastro() {
                     <div className='user-row-cadastro'>
                         <Row>
                             <Col xs={{ span: 24, offset: 0 }}
-                                sm={{ span: 16, offset: 4 }}
-                                md={{ span: 12, offset: 6 }}
-                                lg={{ span: 10, offset: 7 }}
-                                xl={{ span: 6, offset: 9 }}
-                                xxl={{ span: 4, offset: 10 }}>
+                                sm={{ span: 24, offset: 0 }}
+                                md={{ span: 24, offset: 0 }}
+                                lg={{ span: 14, offset: 5 }}
+                                xl={{ span: 10, offset: 7 }}
+                                xxl={{ span: 8, offset: 8 }}>
                                 <div className='user-content-cadastro'>
                                     <Row>
                                         <Col span={20} offset={2}>
@@ -201,6 +202,54 @@ function Cadastro() {
                                                 <Input size='large' prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Sobrenome" />
                                             </Form.Item> */}
                                                 <Form.Item
+                                                    name="empresa"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input
+                                                        prefix={
+                                                            <Building
+                                                                size={14}
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                }}
+                                                            />
+                                                        }
+                                                        placeholder="Nome da Empresa"
+                                                    />
+                                                </Form.Item>
+
+
+                                                {/* <Form.Item
+                                                    name="CPF"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    ]}
+                                                >
+                                                    <InputMask mask="999.999.999-99" placeholder="CPF">
+                                                        {(inputProps) => <Input {...inputProps} />}
+                                                    </InputMask>
+                                                </Form.Item> */}
+
+
+                                                <Form.Item
+                                                    name="phone"
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Input addonBefore={'+55'} placeholder="Celular" />
+                                                </Form.Item>
+
+                                                <Form.Item
                                                     name="email"
                                                     rules={[
                                                         {
@@ -214,42 +263,7 @@ function Cadastro() {
                                                 >
                                                     <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-mail" />
                                                 </Form.Item>
-
-                                                <Form.Item
-                                                    name="CPF"
-                                                    rules={[
-                                                        {
-                                                            required: true,
-                                                        },
-                                                    ]}
-                                                >
-                                                    <InputMask mask="999.999.999-99" placeholder="CPF">
-                                                        {(inputProps) => <Input {...inputProps} />}
-                                                    </InputMask>
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    name="empresa"
-                                                    rules={[
-                                                        {
-                                                            required: true,
-                                                        },
-                                                    ]}
-                                                >
-                                                    <Input placeholder="Nome da Empresa" />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    name="phone"
-                                                    rules={[
-                                                        {
-                                                            required: true,
-                                                        },
-                                                    ]}
-                                                >
-                                                    <Input addonBefore={'+55'} placeholder="Celular" />
-                                                </Form.Item>
-
+                                                
                                                 <Form.Item
                                                     name="password"
                                                     rules={[
@@ -267,7 +281,7 @@ function Cadastro() {
                                                         iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                                                     />
                                                 </Form.Item>
-                                                <Form.Item
+                                                {/* <Form.Item
                                                     name="password-confirm"
                                                     rules={[
                                                         {
@@ -290,7 +304,7 @@ function Cadastro() {
                                                         placeholder="Confirme a Senha"
                                                         iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                                                     />
-                                                </Form.Item>
+                                                </Form.Item> */}
 
                                                 <Form.Item>
                                                     <Button type="primary" htmlType="submit" className="login-form-button cad-button">
