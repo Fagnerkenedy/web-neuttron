@@ -601,6 +601,7 @@ const CreateView = ({ itemId }) => {
                         api_name: item.api_name
                     };
                 });
+            console.log("depois: ", matchingResponse)
             setRelatedFields(matchingResponse);
         }
     }
