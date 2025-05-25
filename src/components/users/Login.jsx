@@ -26,6 +26,8 @@ const Login = () => {
     }
 
     useEffect(() => {
+        document.title = "Neuttron CRM | Entre ou cadastre-se"
+        document.description = "Faça login no sistema"
         if (user != null) {
             const recoveredOrg = localStorage.getItem('org');
             navigate(`/${recoveredOrg}/home`);

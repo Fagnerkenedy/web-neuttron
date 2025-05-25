@@ -1,7 +1,7 @@
 import { LockOutlined, UserOutlined, MailOutlined, EyeInvisibleOutlined, EyeTwoTone, BankOutlined } from '@ant-design/icons';
 import { Layout, Row, Col, Button, Form, Input, Typography, Divider, Alert, Result, InputNumber, theme, ConfigProvider, Image } from 'antd';
 import { PasswordInput } from 'antd-password-input-strength';
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import Logo from './neuttron_preto_sem_fundo.png';
@@ -24,6 +24,10 @@ function Cadastro() {
     const [loading, setLoading] = useState(false);
     const [cadastrado, setCadastrado] = useState(false);
 
+    useEffect(() => {
+        document.title = "Neuttron CRM | Cadastre-se"
+        document.description = "Crie uma conta ou entre no sistema"
+    },[])
     const onFinish = async (values) => {
         setLoading(true)
 
