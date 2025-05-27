@@ -38,7 +38,7 @@ function RelatedList({ related_module, related_id }) {
             >Criar {related_module == "users" ? ("Usuário") :
                 related_module == "profiles" ? ("Perfil") :
                     related_module == "functions" ? ("Função") :
-                        related_module == "charts" ? ("Painel") :
+                        related_module == "charts" ? ("Gráfico") :
                             (toSingular(related_module))}
             </Button>
         </Empty>

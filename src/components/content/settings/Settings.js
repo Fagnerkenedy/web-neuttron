@@ -37,7 +37,7 @@ function Settings() {
                     </Can>
                     <Can I='read' a={'charts'} ability={ability}>
                         <Row style={{ padding: '15px' }}>
-                            <Link href={`/${org}/charts`}>Painéis</Link>
+                            <Link href={`/${org}/charts`}>Gráficos</Link>
                         </Row>
                     </Can>
                     <Can I='read' a={'kanban'} ability={ability}>

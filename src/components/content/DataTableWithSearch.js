@@ -53,7 +53,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
       >Criar {moduleName == "users" ? ("Usuário") :
         moduleName == "profiles" ? ("Perfil") :
           moduleName == "functions" ? ("Função") :
-            moduleName == "charts" ? ("Painel") :
+            moduleName == "charts" ? ("Gráfico") :
               (toSingular(activeModule))}
       </Button>
     </Empty>

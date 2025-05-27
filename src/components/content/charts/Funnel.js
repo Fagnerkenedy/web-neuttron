@@ -2,9 +2,9 @@ import { Funnel } from '@antv/g2plot';
 import { useEffect, useRef } from 'react';
 import noData from './noData';
 
-const FunnelChart = ({ xField, yField }) => {
+const FunnelChart = ({ xField, yField, data }) => {
     const chartRef = useRef(null)
-    const data = []
+
     useEffect(() => {
         if (data.length === 0) return
 

@@ -984,7 +984,7 @@ const DetailView = ({ itemId }) => {
                     {moduleName == "users" && (<Text>A criação de novos usuários não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     {moduleName == "profiles" && (<Text>A criação de novos perfis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     {moduleName == "functions" && (<Text>A criação de novas funções não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
-                    {moduleName == "charts" && (<Text>A criação de novos painéis não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
+                    {moduleName == "charts" && (<Text>A criação de novos gráficos não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     {moduleName == "kanban" && (<Text>A criação de novos kanbans não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
                 </>,
@@ -1059,7 +1059,7 @@ const DetailView = ({ itemId }) => {
                                                 {/* {moduleName == "users" ? ("Usuário") :
                                                 moduleName == "profiles" ? ("Perfil") :
                                                     moduleName == "functions" ? ("Função") :
-                                                        moduleName == "charts" ? ("Painel") :
+                                                        moduleName == "charts" ? ("Gráfico") :
                                                             (toSingular(activeModule))} */}
                                                 Novo
                                             </Button>

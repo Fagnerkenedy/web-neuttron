@@ -1113,7 +1113,7 @@ const CreateView = ({ itemId }) => {
                                             Criar {moduleName == "users" ? ("Usuário") :
                                                 moduleName == "profiles" ? ("Perfil") :
                                                     moduleName == "functions" ? ("Função") :
-                                                        moduleName == "charts" ? ("Painel") :
+                                                        moduleName == "charts" ? ("Gráfico") :
                                                             (toSingular(activeModule))}
                                         </Title>
                                     </Col>
