@@ -1,10 +1,12 @@
 import { Funnel } from '@antv/g2plot';
 import { useEffect, useRef } from 'react';
+import noData from './noData';
 
-const FunnelChart = ({ xField, yField, data }) => {
+const FunnelChart = ({ xField, yField }) => {
     const chartRef = useRef(null)
-
+    const data = []
     useEffect(() => {
+        if (data.length === 0) return
 
         const funnelPlot = new Funnel(chartRef.current, {
             data,
@@ -20,12 +22,15 @@ const FunnelChart = ({ xField, yField, data }) => {
         return () => {
             funnelPlot.destroy();
         };
-    }, [])
+    }, [data, xField, yField])
+
+    if (data.length === 0) {
+        return noData()
+    }
 
     return (
         <div style={{ padding: 10 }} ref={chartRef}></div>
     )
-
 }
 
 export default FunnelChart;

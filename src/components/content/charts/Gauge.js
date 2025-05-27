@@ -1,10 +1,12 @@
 import { Gauge } from '@antv/g2plot';
 import { useEffect, useRef } from 'react';
+import noData from './noData';
 
 const GaugeChart = ({ xField, yField, data }) => {
     const chartRef = useRef(null)
 
     useEffect(() => {
+        if (data.length === 0) return
 
         const gaugePlot = new Gauge(chartRef.current, {
             percent: data,
@@ -49,7 +51,11 @@ const GaugeChart = ({ xField, yField, data }) => {
         return () => {
             gaugePlot.destroy();
         };
-    }, [])
+    }, [data])
+
+    if (data.length === 0) {
+        return noData()
+    }
 
     return (
         <div style={{ padding: 10 }} ref={chartRef}></div>
