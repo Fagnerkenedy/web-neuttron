@@ -489,12 +489,20 @@ const EditView = ({ itemId }) => {
 
             const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
             console.log("o que retornou fields? ", response)
-            const matchingResponse = response.data.filter(item => item.field_type === "select").map(item => {
-                return {
-                    field_value: item.name,
-                    api_name: item.api_name
-                };
-            });
+            const matchingResponse = response.data
+                .filter(item => {
+                    if (moduleName == "kanban") {
+                        return item.field_type === "select"
+                    } else {
+                        return true
+                    }
+                })
+                .map(item => {
+                    return {
+                        field_value: item.name,
+                        api_name: item.api_name
+                    };
+                });
             console.log("bablasbk", matchingResponse)
             setRelatedFields(matchingResponse);
         }
@@ -536,7 +544,11 @@ const EditView = ({ itemId }) => {
                         onChange={(key, value) => {
                             onChangeRelatedModule(value)
                             setSelectedModule(value.value)
-                            form.setFieldsValue({ field: "" })
+                            if (moduleName == "kanban") {
+                                form.setFieldsValue({ field: "" })
+                            } else if (moduleName == "charts") {
+                                form.setFieldsValue({ xField: "", yField: "" })
+                            }
                         }}
                         // loading={loading}
                         onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}

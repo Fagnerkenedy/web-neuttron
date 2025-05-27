@@ -654,6 +654,11 @@ const CreateView = ({ itemId }) => {
                             onChange={(key, value) => {
                                 onChangeRelatedModule(value)
                                 setSelectedModule(value.value)
+                                if (moduleName == "kanban") {
+                                    form.setFieldsValue({ field: "" })
+                                } else if (moduleName == "charts") {
+                                    form.setFieldsValue({ xField: "", yField: "" })
+                                }
                             }}
                             // loading={loading}
                             onDropdownVisibleChange={(open) => fetchRelatedModule(open, fieldData.related_module, fieldData.search_field)}
@@ -1075,7 +1080,8 @@ const CreateView = ({ itemId }) => {
     return (
         <div>
             <Form
-                name="Form"
+                // name="Form"
+                form={form}
                 labelCol={
                     screens.xs
                         ? undefined
