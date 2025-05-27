@@ -657,7 +657,7 @@ const CreateView = ({ itemId }) => {
                                 if (moduleName == "kanban") {
                                     form.setFieldsValue({ field: "" })
                                 } else if (moduleName == "charts") {
-                                    form.setFieldsValue({ xField: "", yField: "" })
+                                    form.setFieldsValue({ xField_layout: "", yField: "" })
                                 }
                             }}
                             // loading={loading}
