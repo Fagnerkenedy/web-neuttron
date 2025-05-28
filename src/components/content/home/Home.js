@@ -1,9 +1,9 @@
-import { Card, Col, Layout, Row } from "antd";
+import { Button, Card, Col, Layout, Row, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { fetchModules } from '../../../components/header/fetchModules'
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
-import { AppstoreOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, EditOutlined } from "@ant-design/icons";
 import Charts from '../charts/Charts'
 import { Can } from "../../../contexts/AbilityContext.js";
 import { useAbility } from '../../../contexts/AbilityContext.js'
@@ -34,27 +34,16 @@ function Home() {
 
     return (
         <Layout style={{ padding: '5px 5px 5px 5px' }}>
-            <Text style={{ fontSize: '20px', marginLeft: '5px', marginBottom: '5px' }} level={1} strong>{userName.organization}</Text>
+            <Row justify={"space-between"} align={"middle"}>
+                <Text style={{ fontSize: '20px', marginLeft: '5px', marginBottom: '5px' }} level={1} strong>{userName.organization}</Text>
+                <Tooltip title={"Editar Gráficos"} placement={"left"}>
+                    <Button href={`/${org}/charts`} type={"text"} shape={"circle"} style={{ marginLeft: 5 }}>
+                        <EditOutlined style={{ fontSize: 14 }} />
+                    </Button>
+                </Tooltip>
+            </Row>
             <Charts />
             {/* <DrilldownChart /> */}
-            {/* <Row gutter={16}>
-                {modules.map((module, index) => (
-                    <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>
-                        <Col key={index}>
-                            <Link href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}>
-                                <Card
-                                    key={index}
-                                    style={{ marginBottom: '15px', width: '48vw', height: '200px', cursor: 'pointer', border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}
-                                    cover={<AppstoreOutlined style={{ fontSize: '34px' }} />}
-                                    title={module.name}
-                                    hoverable
-                                >
-                                </Card>
-                            </Link>
-                        </Col>
-                    </Can>
-                ))}
-            </Row> */}
         </Layout>
     )
 }
