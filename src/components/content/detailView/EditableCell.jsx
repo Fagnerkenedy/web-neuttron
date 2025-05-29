@@ -24,7 +24,7 @@ const EditableCell = ({ value, onChange, type }) => {
     <div>
       {
         type === 'number' ? (
-          <InputNumber style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s', minWidth: '100%' }}
+          <InputNumber style={{ border: '1px solid transparent', transition: 'border-color 0.3s', minWidth: '100%' }}
             changeOnWheel
             onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
             onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }} 
@@ -35,7 +35,7 @@ const EditableCell = ({ value, onChange, type }) => {
         ) : (
           <Form.Item>
             <Input
-              style={{ border: 'none', border: '1px solid transparent', transition: 'border-color 0.3s' }}
+              style={{ border: '1px solid transparent', transition: 'border-color 0.3s' }}
               onMouseEnter={(e) => { e.target.style.borderColor = '#ccc'; }}
               onMouseLeave={(e) => { e.target.style.borderColor = 'transparent'; }}
               value={inputValue}

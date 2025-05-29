@@ -18,7 +18,7 @@ import Settings from '../components/content/settings/Settings';
 import Modules from '../components/content/settings/modules/Modules';
 import Layout from '../components/content/settings/modules/layout/Layout';
 import Payment from '../components/checkout/Payment';
-import { useAbility } from '../contexts/AbilityContext.js'
+import { useAbility } from '../contexts/AbilityContext.jsx'
 import { ConfigProvider, theme } from 'antd';
 import ptBR from 'antd/lib/locale/pt_BR';
 import NewPassword from '../components/users/NewPassword.jsx';
@@ -33,7 +33,7 @@ import NotFound from "../components/upload/pages/NotFound";
 import Result from "../components/upload/pages/Result";
 
 
-const socket = io(process.env.REACT_APP_LINK_API);
+const socket = io(import.meta.env.VITE_LINK_API);
 
 function RoutesPage() {
   const currentPath = window.location.pathname;

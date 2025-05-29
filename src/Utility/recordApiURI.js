@@ -5,7 +5,7 @@ const apiURI = {
   // register: (data) => {
   //   const config = {
   //     method: 'post',
-  //     url: `${process.env.REACT_APP_LINK_API}/crm/register`,
+  //     url: `${import.meta.env.VITE_LINK_API}/crm/register`,
   //     data: { ...data }
   //   }
 
@@ -16,7 +16,7 @@ const apiURI = {
   // update: (data, batata) => {
   //   const config = {
   //     method: 'put',
-  //     url: `${process.env.REACT_APP_LINK_API}/crm/update/${batata}`,
+  //     url: `${import.meta.env.VITE_LINK_API}/crm/update/${batata}`,
   //     data: { ...data }
   //   }
 
@@ -27,7 +27,7 @@ const apiURI = {
   deleteRecord: async ( org, module, record_id ) => {
     const config = {
       method: 'delete',
-      url: `${process.env.REACT_APP_LINK_API}/crm/${org}/${module}/${record_id}`
+      url: `${import.meta.env.VITE_LINK_API}/crm/${org}/${module}/${record_id}`
     }
 
     return recordApiRequest(config)

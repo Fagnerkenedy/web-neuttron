@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Col, Row, Layout, theme, Button, Tooltip, Select } from "antd";
 import { Typography } from 'antd';
 import { fetchCharts } from './fetchCharts'
-import Barra from './Barra'
-import Linha from './Linha'
-import Funil from './Funil'
-import Column from './Column.js'
-import Line from "./Line.js";
-import Funnel from "./Funnel.js"
-import Area from "./Area.js"
-import Bar from "./Bar.js"
-import Pie from "./Pie.js"
-import Donut from "./Donut.js"
-import Rose from "./Rose.js"
-import Gauge from "./Gauge.js"
+// import Barra from './Barra'
+// import Linha from './Linha'
+// import Funil from './Funil'
+import Column from './Column.jsx'
+import Line from "./Line.jsx";
+import Funnel from "./Funnel.jsx"
+import Area from "./Area.jsx"
+import Bar from "./Bar.jsx"
+import Pie from "./Pie.jsx"
+import Donut from "./Donut.jsx"
+import Rose from "./Rose.jsx"
+import Gauge from "./Gauge.jsx"
 import { EditOutlined } from "@ant-design/icons";
-import Demo from "./testere.js";
+// import Demo from "./testere.js";
 const { Text } = Typography;
 
 function Charts() {

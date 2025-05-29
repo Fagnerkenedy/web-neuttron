@@ -5,10 +5,10 @@ import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
 import { AppstoreOutlined, EditOutlined } from "@ant-design/icons";
 import Charts from '../charts/Charts'
-import { Can } from "../../../contexts/AbilityContext.js";
-import { useAbility } from '../../../contexts/AbilityContext.js'
+import { Can } from "../../../contexts/AbilityContext.jsx";
+import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { useOutletContext } from 'react-router-dom';
-import DrilldownChart from '../charts/DrilldownChart.js'
+import DrilldownChart from '../charts/DrilldownChart.jsx'
 
 const { Text } = Typography;
 

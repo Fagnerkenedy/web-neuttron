@@ -1,6 +1,6 @@
 import axios from "axios"
-const linkApi = process.env.REACT_APP_LINK_API
-const userApiToken = process.env.REACT_APP_USER_API_TOKEN
+const linkApi = import.meta.env.VITE_LINK_API
+const userApiToken = import.meta.env.VITE_USER_API_TOKEN
 
 const getOpenTour = async (org, userId) => {
     try {

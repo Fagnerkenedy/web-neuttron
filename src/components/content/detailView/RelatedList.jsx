@@ -4,9 +4,9 @@ import '../styles.css'
 import { Content } from "antd/es/layout/layout";
 import { useDataTable } from '../tableRelatedList/DataTableHooksRelatedList';
 import { PlusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Can } from "../../../contexts/AbilityContext.js";
-import { useAbility } from '../../../contexts/AbilityContext.js'
-const pluralize = require('pluralize')
+import { Can } from "../../../contexts/AbilityContext.jsx";
+import { useAbility } from '../../../contexts/AbilityContext.jsx'
+import pluralize from 'pluralize';
 const { Text } = Typography;
 
 function RelatedList({ related_module, related_id }) {

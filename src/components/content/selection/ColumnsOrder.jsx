@@ -17,7 +17,7 @@ const ColumnsOrder = ({ reload }) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const apiConfig = {
-        baseURL: process.env.REACT_APP_LINK_API,
+        baseURL: import.meta.env.VITE_LINK_API,
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     };
     const org = window.location.pathname.split('/')[1];

@@ -3,25 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
 import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip, notification, Grid, Divider } from 'antd';
-import EditableCell from './EditableCell.js';
+import EditableCell from './EditableCell.jsx';
 import { Content } from 'antd/es/layout/layout';
 import apiURI from '../../../Utility/recordApiURI.js';
 import { BoxPlotOutlined, CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/es/typography/Paragraph.js';
-import RelatedList from './RelatedList.js';
-import PermissionsPage from './PermissionsPage.js';
-import { Can } from "../../../contexts/AbilityContext.js";
-import { useAbility } from '../../../contexts/AbilityContext.js'
+import RelatedList from './RelatedList.jsx';
+import PermissionsPage from './PermissionsPage.jsx';
+import { Can } from "../../../contexts/AbilityContext.jsx";
+import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { fetchModules } from './fetchModules.js';
-import CodeEditor from '../functionEditor/index.js';
+// import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
 import Link from 'antd/es/typography/Link.js';
 import userApiURI from '../../../Utility/userApiURI.js';
 const { TextArea } = Input;
-const dayjs = require('dayjs');
+import dayjs from 'dayjs';;
 const { deleteRecord } = apiURI;
-const pluralize = require('pluralize')
+import pluralize from 'pluralize';
 
 dayjs().format()
 
@@ -75,7 +75,7 @@ const DetailView = ({ itemId }) => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken()
     const [data, setData] = useState(null);
-    const linkApi = process.env.REACT_APP_LINK_API;
+    const linkApi = import.meta.env.VITE_LINK_API;
 
     const fetchData = async () => {
         try {

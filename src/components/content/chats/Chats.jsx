@@ -2,8 +2,8 @@ import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row, Skele
 import React, { useEffect, useState } from "react";
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
-import { Can } from "../../../contexts/AbilityContext.js";
-import { useAbility } from '../../../contexts/AbilityContext.js'
+import { Can } from "../../../contexts/AbilityContext.jsx";
+import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import Sider from "antd/es/layout/Sider.js";
 import axios from "axios";
@@ -11,7 +11,7 @@ import { MessageOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons
 import './styles.css'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { formatTime } from "./formatNumbers.js";
-import WhatsAppQRCode from "./QrCode.js";
+import WhatsAppQRCode from "./QrCode.jsx";
 import styled from "styled-components";
 
 const { Header, Content } = Layout;
@@ -36,7 +36,7 @@ function Chats({ socket }) {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const apiConfig = {
-        baseURL: process.env.REACT_APP_LINK_API,
+        baseURL: import.meta.env.VITE_LINK_API,
         params: { page, limit: 10 },
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     };
@@ -138,7 +138,7 @@ function Chats({ socket }) {
         };
         const getConversationData = async () => {
             const conversationData = await axios.get(`/chat/${org}/conversation/${conversationId}`, {
-                baseURL: process.env.REACT_APP_LINK_API,
+                baseURL: import.meta.env.VITE_LINK_API,
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
             setConversationData(conversationData.data.data)

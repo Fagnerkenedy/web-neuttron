@@ -25,7 +25,7 @@ const UploadComponent = () => {
     fd.append("file", param.file);
 
     try {
-      response = await fetch(process.env.REACT_APP_LINK_API + "/upload", {
+      response = await fetch(import.meta.env.VITE_LINK_API + "/upload", {
         method: "POST",
         body: fd,
       });

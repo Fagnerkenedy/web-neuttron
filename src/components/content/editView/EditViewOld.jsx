@@ -8,7 +8,7 @@ import apiURI from '../../../Utility/recordApiURI.js';
 import MyComponent from './teste.js';
 import { useNavigate } from 'react-router-dom'
 const { deleteRecord } = apiURI;
-const pluralize = require('pluralize')
+import pluralize from 'pluralize';
 
 const { Title, Text } = Typography;
 const currentPath = window.location.pathname;
@@ -36,7 +36,7 @@ const EditView = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const [data, setData] = useState(null);
-    const linkApi = process.env.REACT_APP_LINK_API;
+    const linkApi = import.meta.env.VITE_LINK_API;
 
     const fetchData = async () => {
         try {

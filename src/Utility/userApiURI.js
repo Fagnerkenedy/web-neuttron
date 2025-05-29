@@ -4,7 +4,7 @@ const apiURI = {
   checkEmail: (email) => {
     const config = {
       method: 'post',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/checkemail`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/checkemail`,
       data: { email } ,
     }
     return userApiRequest(config);
@@ -13,7 +13,7 @@ const apiURI = {
   checkUsedUsers: (org) => {
     const config = {
       method: 'get',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/${org}/checkUsedUsers`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/${org}/checkUsedUsers`,
     }
     return userApiRequest(config);
   },
@@ -21,7 +21,7 @@ const apiURI = {
   register: (data) => {
     const config = {
       method: 'post',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/register`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/register`,
       data: { ...data }
     }
 
@@ -32,7 +32,7 @@ const apiURI = {
   login: (data) => {
     const config = {
       method: 'post',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/login`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/login`,
       data: { ...data }
     }
     return userApiRequest(config)
@@ -41,7 +41,7 @@ const apiURI = {
   sendEmailConfirmation: (data) => {
     const config = {
       method: 'post',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/mailconfirmation`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/mailconfirmation`,
       data: { ...data }
     }
     return userApiRequest(config)
@@ -50,7 +50,7 @@ const apiURI = {
   userConfirmation: (data) => {
     const config = {
       method: 'post',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/confirmation`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/confirmation`,
       data: { ...data }
     }
     return userApiRequest(config)
@@ -59,7 +59,7 @@ const apiURI = {
   updateDarkMode: (data, org) => {
     const config = {
       method: 'put',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/${org}/updateDarkMode`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/${org}/updateDarkMode`,
       data: { ...data }
     }
 
@@ -70,7 +70,7 @@ const apiURI = {
   deleteAccount: (data, org) => {
     const config = {
       method: 'post',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/deleteaccount`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/deleteaccount`,
       data: { ...data }
     }
 
@@ -81,7 +81,7 @@ const apiURI = {
   registerPassword: (data, id, org) => {
     const config = {
       method: 'put',
-      url: `${process.env.REACT_APP_USER_API_BASE_URL}/${org}/registerPassword/${id}`,
+      url: `${import.meta.env.VITE_USER_API_BASE_URL}/${org}/registerPassword/${id}`,
       data: { ...data }
     }
 

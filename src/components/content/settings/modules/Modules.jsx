@@ -8,7 +8,7 @@ import { DownOutlined, EllipsisOutlined, PlusOutlined, WarningOutlined } from "@
 import { useNavigate } from 'react-router-dom';
 import { useAbility } from "../../../../contexts/AbilityContext";
 const { Title, Text } = Typography;
-const linkApi = process.env.REACT_APP_LINK_API;
+const linkApi = import.meta.env.VITE_LINK_API;
 
 // const onMenuClick = (e) => {
 //     console.log('click', e);

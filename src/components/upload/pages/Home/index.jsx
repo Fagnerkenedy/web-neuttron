@@ -53,7 +53,7 @@ const Home = () => {
               <Button icon={<CloudDownloadOutlined style={{ fontSize: "20px", marginRight: "10px" }} />} href="wiki" style={{ border: "none", background: "transparent", display: "flex", alignItems: "center" }} type="submit"
                 onClick={async (e) => {
                   e.preventDefault();
-                  fetch(process.env.REACT_APP_LINK_API + "/downloadModel", {
+                  fetch(import.meta.env.VITE_LINK_API + "/downloadModel", {
                     method: "GET"
                   }).then(response => response.blob()).then(blob => {
                     var url = window.URL.createObjectURL(blob);

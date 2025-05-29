@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Component } from "react";
 import axios from "axios";
 
-const linkApi = process.env.REACT_APP_LINK_API
+const linkApi = import.meta.env.VITE_LINK_API
 console.log("process env:", `${linkApi}/fields/create`)
 const FormItem = Form.Item;
 const { Option } = Select;

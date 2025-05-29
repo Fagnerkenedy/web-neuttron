@@ -1,8 +1,9 @@
 import React from 'react';
-import './App.less';
+// import './App.less';
+import 'antd/dist/reset.css';
 import './style.less'
 import RoutesPage from './main/RoutesPage.jsx';
-import { AbilityProvider, useAbility } from './contexts/AbilityContext.js'
+import { AbilityProvider, useAbility } from './contexts/AbilityContext.jsx'
 
 const App = () => {
   const ability = useAbility()

@@ -3,8 +3,8 @@ import { Layout, Card, Row } from 'antd';
 import Link from "antd/es/typography/Link";
 import '../styles.css'
 import { Content } from "antd/es/layout/layout";
-import { Can } from "../../../contexts/AbilityContext.js";
-import { useAbility } from '../../../contexts/AbilityContext.js'
+import { Can } from "../../../contexts/AbilityContext.jsx";
+import { useAbility } from '../../../contexts/AbilityContext.jsx'
 
 function Settings() {
     const { ability, loading } = useAbility();

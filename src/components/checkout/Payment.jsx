@@ -4,12 +4,12 @@ import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 import { Button, Col, Divider, Layout, Menu, Row, Select, Typography, theme } from "antd";
 import './style.css';
 import MercadoPagoButton from "./MercadoPagoButton";
-import PayPalButton from "./PayPalButton.js";
+import PayPalButton from "./PayPalButton.jsx";
 const { Title, Text } = Typography;
 
 
 const Payment = () => {
-  const token = process.env.REACT_APP_USER_API_TOKEN;
+  const token = import.meta.env.VITE_USER_API_TOKEN;
   const [preferenceId, setPreferenceId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [orderData, setOrderData] = useState({ quantity: "1", price: 479.04, amount: 479.04, description: "Plano Profissional Teste 1 Usuário" });
@@ -21,7 +21,7 @@ const Payment = () => {
   const [current, setCurrent] = useState('anual');
 
   useEffect(() => {
-    axios.post(`${process.env.REACT_APP_LINK_API}/payment/create_preference`, orderData, {
+    axios.post(`${import.meta.env.VITE_LINK_API}/payment/create_preference`, orderData, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -36,7 +36,7 @@ const Payment = () => {
       .finally(() => {
         setIsLoading(false);
       });
-    initMercadoPago(process.env.REACT_APP_PUBLIC_KEY_MERCADO_PAGO, { locale: 'pt-BR' });
+    initMercadoPago(import.meta.env.VITE_PUBLIC_KEY_MERCADO_PAGO, { locale: 'pt-BR' });
   }, []);
 
   // const renderCheckoutButton = (preferenceId) => {

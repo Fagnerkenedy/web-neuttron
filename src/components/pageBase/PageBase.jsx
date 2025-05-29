@@ -9,7 +9,7 @@ import axios from "axios";
 import AuthContext from '../../contexts/auth';
 const updateDarkMode = apiURI.updateDarkMode
 const { defaultAlgorithm, darkAlgorithm, compactAlgorithm, } = theme;
-const linkApi = process.env.REACT_APP_LINK_API
+const linkApi = import.meta.env.VITE_LINK_API
 
 function PageBase() {
     const currentPath = window.location.pathname;

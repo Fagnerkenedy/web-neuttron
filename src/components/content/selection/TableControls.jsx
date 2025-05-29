@@ -4,15 +4,15 @@ import Link from 'antd/es/typography/Link';
 import { Option } from 'antd/es/mentions';
 import apiURI from '../../../Utility/recordApiURI.js';
 import { fetchModules } from './fetchModules.js';
-import { Can } from "../../../contexts/AbilityContext.js";
-import { useAbility } from '../../../contexts/AbilityContext.js'
+import { Can } from "../../../contexts/AbilityContext.jsx";
+import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { EllipsisOutlined, PlusCircleFilled, PlusCircleOutlined, PlusOutlined, SwapOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import userApiURI from '../../../Utility/userApiURI.js';
 import { useNavigate } from 'react-router-dom';
 import { Columns2, Kanban, SquareKanban } from 'lucide-react';
 const { deleteRecord } = apiURI;
-const pluralize = require('pluralize')
+import pluralize from 'pluralize'
 const { Title, Text } = Typography;
 
 const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSizeChange, setLayoutVisualization }) => {
@@ -21,7 +21,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSi
   const org = pathParts[1]
   const moduleName = pathParts[2]
   const apiConfig = {
-    baseURL: process.env.REACT_APP_LINK_API,
+    baseURL: import.meta.env.VITE_LINK_API,
     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
   };
   const { ability, loading } = useAbility();

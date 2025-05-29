@@ -6,7 +6,7 @@ const { Option } = Select;
 const currentPath = window.location.pathname;
 const pathParts = currentPath.split('/');
 const moduleName = 'Clientes';
-const linkApi = process.env.REACT_APP_LINK_API
+const linkApi = import.meta.env.VITE_LINK_API
 
 const MyComponent = () => {
     const [clientes, setClientes] = useState([]);

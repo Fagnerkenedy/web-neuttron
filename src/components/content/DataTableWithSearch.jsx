@@ -6,7 +6,7 @@ import { SearchOutlined, CloseCircleOutlined, CheckOutlined } from '@ant-design/
 import Link from 'antd/es/typography/Link';
 import Loading from '../utils/Loading'
 import { fetchModules } from '../content/selection/fetchModules.js';
-const pluralize = require('pluralize')
+import pluralize from 'pluralize';
 
 const { Title, Text } = Typography;
 

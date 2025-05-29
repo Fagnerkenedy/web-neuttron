@@ -2,7 +2,7 @@
 
 // let id = '42931815-db1b-41e7-95b9-365a82d7c1e5'
 
-const dayjs = require("dayjs");
+import dayjs from 'dayjs';;
 
 // let idString = id.toString()
 
@@ -124,7 +124,7 @@ const Conversations = ({ socket }) => {
 
     const requestApi = async () => {
         const response = await axios.get(`/chat/${org}/messages/${conversationId}`, {
-            baseURL: process.env.REACT_APP_LINK_API,
+            baseURL: import.meta.env.VITE_LINK_API,
             params: { page: page, limit: 10 },
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
@@ -238,7 +238,7 @@ const Conversations = ({ socket }) => {
 
             // console.log("para: ", messages[0]?.contactNumber)
             try {
-                await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
+                await axios.post(`${import.meta.env.VITE_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",
                     to: messages[0]?.contactNumber,
                     message: input,

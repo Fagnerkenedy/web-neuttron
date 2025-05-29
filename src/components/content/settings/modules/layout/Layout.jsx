@@ -141,7 +141,7 @@ const DragAndDrop = () => {
   const [ITEMS, setItems] = useState(initialItems);
   const [sections, setSections] = useState({});
   const [sectionOrder, setSectionOrder] = useState([]);
-  const linkApi = process.env.REACT_APP_LINK_API;
+  const linkApi = import.meta.env.VITE_LINK_API;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isChanged, setIsChanged] = useState(false);
@@ -1537,7 +1537,7 @@ const DragAndDrop = () => {
                                       style={{
                                         maxHeight: smallHeight ? '170px' : '',
                                         overflow: smallHeight ? 'hidden' : '',
-                                        border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
+                                        // border: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid',
                                         backgroundColor: snapshot.isDraggingOver
                                           ? (darkMode ? '#3a3a3c' : '#e6f7ff')
                                           : '',

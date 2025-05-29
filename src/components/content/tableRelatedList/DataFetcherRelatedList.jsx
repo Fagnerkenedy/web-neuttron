@@ -1,6 +1,6 @@
 import Link from "antd/es/typography/Link";
 import axios from "axios";
-const linkApi = process.env.REACT_APP_LINK_API;
+const linkApi = import.meta.env.VITE_LINK_API;
 
 export const fetchColumns = async (org, moduleName, related_id) => {
   try {

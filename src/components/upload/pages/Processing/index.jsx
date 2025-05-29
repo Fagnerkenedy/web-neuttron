@@ -22,7 +22,7 @@ function Processing() {
 
   React.useEffect(() => {
     setTreadStage(2)
-    fetch(process.env.REACT_APP_LINK_API + `/processing/${filename}`, {
+    fetch(import.meta.env.VITE_LINK_API + `/processing/${filename}`, {
       method: "POST"
     }).then(response => {
       if (!response.ok) {

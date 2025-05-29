@@ -44,7 +44,7 @@ const Conversations = ({ socket }) => {
         const scrollableDiv = document.getElementById("scrollableDivMessages");
         const previousScrollHeight = scrollableDiv.scrollHeight;
         const response = await axios.get(`/chat/${org}/messages/${conversationId}`, {
-            baseURL: process.env.REACT_APP_LINK_API,
+            baseURL: import.meta.env.VITE_LINK_API,
             params: { page: page, limit: 10 },
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
@@ -70,12 +70,12 @@ const Conversations = ({ socket }) => {
         console.log("messagessss:", messages)
         const getMessages = async () => {
             const response = await axios.get(`/chat/${org}/messages/${conversationId}`, {
-                baseURL: process.env.REACT_APP_LINK_API,
+                baseURL: import.meta.env.VITE_LINK_API,
                 params: { page: 1, limit: 30 },
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
             const conversationData = await axios.get(`/chat/${org}/conversation/${conversationId}`, {
-                baseURL: process.env.REACT_APP_LINK_API,
+                baseURL: import.meta.env.VITE_LINK_API,
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
             const conversation = response.data.conversation
@@ -132,7 +132,7 @@ const Conversations = ({ socket }) => {
             const newMessage = { senderName: user.name, body: input, created_at: formattedDate, contactNumber: "554599750447", };
             setMessages((prev) => [...prev, newMessage]);
             try {
-                await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/send-message`, {
+                await axios.post(`${import.meta.env.VITE_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",
                     contactNumber: "554599750447",
                     to: conversationData.wa_id_contact,
@@ -154,7 +154,7 @@ const Conversations = ({ socket }) => {
     const updateUnread = async () => {
         console.log("Executou!")
         try {
-            await axios.post(`${process.env.REACT_APP_LINK_API}/chat/${org}/conversation/${conversationId}`);
+            await axios.post(`${import.meta.env.VITE_LINK_API}/chat/${org}/conversation/${conversationId}`);
         } catch (error) {
             console.error("Erro ao enviar mensagem:", error);
         }
@@ -184,7 +184,6 @@ const Conversations = ({ socket }) => {
                             overflow: 'auto',
                             padding: '0 16px',
                             display: "flex",
-                            flexDirection: "column-reverse",
                             flexDirection: "column-reverse",
                         }}
                         className='custom-scrollbar'

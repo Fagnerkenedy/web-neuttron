@@ -9,11 +9,11 @@ import AuthContext from '../../contexts/auth';
 import { CaretUpOutlined, DeleteOutlined, ExclamationOutlined, LogoutOutlined, MessageOutlined, MoonFilled, QuestionCircleOutlined, SettingOutlined, StarFilled, SunFilled, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import './styles.css'
 import Logo from '../utils/Logo';
-import { Can } from "../../contexts/AbilityContext.js";
-import { useAbility } from '../../contexts/AbilityContext.js'
+import { Can } from "../../contexts/AbilityContext.jsx";
+import { useAbility } from '../../contexts/AbilityContext.jsx'
 import { css } from '@emotion/css';
 import userApiURI from '../../Utility/userApiURI.js';
-import HeaderModules from './Modules.js';
+import HeaderModules from './Modules.jsx';
 
 const { Title, Text } = Typography;
 
