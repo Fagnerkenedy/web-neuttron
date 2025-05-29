@@ -20,6 +20,8 @@ function PageBase() {
     const [darkMode, setDarkMode] = useState(user.dark_mode);
 
     useEffect(() => {
+        document.title = "Neuttron CRM"
+        // document.description = "Home"
         const updatedUser = { ...user, dark_mode: darkMode };
         localStorage.setItem('user', JSON.stringify(updatedUser));
         updateDarkMode(updatedUser, org)

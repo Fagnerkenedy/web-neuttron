@@ -23,6 +23,8 @@ function Home() {
     const { darkMode } = useOutletContext();
 
     useEffect(() => {
+        document.title = "Neuttron CRM"
+        document.description = "Home"
         async function fetchModulesData() {
             const fetchedModules = await fetchModules(org);
             setModules(fetchedModules.result);
