@@ -16,7 +16,7 @@ scp -i "C:/Users/fagne/.ssh/neuttron-server.pem" -r dist/* ubuntu@crm.neuttron.c
 echo "Accessing server and moving files..."
 
 ssh -i "C:/Users/fagne/.ssh/neuttron-server.pem" ubuntu@crm.neuttron.com.br << 'EOF'
-  sudo mv /home/ubuntu/temp_deploy/* /var/www/52.67.55.72/
+  sudo rsync -av --delete /home/ubuntu/temp_deploy/ /var/www/52.67.55.72/
   echo "✅ Deploy finalizado com sucesso!"
 EOF
 
