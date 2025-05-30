@@ -5,7 +5,7 @@ import '../styles.css'
 import { Content } from "antd/es/layout/layout";
 import { Can } from "../../../contexts/AbilityContext.jsx";
 import { useAbility } from '../../../contexts/AbilityContext.jsx'
-import { Link } from "react-router-dom";
+import Link from "../../utils/Link.jsx";
 
 function Settings() {
     const { ability, loading } = useAbility();

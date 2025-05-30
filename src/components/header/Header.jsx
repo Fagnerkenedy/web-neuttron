@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm, Space, Divider, Grid } from 'antd';
+import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm, Space, Divider, Grid, Image } from 'antd';
 import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
 import AuthContext from '../../contexts/auth';
-import { CaretUpOutlined, DeleteOutlined, ExclamationOutlined, LogoutOutlined, MessageOutlined, MoonFilled, QuestionCircleOutlined, SettingOutlined, StarFilled, SunFilled, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
+import { CaretUpOutlined, DeleteOutlined, ExclamationOutlined, HomeFilled, LogoutOutlined, MessageOutlined, MoonFilled, QuestionCircleOutlined, SettingOutlined, StarFilled, SunFilled, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import './styles.css'
 import Logo from '../utils/Logo';
 import { Can } from "../../contexts/AbilityContext.jsx";
@@ -233,15 +233,27 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
     <>
       <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '50px', padding: "10px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
 
-        <Tooltip title="Página Inicial">
-          <Link
-            to={`home`}
-          >
-            <Row span={2}>
-              <Logo fontSize={19} />
-            </Row>
-          </Link>
-        </Tooltip>
+        <Row span={2}>
+          {/* <Logo fontSize={19} /> */}
+          {isDesktop ? (
+            <>
+              <Col align={"middle"}>
+                <Avatar size={25} src='/src/img/nsemfundo.png' />
+              </Col>
+              <Link
+                to={`home`}
+              >
+                <Button style={{ marginLeft: 10 }} icon={<HomeFilled />}>Dashboard</Button>
+              </Link>
+            </>
+          ) : (
+            <Link
+              to={`home`}
+            >
+              <Avatar size={25} src='/src/img/nsemfundo.png' />
+            </Link>
+          )}
+        </Row>
         <HeaderModules
           ref2={ref2}
           modules={modules}

@@ -4,8 +4,9 @@ import '../../styles.css'
 import { Content } from "antd/es/layout/layout";
 import axios from "axios";
 import { DownOutlined, EllipsisOutlined, PlusOutlined, WarningOutlined } from "@ant-design/icons";
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAbility } from "../../../../contexts/AbilityContext";
+import Link from "../../../utils/Link";
 const { Title, Text } = Typography;
 const linkApi = import.meta.env.VITE_LINK_API;
 

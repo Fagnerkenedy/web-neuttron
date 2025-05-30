@@ -102,7 +102,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                     <Tooltip title={"Editar"}>
                                                         <Button type={"text"} shape={"circle"}>
                                                             <EditOutlined style={{ fontSize: 14 }} />
@@ -117,7 +117,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
@@ -132,7 +132,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
@@ -147,7 +147,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
@@ -162,7 +162,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
@@ -177,7 +177,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
@@ -192,7 +192,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
@@ -207,7 +207,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
@@ -222,7 +222,7 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                <Link to={`/${org}/charts/${chart.query.id}/edit`}>
                                                 <Tooltip title={"Editar"}>
                                                     <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />

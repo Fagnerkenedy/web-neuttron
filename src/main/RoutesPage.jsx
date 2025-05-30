@@ -93,7 +93,7 @@ function RoutesPage() {
               colorPrimary: '#1a73e8', // #1a73e8 #004E99
               // colorLinkHover: '#004E99', // Cor legal: 277AF7
               colorSuccess: '#6aaf35',
-              borderRadius: 12,
+              borderRadius: 14,
             },
           }}
         >
