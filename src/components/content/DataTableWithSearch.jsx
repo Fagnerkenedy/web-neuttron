@@ -3,22 +3,27 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Table, ConfigProvider, Button, Input, Space, Spin, Layout, Empty, Typography, Checkbox, Select, Pagination } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseCircleOutlined, CheckOutlined } from '@ant-design/icons';
-import Link from 'antd/es/typography/Link';
+// import Link from 'antd/es/typography/Link';
+import { Link, useNavigate } from 'react-router-dom'
 import Loading from '../utils/Loading'
 import { fetchModules } from '../content/selection/fetchModules.js';
 import pluralize from 'pluralize';
+import { useParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
 const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, loading, totalItems, pageSize, onPageChange, currentPage }) => {
-  const currentPath = window.location.pathname;
-  const pathParts = currentPath.split('/');
-  const org = pathParts[1]
-  const moduleName = pathParts[2]
+  // const currentPath = window.location.pathname;
+  // const pathParts = currentPath.split('/');
+  // const org = pathParts[1]
+  // const moduleName = pathParts[2]
+  const { org, module } = useParams();
+  const moduleName = module
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [activeModule, setActiveModule] = useState("");
   const searchInput = useRef(null);
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function fetchModulesData() {
@@ -30,7 +35,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
       });
     }
     fetchModulesData();
-  }, []);
+  }, [moduleName]);
 
   const toSingular = (plural) => {
     return pluralize.singular(plural)
@@ -196,9 +201,11 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
     },
     render: (text, data) => {
       const productId = data && data.key ? data.key : '';
-      const currentPath = window.location.pathname;
-      const pathParts = currentPath.split('/');
-      const moduleName = pathParts[2]
+      // const currentPath = window.location.pathname;
+      // const pathParts = currentPath.split('/');
+      // const moduleName = pathParts[2]
+      const { org, module } = useParams();
+      const moduleName = module
       console.log("data.field_type", field_type)
       const formatDate = (dateString) => {
         const date = new Date(dateString)
@@ -221,7 +228,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
       switch (field_type) {
         case 'checkbox':
           return searchedColumn === dataIndex ? (
-            <Link href={`${moduleName}/${productId}`}><Highlighter
+            <Link to={`${productId}`}><Highlighter
               highlightStyle={{
                 backgroundColor: '#ffc069',
                 padding: 0,
@@ -231,11 +238,11 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
               textToHighlight={text == 1 ? <CheckOutlined /> : ''}
             /></Link>
           ) : (
-            <Link href={`${moduleName}/${productId}`}>{text == 1 ? <CheckOutlined /> : ''}</Link>
+            <Link to={`${productId}`}>{text == 1 ? <CheckOutlined /> : ''}</Link>
           )
         case 'date':
           return searchedColumn === dataIndex ? (
-            <Link href={`${moduleName}/${productId}`}><Highlighter
+            <Link to={`${productId}`}><Highlighter
               highlightStyle={{
                 backgroundColor: '#ffc069',
                 padding: 0,
@@ -245,11 +252,11 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
               textToHighlight={text ? text.toString() : ''}
             /></Link>
           ) : (
-            <Link href={`${moduleName}/${productId}`}>{formatDate(text)}</Link>
+            <Link to={`${productId}`}>{formatDate(text)}</Link>
           )
         case 'date_time':
           return searchedColumn === dataIndex ? (
-            <Link href={`${moduleName}/${productId}`}><Highlighter
+            <Link to={`${productId}`}><Highlighter
               highlightStyle={{
                 backgroundColor: '#ffc069',
                 padding: 0,
@@ -259,11 +266,11 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
               textToHighlight={text ? text.toString() : ''}
             /></Link>
           ) : (
-            <Link href={`${moduleName}/${productId}`}>{formatDateTime(text)}</Link>
+            <Link to={`${productId}`}>{formatDateTime(text)}</Link>
           )
         default:
           return searchedColumn === dataIndex ? (
-            <Link href={`${moduleName}/${productId}`}><Highlighter
+            <Link to={`${productId}`}><Highlighter
               highlightStyle={{
                 backgroundColor: '#ffc069',
                 padding: 0,
@@ -273,11 +280,11 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
               textToHighlight={text ? text.toString() : ''}
             /></Link>
           ) : (
-            <Link href={`${moduleName}/${productId}`}>{text}</Link>
+            <Link to={`${productId}`}>{text}</Link>
           )
       }
       // return searchedColumn === dataIndex ? (
-      //   <Link href={`${moduleName}/${productId}`}><Highlighter
+      //   <Link to={`${productId}`}><Highlighter
       //     highlightStyle={{
       //       backgroundColor: '#ffc069',
       //       padding: 0,
@@ -287,7 +294,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
       //     textToHighlight={text ? text.toString() : ''}
       //   /></Link>
       // ) : (
-      //   <Link href={`${moduleName}/${productId}`}>{text}</Link>
+      //   <Link to={`${productId}`}>{text}</Link>
       // )
     },
   });
@@ -329,7 +336,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
         }}
         locale={{ emptyText: emptyText }}
         onRow={(record) => ({
-          onClick: () => window.location.href = `/${org}/${moduleName}/${record.key}`
+          onClick: () => navigate(`/${org}/${moduleName}/${record.key}`)
         })}
         footer={() => (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

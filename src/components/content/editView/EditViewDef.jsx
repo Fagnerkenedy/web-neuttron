@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
 import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tag, Table, Grid, Divider } from 'antd';
@@ -1032,7 +1032,9 @@ const EditView = ({ itemId }) => {
                                     <Col>
                                         <Row>
                                             <Col>
-                                                <Button href={`/${org}/${moduleName}/${record_id}`}>Cancelar</Button>
+                                                <Link to={`/${org}/${moduleName}/${record_id}`}>
+                                                    <Button>Cancelar</Button>
+                                                </Link>
                                                 <Button style={{ margin: '0 15px' }} type='primary' htmlType="submit">Salvar</Button>
                                             </Col>
                                         </Row>

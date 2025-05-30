@@ -1,10 +1,11 @@
 import React from "react";
 import { Layout, Card, Row } from 'antd';
-import Link from "antd/es/typography/Link";
+// import Link from "antd/es/typography/Link";
 import '../styles.css'
 import { Content } from "antd/es/layout/layout";
 import { Can } from "../../../contexts/AbilityContext.jsx";
 import { useAbility } from '../../../contexts/AbilityContext.jsx'
+import { Link } from "react-router-dom";
 
 function Settings() {
     const { ability, loading } = useAbility();
@@ -17,32 +18,32 @@ function Settings() {
                 <Card title="Configurações">
                     <Can I='read' a={'modules'} ability={ability}>
                         <Row style={{ padding: '15px' }}>
-                            <Link href={`/${org}/settings/modules`}>Módulos e campos</Link>
+                            <Link to={`modules`}>Módulos e campos</Link>
                         </Row>
                     </Can>
                     <Can I='read' a={'users'} ability={ability}>
                         <Row style={{ padding: '15px' }}>
-                            <Link href={`/${org}/users`}>Usuários</Link>
+                            <Link to={`/${org}/users`}>Usuários</Link>
                         </Row>
                     </Can>
                     <Can I='read' a={'profiles'} ability={ability}>
                         <Row style={{ padding: '15px' }}>
-                            <Link href={`/${org}/profiles`}>Perfis</Link>
+                            <Link to={`/${org}/profiles`}>Perfis</Link>
                         </Row>
                     </Can>
                     <Can I='read' a={'functions'} ability={ability}>
                         <Row style={{ padding: '15px' }}>
-                            <Link href={`/${org}/functions`}>Funções</Link>
+                            <Link to={`/${org}/functions`}>Funções</Link>
                         </Row>
                     </Can>
                     <Can I='read' a={'charts'} ability={ability}>
                         <Row style={{ padding: '15px' }}>
-                            <Link href={`/${org}/charts`}>Gráficos</Link>
+                            <Link to={`/${org}/charts`}>Gráficos</Link>
                         </Row>
                     </Can>
                     <Can I='read' a={'kanban'} ability={ability}>
                         <Row style={{ padding: '15px' }}>
-                            <Link href={`/${org}/kanban`}>Kanban</Link>
+                            <Link to={`/${org}/kanban`}>Kanban</Link>
                         </Row>
                     </Can>
                 </Card>

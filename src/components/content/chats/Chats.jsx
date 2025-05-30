@@ -42,7 +42,7 @@ function Chats({ socket }) {
     };
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
-    const org = pathParts[1]
+    // const org = pathParts[1]
     const localUser = localStorage.getItem("user");
     const user = JSON.parse(localUser);
     const { ability } = useAbility();
@@ -51,7 +51,7 @@ function Chats({ socket }) {
 
     const [messages, setMessages] = useState([]);
     const [conversations, setConversations] = useState([]);
-    const { conversationId } = useParams();
+    const { conversationId, org, module } = useParams();
     const [searchText, setSearchText] = useState("")
     const [selectedKey, setSelectedKey] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -96,7 +96,7 @@ function Chats({ socket }) {
             socket.off('message');
             socket.off('error');
         };
-    }, []);
+    }, [org]);
 
     useEffect(() => {
         setLoading(true)

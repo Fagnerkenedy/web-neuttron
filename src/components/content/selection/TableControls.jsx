@@ -13,13 +13,16 @@ import { useNavigate } from 'react-router-dom';
 import { Columns2, Kanban, SquareKanban } from 'lucide-react';
 const { deleteRecord } = apiURI;
 import pluralize from 'pluralize'
+import { useParams } from 'react-router-dom';
 const { Title, Text } = Typography;
 
 const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSizeChange, setLayoutVisualization }) => {
-  const currentPath = window.location.pathname;
-  const pathParts = currentPath.split('/');
-  const org = pathParts[1]
-  const moduleName = pathParts[2]
+  // const currentPath = window.location.pathname;
+  // const pathParts = currentPath.split('/');
+  // const org = pathParts[1]
+  // const moduleName = pathParts[2]
+  const { org, module } = useParams()
+  const moduleName = module
   const apiConfig = {
     baseURL: import.meta.env.VITE_LINK_API,
     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
@@ -61,7 +64,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSi
   useEffect(() => {
     fetchModulesData();
     fetchLayoutType()
-  }, []);
+  }, [moduleName]);
 
   const handleChange = async (value) => {
     const response = await axios.put(`/crm/${org}/${moduleName}/updateLayoutContent`, { layout_type: value }, apiConfig);

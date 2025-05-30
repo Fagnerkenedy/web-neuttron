@@ -9,13 +9,15 @@ import { Can } from "../../../contexts/AbilityContext.jsx";
 import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { useOutletContext } from 'react-router-dom';
 import DrilldownChart from '../charts/DrilldownChart.jsx'
+import { useParams } from 'react-router-dom';
 
 const { Text } = Typography;
 
 function Home() {
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
-    const org = pathParts[1]
+    // const org = pathParts[1]
+    const { org, module } = useParams();
     const [modules, setModules] = useState([])
     const user = localStorage.getItem('user')
     const userName = JSON.parse(user)
@@ -32,7 +34,7 @@ function Home() {
         if (!loading) {
             fetchModulesData();
         }
-    }, [loading])
+    }, [org, loading])
 
     return (
         <Layout style={{ padding: '5px 5px 5px 5px' }}>

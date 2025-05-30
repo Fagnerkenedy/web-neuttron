@@ -1,5 +1,3 @@
-import React from 'react';
-// import './App.less';
 import 'antd/dist/reset.css';
 import './style.less'
 import RoutesPage from './main/RoutesPage.jsx';

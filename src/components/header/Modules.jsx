@@ -1,14 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
-import Link from 'antd/es/typography/Link';
+// import Link from 'antd/es/typography/Link';
 import { Button, Col, Tooltip } from 'antd';
 import { Can } from '../../contexts/AbilityContext';
 import CustomDropdown from './CustomDropdown';
 import { HomeOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, ability, ref2 }) => {
     // const refModules = useRef(null);
     const [visibleModules, setVisibleModules] = useState([]);
     const [extraModules, setExtraModules] = useState([]);
+    const navigate = useNavigate();
+
+    const handleClick = (moduleData) => {
+        setActiveModule(moduleData.name);
+        navigate(`/${org}/${moduleData.api_name ? moduleData.api_name : moduleData.name}`);
+    };
 
     useEffect(() => {
         const checkOverflow = () => {
@@ -82,10 +90,18 @@ const HeaderModules = ({ modules, org, darkMode, activeModule, setActiveModule, 
 
             {visibleModules.map((module, index) => (
                 <Can I='read' a={(module.api_name ? module.api_name : module.name)} ability={ability} key={index}>
-                    <Link
+                    {/* <Link
                         className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
                         style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}
-                        href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
+                        // href={`/${org}/${(module.api_name ? module.api_name : module.name)}`}
+                        onClick={() => handleClick(module)}
+                    >
+                        {module.name.charAt(0).toUpperCase() + module.name.slice(1)}
+                    </Link> */}
+                    <Link
+                        to={`/${org}/${module.api_name ? module.api_name : module.name}`}
+                        className={`modules ${activeModule === (module.api_name ? module.api_name : module.name) ? 'active' : ''}`}
+                        style={{ color: darkMode ? '#fff' : '#000', whiteSpace: 'nowrap', padding: 13 }}
                         onClick={() => setActiveModule(module.name)}
                     >
                         {module.name.charAt(0).toUpperCase() + module.name.slice(1)}

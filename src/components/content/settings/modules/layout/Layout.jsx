@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import styled, { createGlobalStyle } from 'styled-components';
 import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip, ConfigProvider, InputNumber } from 'antd';
@@ -160,7 +160,9 @@ const DragAndDrop = () => {
   const currentPath = window.location.pathname;
   const pathParts = currentPath.split('/');
   const org = pathParts[1];
-  const moduleName = pathParts[4];
+  // const moduleName = pathParts[4];
+  const { moduleLayout } = useParams()
+  const moduleName = moduleLayout
   const record_id = pathParts[5];
   const [clickedItem, setClickedItem] = useState([])
   const { darkMode } = useOutletContext();
@@ -281,14 +283,29 @@ const DragAndDrop = () => {
     });
   }
 
-  useEffect(async () => {
-    const getTour = await getModulesTour(org, user.id)
-    let modulesTour = ''
-    if (getTour.data.length > 0) modulesTour = getTour.data[0].modules_tour
-    setModulesTour(modulesTour)
-    fetchData();
-    fetchModulesData();
-  }, []);
+  // useEffect(async () => {
+  //   const getTour = await getModulesTour(org, user.id)
+  //   let modulesTour = ''
+  //   if (getTour.data.length > 0) modulesTour = getTour.data[0].modules_tour
+  //   setModulesTour(modulesTour)
+  //   fetchData();
+  //   fetchModulesData();
+  // }, [moduleName]);
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      const getTour = await getModulesTour(org, user.id)
+      let modulesTour = ''
+      if (getTour.data.length > 0) modulesTour = getTour.data[0].modules_tour
+      setModulesTour(modulesTour)
+
+      await fetchData()
+      await fetchModulesData()
+    }
+
+    fetchAll()
+  }, [moduleName])
+
 
   // Cria um alerta que evita que o usuário saia da página sem salvar o que foi alterado.
   useEffect(() => {
@@ -1229,9 +1246,11 @@ const DragAndDrop = () => {
                   icon={<QuestionCircleOutlined />}
                 />
               </Tooltip>
-              <Button href={`/${org}/settings/modules`} style={{ marginLeft: 16 }}>
-                Cancelar
-              </Button>
+              <Link to={`/${org}/settings/modules`}>
+                <Button style={{ marginLeft: 16 }}>
+                  Cancelar
+                </Button>
+              </Link>
               <Button ref={ref3} type="primary" onClick={saveChanges} style={{ marginLeft: 16 }}>
                 Salvar
               </Button>

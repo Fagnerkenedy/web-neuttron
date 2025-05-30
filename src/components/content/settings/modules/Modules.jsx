@@ -1,11 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Layout, Card, Table, Button, Modal, Form, Input, Dropdown, Menu, Popconfirm, message, notification, Typography } from 'antd';
-import Link from "antd/es/typography/Link";
 import '../../styles.css'
 import { Content } from "antd/es/layout/layout";
 import axios from "axios";
 import { DownOutlined, EllipsisOutlined, PlusOutlined, WarningOutlined } from "@ant-design/icons";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAbility } from "../../../../contexts/AbilityContext";
 const { Title, Text } = Typography;
 const linkApi = import.meta.env.VITE_LINK_API;
@@ -41,6 +40,7 @@ function Modules() {
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
+    const { modules } = useParams()
 
     const onEdit = (value) => {
         console.log("value :", value)
@@ -163,7 +163,7 @@ function Modules() {
                 );
                 return (
                     <>
-                        <Link href={`/${org}/settings/modules/${record.api_name}`}>{text}</Link>
+                        <Link to={`${record.api_name}`}>{text}</Link>
                         <Dropdown
                             overlay={menu}
                             trigger={['click']}
@@ -197,7 +197,7 @@ function Modules() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [modules]);
 
     const handleAccess = (e) => {
         if (!ability.can('access', "modules")) {
@@ -206,7 +206,7 @@ function Modules() {
                 '',
                 <>
                     <Text>A criação de novos módulos não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>
-                    <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
+                    <Link to={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
                 </>,
                 'bottom',
                 'error',

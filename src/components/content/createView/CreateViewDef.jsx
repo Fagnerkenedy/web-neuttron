@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
 import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Upload, Modal, notification, Table, Grid, Divider } from 'antd';
@@ -1124,7 +1124,9 @@ const CreateView = ({ itemId }) => {
                                         </Title>
                                     </Col>
                                     <Col>
-                                        <Button href={`/${org}/${moduleName}`}>Cancelar</Button>
+                                    <Link to={`/${org}/${moduleName}`}>
+                                        <Button>Cancelar</Button>
+                                    </Link>
                                         <Button style={{ margin: '0 15px' }} type='primary' htmlType="submit">Salvar</Button>
                                     </Col>
                                 </Row>

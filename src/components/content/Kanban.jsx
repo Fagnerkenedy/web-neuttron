@@ -4,7 +4,7 @@ import { Badge, Button, Card, Col, Empty, Layout, Row, Table, Tooltip, Typograph
 import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import styled, { createGlobalStyle } from 'styled-components';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import ColumnsOrder from './selection/ColumnsOrder';
 // import './styles.css'
 
@@ -15,8 +15,10 @@ const KanbanBoard = ({ data }) => {
     baseURL: import.meta.env.VITE_LINK_API,
     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
   };
-  const org = window.location.pathname.split('/')[1];
-  const moduleName = window.location.pathname.split('/')[2];
+  // const org = window.location.pathname.split('/')[1];
+  // const moduleName = window.location.pathname.split('/')[2];
+  const { org, module } = useParams();
+  const moduleName = module
   const [loading, setLoading] = useState(true);
   const [field, setField] = useState('');
   const {

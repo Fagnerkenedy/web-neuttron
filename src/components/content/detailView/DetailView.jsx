@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
 import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip, notification, Grid, Divider } from 'antd';
@@ -16,7 +16,8 @@ import { fetchModules } from './fetchModules.js';
 // import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
 import { useOutletContext } from 'react-router-dom';
-import Link from 'antd/es/typography/Link.js';
+// import Link from 'antd/es/typography/Link.js';
+import { Link } from 'react-router-dom'
 import userApiURI from '../../../Utility/userApiURI.js';
 const { TextArea } = Input;
 import dayjs from 'dayjs';;
@@ -40,11 +41,14 @@ const DetailView = ({ itemId }) => {
     const [options, setOptions] = useState([]);
     const [relatedFieldData, setRelatedFieldData] = useState([]);
     const [openField, setOpenField] = useState(false)
-    const currentPath = window.location.pathname;
-    const pathParts = currentPath.split('/');
-    const org = pathParts[1];
-    const moduleName = pathParts[2];
-    const record_id = pathParts[3];
+    // const currentPath = window.location.pathname;
+    // const pathParts = currentPath.split('/');
+    // const org = pathParts[1];
+    // const moduleName = pathParts[2];
+    // const record_id = pathParts[3];
+    const { org, module, recordId } = useParams();
+    const moduleName = module
+    const record_id = recordId
     const { darkMode } = useOutletContext();
     const [form] = Form.useForm();
     const [fieldToUpdate, setfieldToUpdate] = useState('');
@@ -296,7 +300,7 @@ const DetailView = ({ itemId }) => {
             });
         }
         fetchModulesData();
-    }, [itemId]);
+    }, [itemId, record_id]);
 
     React.useEffect(() => {
         if (isEditing && inputRef.current) {
@@ -540,7 +544,7 @@ const DetailView = ({ itemId }) => {
                     ]}
                 >
                     <Tooltip title={`Ir para ${fieldData.field_value}`}>
-                        <Link style={{ color: '#1a73e8' }} href={`/${org}/${fieldData.related_module}/${fieldData.related_id}`}>{fieldData.field_value ? fieldData.field_value : "—"}</Link>
+                        <Link style={{ color: '#1a73e8' }} to={`/${org}/${fieldData.related_module}/${fieldData.related_id}`}>{fieldData.field_value ? fieldData.field_value : "—"}</Link>
                     </Tooltip>
                     {/* <Select
                         showSearch
@@ -986,7 +990,7 @@ const DetailView = ({ itemId }) => {
                     {moduleName == "functions" && (<Text>A criação de novas funções não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     {moduleName == "charts" && (<Text>A criação de novos gráficos não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
                     {moduleName == "kanban" && (<Text>A criação de novos kanbans não é suportada no seu plano. Faça o upgrade para o plano Profissional.{' '}</Text>)}
-                    <Link href={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
+                    <Link to={`/${org}/checkout`} rel="noopener noreferrer">Fazer Upgrade</Link>
                 </>,
                 'bottom',
                 'warning',
@@ -1037,10 +1041,12 @@ const DetailView = ({ itemId }) => {
                         >
                             <Row style={{ alignItems: 'center', justifyContent: 'space-between', height: '40px', }}>
                                 <Col xs={12} style={{ display: 'flex', alignItems: 'center', }}>
-                                    <Tooltip placement="right" title="Fechar">
-                                        <Button style={{ marginLeft: 5 }} type='text' icon={<CloseOutlined />} href={`/${org}/${moduleName}`}>
-                                        </Button>
-                                    </Tooltip>
+                                    <Link to={`/${org}/${moduleName}`}>
+                                        <Tooltip placement="right" title="Fechar">
+                                            <Button style={{ marginLeft: 5 }} type='text' icon={<CloseOutlined />}>
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
                                     <Title
                                         style={{ fontSize: '22px', margin: '0', marginLeft: 5 }}
                                     >
@@ -1075,22 +1081,26 @@ const DetailView = ({ itemId }) => {
                                     <Can I='update' a={moduleName} ability={ability}>
                                         {/* <Tooltip title="Editar"> */}
                                         {isDesktop ? (
-                                            <Button
-                                                style={{ marginLeft: '10px' }}
-                                                color="default"
-                                                icon={<EditOutlined />}
-                                                href={`/${org}/${moduleName}/${record_id}/edit`}
-                                            >
-                                                Editar
-                                            </Button>
+                                            <Link to={`edit`}>
+                                                <Button
+                                                    style={{ marginLeft: '10px' }}
+                                                    color="default"
+                                                    icon={<EditOutlined />}
+                                                // href={`/${org}/${moduleName}/${record_id}/edit`}
+                                                >
+                                                    Editar
+                                                </Button>
+                                            </Link>
                                         ) : (
-                                            <Button
-                                                style={{ marginLeft: '10px' }}
-                                                color="default"
-                                                icon={<EditOutlined />}
-                                                href={`/${org}/${moduleName}/${record_id}/edit`}
-                                            >
-                                            </Button>
+                                            <Link to={`edit`}>
+                                                <Button
+                                                    style={{ marginLeft: '10px' }}
+                                                    color="default"
+                                                    icon={<EditOutlined />}
+                                                    href={`/${org}/${moduleName}/${record_id}/edit`}
+                                                >
+                                                </Button>
+                                            </Link>
                                         )}
                                         {/* </Tooltip> */}
                                     </Can>

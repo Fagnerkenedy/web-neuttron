@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import apiURI from "../../Utility/userApiURI.js"
 import axios from "axios";
 import AuthContext from '../../contexts/auth';
+import { motion } from "framer-motion";
 const updateDarkMode = apiURI.updateDarkMode
 const { defaultAlgorithm, darkAlgorithm, compactAlgorithm, } = theme;
 const linkApi = import.meta.env.VITE_LINK_API

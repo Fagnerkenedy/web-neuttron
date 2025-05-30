@@ -31,6 +31,7 @@ import Mapping from "../components/upload/pages/Mapping";
 import Processing from "../components/upload/pages/Processing";
 import NotFound from "../components/upload/pages/NotFound";
 import Result from "../components/upload/pages/Result";
+import AuthorizedRouteWrapper from './AuthorizedRouteWrapper.jsx';
 
 
 const socket = io(import.meta.env.VITE_LINK_API);
@@ -91,7 +92,8 @@ function RoutesPage() {
               colorBgBase: darkMode ? '#1b1b1b' : '#f5f5f5',
               colorPrimary: '#1a73e8', // #1a73e8 #004E99
               // colorLinkHover: '#004E99', // Cor legal: 277AF7
-              colorSuccess: '#6aaf35'
+              colorSuccess: '#6aaf35',
+              borderRadius: 12,
             },
           }}
         >
@@ -100,28 +102,28 @@ function RoutesPage() {
             <Routes>
               {/* <Route path="/" element={<Navigate to="/login" />} /> */}
               <Route path="/:org" element={<Private><PageBase /></Private>}>
-                <Route path="/:org/home" element={<Home />} />
-                <Route path="/:org/chats" element={<Chats socket={socket} />}>
-                  <Route path="/:org/chats/:conversationId" element={<Conversations socket={socket} />} />
+                <Route path="home" element={<Home />} />
+                <Route path="chats" element={<Chats socket={socket} />}>
+                  <Route path=":conversationId" element={<Conversations socket={socket} />} />
                 </Route>
-                <Route path="/:org/:module" element={<AuthorizedRoute action="read" subject={moduleName}><AppContent /></AuthorizedRoute>} />
-                <Route path="/:org/:module/:recordId" element={<AuthorizedRoute action="read" subject={moduleName}><DetailView /></AuthorizedRoute>} />
-                <Route path="/:org/:module/create" element={<AuthorizedRoute action="create" subject={moduleName}><CreateView /></AuthorizedRoute>} />
-                <Route path="/:org/:module/:recordId/edit" element={<AuthorizedRoute action="update" subject={moduleName}><EditView /></AuthorizedRoute>} />
-                {/* <Route path="/:org/:module/upload">
-                  <Route path="/:org/:module/upload/home" element={<HomeUpload></HomeUpload>}></Route>
-                  <Route path="/:org/:module/upload/fields" element={<Fields></Fields>}></Route>
-                  <Route path="/:org/:module/upload/mapping" element={<Mapping></Mapping>}></Route>
-                  <Route path="/:org/:module/upload/processing/:filename" element={<Processing></Processing>}></Route>
-                  <Route path="/:org/:module/upload/result" element={<Result></Result>}></Route>
-                  <Route path="/:org/:module/upload/*" element={<NotFound />}></Route>
+                <Route path=":module" element={<AuthorizedRouteWrapper action="read"><AppContent /></AuthorizedRouteWrapper>} />
+                <Route path=":module/:recordId" element={<AuthorizedRouteWrapper action="read"><DetailView /></AuthorizedRouteWrapper>} />
+                <Route path=":module/create" element={<AuthorizedRouteWrapper action="create"><CreateView /></AuthorizedRouteWrapper>} />
+                <Route path=":module/:recordId/edit" element={<AuthorizedRouteWrapper action="update"><EditView /></AuthorizedRouteWrapper>} />
+                {/* <Route path="upload">
+                  <Route path="upload/home" element={<HomeUpload></HomeUpload>}></Route>
+                  <Route path="upload/fields" element={<Fields></Fields>}></Route>
+                  <Route path="upload/mapping" element={<Mapping></Mapping>}></Route>
+                  <Route path="upload/processing/:filename" element={<Processing></Processing>}></Route>
+                  <Route path="upload/result" element={<Result></Result>}></Route>
+                  <Route path="upload/*" element={<NotFound />}></Route>
                 </Route> */}
-                <Route path="/:org/settings" element={<Settings />} />
-                <Route path="/:org/settings/modules" element={<Modules />} />
-                {/* <Route path="/:org/settings/roles" element={<PermissionsPage />} /> */}
-                <Route path="/:org/settings/modules/:module" element={<Layout />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="settings/modules" element={<Modules />} />
+                {/* <Route path="roles" element={<PermissionsPage />} /> */}
+                <Route path="settings/modules/:moduleLayout" element={<Layout />} />
               </Route>
-              <Route path="/:org/checkout" element={<AuthorizedRoute action="read" subject={moduleName}><Payment /></AuthorizedRoute>} />
+              <Route path="/:org/checkout" element={<AuthorizedRouteWrapper action="read"><Payment /></AuthorizedRouteWrapper>} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro/confirmacao/:uuid" element={<ConfirmedEmail />} />

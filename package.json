@@ -25,6 +25,7 @@
     "axios": "^1.6.2",
     "crypto": "^1.0.1",
     "dayjs": "^1.11.10",
+    "framer-motion": "^12.15.0",
     "less": "^4.3.0",
     "lucide-react": "^0.503.0",
     "moment": "^2.30.1",

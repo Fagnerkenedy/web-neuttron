@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm, Space, Divider, Grid } from 'antd';
-import Link from 'antd/es/typography/Link';
+// import Link from 'antd/es/typography/Link';
+import { Link } from 'react-router-dom';
 import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
@@ -14,15 +15,17 @@ import { useAbility } from '../../contexts/AbilityContext.jsx'
 import { css } from '@emotion/css';
 import userApiURI from '../../Utility/userApiURI.js';
 import HeaderModules from './Modules.jsx';
+import { useParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
 const AppHeader = ({ darkMode, toggleDarkMode }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const currentPath = window.location.pathname;
-  const pathParts = currentPath.split('/');
-  const org = pathParts[1]
-  const module = pathParts[2]
+  // const pathParts = currentPath.split('/');
+  // const org = pathParts[1]
+  // const module = pathParts[2]
+  const { org, module } = useParams();
   const { logout } = useContext(AuthContext);
   const [modules, setModules] = useState([]);
   const [activeModule, setActiveModule] = useState(null);
@@ -227,7 +230,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
       setActiveModule(module)
       fetchModulesData();
     }
-  }, [loading]);
+  }, [module, loading]);
 
   return (
     <>
@@ -235,7 +238,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
 
         <Tooltip title="Página Inicial">
           <Link
-            href={`/${org}/home`}
+            to={`home`}
           >
             <Row span={2}>
               <Logo fontSize={19} />
@@ -260,14 +263,14 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             >
               <Can I='read' a='checkout' ability={ability}>
               <Tooltip title="Fazer Upgrade">
-                <Button type="primary" shape="circle" href={`/${org}/checkout`} icon={<StarFilled />} />
+                <Button type="primary" shape="circle" href={`checkout`} icon={<StarFilled />} />
               </Tooltip>
               </Can>
             </ConfigProvider>
           </Col> */}
           <Col style={{ marginLeft: '5px' }}>
             <Link
-              href={`/${org}/chats`}
+              to={`chats`}
             >
               <Tooltip title="Mensagens">
                 <Button type="text" shape="circle" icon={<MessageOutlined />} />
@@ -275,9 +278,13 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             </Link>
           </Col>
           <Col ref={ref3} style={{ marginLeft: '5px' }}>
-            <Tooltip title="Configurações">
-              <Button type="text" shape="circle" href={`/${org}/settings`} icon={<SettingOutlined />} />
-            </Tooltip>
+            <Link
+              to={`settings`}
+            >
+              <Tooltip title="Configurações">
+                <Button type="text" shape="circle" icon={<SettingOutlined />} />
+              </Tooltip>
+            </Link>
           </Col>
           <Col ref={ref4} style={{ marginLeft: '5px' }}>
             {isDesktop ? (<Tooltip title="Perfil"> <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} /> </Tooltip>) : (
