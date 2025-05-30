@@ -17,6 +17,8 @@ echo "Accessing server and moving files..."
 
 ssh -i "C:/Users/fagne/.ssh/neuttron-server.pem" ubuntu@crm.neuttron.com.br << 'EOF'
   sudo rsync -av --delete /home/ubuntu/temp_deploy/ /var/www/52.67.55.72/
+  sudo chown -R www-data:www-data /var/www/52.67.55.72
+  sudo chmod -R 755 /var/www/52.67.55.72
   echo "✅ Deploy finalizado com sucesso!"
 EOF
 
