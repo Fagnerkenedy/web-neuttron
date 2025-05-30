@@ -238,7 +238,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
           {isDesktop ? (
             <>
               <Col align={"middle"}>
-                <Avatar size={25} src='/src/img/nsemfundo.png' />
+                <Avatar size={25} src='/src/img/N_sem_fundo.png' />
               </Col>
               <Link
                 to={`home`}
@@ -250,7 +250,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             <Link
               to={`home`}
             >
-              <Avatar size={25} src='/src/img/nsemfundo.png' />
+              <Avatar size={25} src='/src/img/N_sem_fundo.png' />
             </Link>
           )}
         </Row>
