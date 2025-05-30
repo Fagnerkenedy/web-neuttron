@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Link } from "react-router-dom";
+import Link from "../../utils/Link";
 const linkApi = import.meta.env.VITE_LINK_API;
 
 export const fetchColumns = async (org, moduleName, related_id) => {
@@ -23,6 +23,7 @@ export const fetchColumns = async (org, moduleName, related_id) => {
       dataIndex: column.api_name,
       width: 200,
       ellipsis: true,
+      field_type: column.field_type,
       render: (text, record) => (
         <Link to={`/${org}/${moduleName}/${record.id}`}>{text}</Link>
       )

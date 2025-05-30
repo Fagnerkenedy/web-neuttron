@@ -254,7 +254,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
               textToHighlight={text ? text.toString() : ''}
             /></Link>
           ) : (
-            <Link to={`${productId}`}>{formatDate(text)}</Link>
+            <Link to={`${productId}`}>{text ? formatDate(text) : null}</Link>
           )
         case 'date_time':
           return searchedColumn === dataIndex ? (
@@ -268,7 +268,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
               textToHighlight={text ? text.toString() : ''}
             /></Link>
           ) : (
-            <Link to={`${productId}`}>{formatDateTime(text)}</Link>
+            <Link to={`${productId}`}>{text ? formatDateTime(text) : null}</Link>
           )
         default:
           return searchedColumn === dataIndex ? (

@@ -7,7 +7,8 @@ import { PlusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Can } from "../../../contexts/AbilityContext.jsx";
 import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import pluralize from 'pluralize';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Link from "../../utils/Link.jsx";
 const { Text } = Typography;
 
 function RelatedList({ related_module, related_id }) {
@@ -47,6 +48,44 @@ function RelatedList({ related_module, related_id }) {
         </Empty>
     )
 
+    const columnsProps = (dataIndex, title, field_type) => ({
+        render: (text, data) => {
+            const productId = data && data.key ? data.key : '';
+            console.log("data.field_type", field_type)
+            const formatDate = (dateString) => {
+                const date = new Date(dateString)
+                const day = String(date.getDate()).padStart(2, '0')
+                const month = String(date.getMonth() + 1).padStart(2, '0')
+                const year = date.getFullYear()
+                return `${day}/${month}/${year}`
+            };
+            const formatDateTime = (dateString) => {
+                const date = new Date(dateString);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+
+                return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+            };
+            switch (field_type) {
+                case 'date':
+                    return <Link to={`${productId}`}>{text ? formatDate(text) : null}</Link>
+                case 'date_time':
+                    return <Link to={`${productId}`}>{text ? formatDateTime(text) : null}</Link>
+                default:
+                    return <Link to={`${productId}`}>{text}</Link>
+            }
+        }
+    })
+
+    const modifiedColumns = columns.map((col) => ({
+        ...col,
+        ...columnsProps(col.dataIndex, col.title, col.field_type),
+    }));
+
     return (
         <Content className='content' style={{ paddingTop: '10px' }}>
             <Layout>
@@ -67,7 +106,7 @@ function RelatedList({ related_module, related_id }) {
                     }>
                     <Table
                         size="small"
-                        columns={(tableData.length > 0 ? columns : '')}
+                        columns={(tableData.length > 0 ? modifiedColumns : '')}
                         dataSource={tableData}
                         locale={{ emptyText: emptyText }}
                         pagination={tableData.length > 10 ? { pageSize: 10 } : false}
