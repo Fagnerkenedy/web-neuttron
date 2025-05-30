@@ -234,11 +234,11 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
       <Col style={{ display: 'flex', alignItems: 'center', background: colorBgContainer, height: '50px', padding: "10px", position: 'fixed', width: '100%', zIndex: '1000', borderBottom: darkMode ? '#303030 1px solid' : '#d7e2ed 1px solid' }}>
 
         <Row span={2}>
-          {/* <Logo fontSize={19} /> */}
           {isDesktop ? (
             <>
               <Col align={"middle"}>
-                <Avatar size={25} src='/src/img/N_sem_fundo.png' />
+                <Logo fontSize={19} />
+                {/* <Avatar size={25} src='/src/img/N_sem_fundo.png' /> */}
               </Col>
               <Link
                 to={`home`}
@@ -250,7 +250,8 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             <Link
               to={`home`}
             >
-              <Avatar size={25} src='/src/img/N_sem_fundo.png' />
+              <Logo fontSize={19} />
+              {/* <Avatar size={25} src='/src/img/N_sem_fundo.png' /> */}
             </Link>
           )}
         </Row>
