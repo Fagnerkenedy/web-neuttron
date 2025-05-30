@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import styled, { createGlobalStyle } from 'styled-components';
 import { notification, Button, Card, Layout, theme, Modal, Form, Input, Row, Col, Typography, Collapse, Checkbox, message, Select, Space, Tour, Tooltip, ConfigProvider, InputNumber } from 'antd';
@@ -17,7 +17,6 @@ import DropdownOutlined from '../../../../../../src/img/dropdown.png'
 import PhoneOutlined from '../../../../../../src/img/telephone.png'
 import EmailOutlined from '../../../../../../src/img/envelope.png'
 import DateTimeOutlined from '../../../../../../src/img/datetime.png'
-import { useOutletContext } from 'react-router-dom';
 import { getModulesTour, updateModulesTour } from './modulesTour';
 import { fetchModules } from '../../../selection/fetchModules';
 import TextToCopyButton from './TextToCopyButton';

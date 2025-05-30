@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Dropdown, Input, Button, Menu, Space, Divider, theme } from 'antd';
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
-import Link from 'antd/es/typography/Link';
 import { Can } from '../../contexts/AbilityContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const { useToken } = theme;
 
@@ -10,10 +10,11 @@ const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability,
     const [searchValue, setSearchValue] = useState('');
     const ref = useRef(null);
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate()
 
     const handleModuleChange = (moduleName) => {
         setIsOpen(false);
-        window.location.href = `/${org}/${moduleName}`
+        navigate(`/${org}/${moduleName}`)
     };
 
     const openSelect = () => {
@@ -35,7 +36,7 @@ const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability,
         setActiveModule(module.name);
         setIsOpen(false); // Fecha o dropdown após a seleção
         // Navega para o link do módulo
-        window.location.href = `/${org}/${module.api_name || module.name}`;
+        navigate(`/${org}/${module.api_name || module.name}`)
     };
 
     const filteredModules = extraModules.filter((module) =>
@@ -76,7 +77,7 @@ const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability,
                                 icon={<PlusOutlined />}
                                 size="small"
                                 onClick={(e) => {
-                                    window.location.href = `/${org}/${module.name}/create`
+                                    navigate(`/${org}/${module.name}/create`)
                                     e.stopPropagation()
                                 }}
                             />
@@ -125,7 +126,9 @@ const CustomDropdown = ({ extraModules, org, setActiveModule, darkMode, ability,
                                 justifyContent: 'center'
                             }}
                         >
-                            <Button type='link' href={`/${org}/settings/modules`}>Criar Novo Módulo</Button>
+                            <Link to={`/${org}/settings/modules`}>
+                                <Button type='link'>Criar Novo Módulo</Button>
+                            </Link>
                         </Space>
                     </div>
                 )}

@@ -1,5 +1,5 @@
-import Link from "antd/es/typography/Link";
 import axios from "axios";
+import { Link } from "react-router-dom";
 const linkApi = import.meta.env.VITE_LINK_API;
 
 export const fetchColumns = async (org, moduleName, related_id) => {
@@ -24,7 +24,7 @@ export const fetchColumns = async (org, moduleName, related_id) => {
       width: 200,
       ellipsis: true,
       render: (text, record) => (
-        <Link href={`/${org}/${moduleName}/${record.id}`}>{text}</Link>
+        <Link to={`/${org}/${moduleName}/${record.id}`}>{text}</Link>
       )
     }));
 

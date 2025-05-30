@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Avatar, Button, Col, Drawer, Layout, Popover, Row, theme, Tooltip, ConfigProvider, Typography, Tour, Popconfirm, Space, Divider, Grid } from 'antd';
-// import Link from 'antd/es/typography/Link';
-import { Link } from 'react-router-dom';
 import { fetchModules } from './fetchModules';
 import { getOpenTour } from './openTour.js';
 import { updateOpenTour } from './openTour.js';
@@ -15,7 +13,6 @@ import { useAbility } from '../../contexts/AbilityContext.jsx'
 import { css } from '@emotion/css';
 import userApiURI from '../../Utility/userApiURI.js';
 import HeaderModules from './Modules.jsx';
-import { useParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 

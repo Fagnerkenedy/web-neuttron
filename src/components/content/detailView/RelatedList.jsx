@@ -7,6 +7,7 @@ import { PlusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Can } from "../../../contexts/AbilityContext.jsx";
 import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import pluralize from 'pluralize';
+import { Link, useNavigate } from "react-router-dom";
 const { Text } = Typography;
 
 function RelatedList({ related_module, related_id }) {
@@ -14,6 +15,7 @@ function RelatedList({ related_module, related_id }) {
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/');
     const org = pathParts[1]
+    const navigate = useNavigate()
 
     const { columns, tableData } = useDataTable({ related_module, related_id });
     const totalTableWidth = columns.reduce((acc, col) => acc + col.width, 0);
@@ -32,22 +34,37 @@ function RelatedList({ related_module, related_id }) {
                 </Text>
             }
         >
-            <Button
-                type="primary"
-                href={`/${org}/${related_module}/create`}
-            >Criar {related_module == "users" ? ("Usuário") :
-                related_module == "profiles" ? ("Perfil") :
-                    related_module == "functions" ? ("Função") :
-                        related_module == "charts" ? ("Gráfico") :
-                            (toSingular(related_module))}
-            </Button>
+            <Link to={`/${org}/${related_module}/create`}>
+                <Button
+                    type="primary"
+                >Criar {related_module == "users" ? ("Usuário") :
+                    related_module == "profiles" ? ("Perfil") :
+                        related_module == "functions" ? ("Função") :
+                            related_module == "charts" ? ("Gráfico") :
+                                (toSingular(related_module))}
+                </Button>
+            </Link>
         </Empty>
     )
 
     return (
         <Content className='content' style={{ paddingTop: '10px' }}>
             <Layout>
-                <Card size="small" title={related_module == 'users' ? "Usuários" : related_module} extra={<Can I='create' a={related_module} ability={ability}><Button style={{ margin: '10px' }} icon={<PlusOutlined />} href={`/${org}/${related_module}/create`}>Novo</Button></Can>}>
+                <Card
+                    size="small"
+                    title={related_module == 'users' ? "Usuários" : related_module}
+                    extra={
+                        <Can I='create' a={related_module} ability={ability}>
+                            <Link to={`/${org}/${related_module}/create`}>
+                                <Button
+                                    style={{ margin: '10px' }}
+                                    icon={<PlusOutlined />}
+                                >
+                                    Novo
+                                </Button>
+                            </Link>
+                        </Can>
+                    }>
                     <Table
                         size="small"
                         columns={(tableData.length > 0 ? columns : '')}
@@ -58,7 +75,7 @@ function RelatedList({ related_module, related_id }) {
                             x: (tableData.length > 0 ? totalTableWidth : '')
                         }}
                         onRow={(record) => ({
-                            onClick: () => window.location.href = `/${org}/${related_module}/${record.id}`
+                            onClick: () => navigate(`/${org}/${related_module}/${record.id}`)
                         })}
                     />
                 </Card>

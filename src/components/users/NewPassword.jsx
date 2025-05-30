@@ -1,7 +1,6 @@
 import { Alert, Button, Col, ConfigProvider, Divider, Form, Input, Layout, Result, Row, theme, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import userApiURI from '../../Utility/userApiURI'
 import Loading from '../utils/Loading';
 import { Content } from 'antd/es/layout/layout';

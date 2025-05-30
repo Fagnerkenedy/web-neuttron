@@ -9,11 +9,10 @@ import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { EllipsisOutlined, PlusCircleFilled, PlusCircleOutlined, PlusOutlined, SwapOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import userApiURI from '../../../Utility/userApiURI.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Columns2, Kanban, SquareKanban } from 'lucide-react';
 const { deleteRecord } = apiURI;
 import pluralize from 'pluralize'
-import { useParams } from 'react-router-dom';
 const { Title, Text } = Typography;
 
 const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSizeChange, setLayoutVisualization }) => {

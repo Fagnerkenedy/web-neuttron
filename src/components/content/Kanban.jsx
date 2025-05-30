@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Badge, Button, Card, Col, Empty, Layout, Row, Table, Tooltip, Typography, theme } from 'antd';
 import axios from 'axios';
-import Link from 'antd/es/typography/Link';
 import styled, { createGlobalStyle } from 'styled-components';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import ColumnsOrder from './selection/ColumnsOrder';
 // import './styles.css'
 
@@ -349,11 +348,12 @@ const KanbanBoard = ({ data }) => {
                   }
                   style={{ height: 'calc(100vh - 140px)', display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}
                 >
-                  <Button
-                    type="primary"
-                    href={`/${org}/kanban/create`}
-                  >Criar Novo Kanban
-                  </Button>
+                  <Link to={`/${org}/kanban/create`}>
+                    <Button
+                      type="primary"
+                    >Criar Novo Kanban
+                    </Button>
+                  </Link>
                 </Empty>
               </Layout>
             )

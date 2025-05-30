@@ -15,6 +15,7 @@ import Donut from "./Donut.jsx"
 import Rose from "./Rose.jsx"
 import Gauge from "./Gauge.jsx"
 import { EditOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 // import Demo from "./testere.js";
 const { Text } = Typography;
 
@@ -101,11 +102,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
-                                                <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
-                                                        <EditOutlined style={{ fontSize: 14 }} />
-                                                    </Button>
-                                                </Tooltip>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
+                                                    <Tooltip title={"Editar"}>
+                                                        <Button type={"text"} shape={"circle"}>
+                                                            <EditOutlined style={{ fontSize: 14 }} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Column xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -114,11 +117,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Line xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -127,11 +132,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Funnel xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -140,11 +147,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Area xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -153,11 +162,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Bar xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -166,11 +177,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Pie xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -179,11 +192,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Donut xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -192,11 +207,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Rose xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>
@@ -205,11 +222,13 @@ function Charts() {
                                         <Col>
                                             <Row justify={"space-between"} align={"middle"}>
                                                 <Text level={4} style={{ margin: '10px' }}>{chart.query.name}</Text>
+                                                <Link to={`/${org}/charts/${chart.query.id}`}>
                                                 <Tooltip title={"Editar"}>
-                                                    <Button href={`/${org}/charts/${chart.query.id}`} type={"text"} shape={"circle"}>
+                                                    <Button type={"text"} shape={"circle"}>
                                                         <EditOutlined style={{ fontSize: 14 }} />
                                                     </Button>
                                                 </Tooltip>
+                                                </Link>
                                             </Row>
                                             <Gauge xField={chart.query.xField} yField={chart.query.yField} data={filteredData} />
                                         </Col>

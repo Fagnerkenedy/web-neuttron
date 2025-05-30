@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import axios from "axios"
 import '../styles.css'
 import { Input, InputNumber, Button, Layout, Col, Form, theme, Row, Typography, message, Popconfirm, Select, DatePicker, Checkbox, Tooltip, notification, Grid, Divider } from 'antd';
@@ -15,7 +15,6 @@ import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { fetchModules } from './fetchModules.js';
 // import CodeEditor from '../functionEditor/index.js';
 import locale from 'antd/es/date-picker/locale/pt_BR'
-import { useOutletContext } from 'react-router-dom';
 // import Link from 'antd/es/typography/Link.js';
 import { Link } from 'react-router-dom'
 import userApiURI from '../../../Utility/userApiURI.js';
@@ -1097,7 +1096,6 @@ const DetailView = ({ itemId }) => {
                                                     style={{ marginLeft: '10px' }}
                                                     color="default"
                                                     icon={<EditOutlined />}
-                                                    href={`/${org}/${moduleName}/${record_id}/edit`}
                                                 >
                                                 </Button>
                                             </Link>

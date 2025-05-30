@@ -4,11 +4,11 @@ import { Table, ConfigProvider, Button, Input, Space, Spin, Layout, Empty, Typog
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseCircleOutlined, CheckOutlined } from '@ant-design/icons';
 // import Link from 'antd/es/typography/Link';
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import Link from '../utils/Link.jsx';
 import Loading from '../utils/Loading'
 import { fetchModules } from '../content/selection/fetchModules.js';
 import pluralize from 'pluralize';
-import { useParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
@@ -54,7 +54,7 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
     >
       <Button
         type="primary"
-        href={`/${org}/${moduleName}/create`}
+        onClick={() => navigate(`/${org}/${moduleName}/create`)}
       >Criar {moduleName == "users" ? ("Usuário") :
         moduleName == "profiles" ? ("Perfil") :
           moduleName == "functions" ? ("Função") :
@@ -228,15 +228,17 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
       switch (field_type) {
         case 'checkbox':
           return searchedColumn === dataIndex ? (
-            <Link to={`${productId}`}><Highlighter
-              highlightStyle={{
-                backgroundColor: '#ffc069',
-                padding: 0,
-              }}
-              searchWords={[searchText]}
-              autoEscape
-              textToHighlight={text == 1 ? <CheckOutlined /> : ''}
-            /></Link>
+            <Link to={`${productId}`}>
+              <Highlighter
+                highlightStyle={{
+                  backgroundColor: '#ffc069',
+                  padding: 0,
+                }}
+                searchWords={[searchText]}
+                autoEscape
+                textToHighlight={text == 1 ? <CheckOutlined /> : ''}
+              />
+            </Link>
           ) : (
             <Link to={`${productId}`}>{text == 1 ? <CheckOutlined /> : ''}</Link>
           )
@@ -270,15 +272,17 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
           )
         default:
           return searchedColumn === dataIndex ? (
-            <Link to={`${productId}`}><Highlighter
-              highlightStyle={{
-                backgroundColor: '#ffc069',
-                padding: 0,
-              }}
-              searchWords={[searchText]}
-              autoEscape
-              textToHighlight={text ? text.toString() : ''}
-            /></Link>
+            <Link to={`${productId}`}>
+              <Highlighter
+                highlightStyle={{
+                  backgroundColor: '#ffc069',
+                  padding: 0,
+                }}
+                searchWords={[searchText]}
+                autoEscape
+                textToHighlight={text ? text.toString() : ''}
+              />
+            </Link>
           ) : (
             <Link to={`${productId}`}>{text}</Link>
           )
@@ -336,20 +340,20 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
         }}
         locale={{ emptyText: emptyText }}
         onRow={(record) => ({
-          onClick: () => navigate(`/${org}/${moduleName}/${record.key}`)
+          onClick: () => navigate(`${record.key}`)
         })}
         footer={() => (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>Total de registros: {totalItems}</span>
             {totalItems > pageSize && (
-              <Pagination 
-                simple={{ readOnly: true }} 
-                responsive={true} 
-                size='small' 
-                current={currentPage} 
-                pageSize={pageSize} 
-                total={totalItems} 
-                onChange={onPageChange} 
+              <Pagination
+                simple={{ readOnly: true }}
+                responsive={true}
+                size='small'
+                current={currentPage}
+                pageSize={pageSize}
+                total={totalItems}
+                onChange={onPageChange}
               />
             )}
           </div>
