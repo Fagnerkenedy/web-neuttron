@@ -3,8 +3,10 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Badge, Button, Card, Col, Empty, Layout, Row, Table, Tooltip, Typography, theme } from 'antd';
 import axios from 'axios';
 import styled, { createGlobalStyle } from 'styled-components';
-import { Link, useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import ColumnsOrder from './selection/ColumnsOrder';
+import Link from '../utils/Link';
+import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, DollarOutlined, EditOutlined, FormOutlined, LinkOutlined, MailOutlined, NumberOutlined, PhoneFilled, PhoneOutlined, SelectOutlined } from '@ant-design/icons';
 // import './styles.css'
 
 const KanbanBoard = ({ data }) => {
@@ -230,6 +232,25 @@ const KanbanBoard = ({ data }) => {
     'lime',
   ];
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const year = date.getFullYear()
+    return `${day}/${month}/${year}`
+  };
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div style={{ position: 'relative' }}>
@@ -291,6 +312,7 @@ const KanbanBoard = ({ data }) => {
                       <Draggable key={item.id} draggableId={item.id} index={index}>
                         {(provided) => (
                           <Card
+                            title={column.name}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
@@ -304,15 +326,113 @@ const KanbanBoard = ({ data }) => {
                             hoverable={true}
                             // style={{ cursor: 'grab' }}
                             onClick={() => navigate(`/${org}/${moduleName}/${item.id}`)}
+                            extra={
+                              <Tooltip title={"Editar"}>
+                                <Button
+                                  type='text'
+                                  icon={<EditOutlined />}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    navigate(`/${org}/${moduleName}/${item.id}/edit`)
+                                  }}
+                                />
+                              </Tooltip>
+                            }
                           >
                             {Object.entries(item.content).map(([key, value]) => {
                               return (
                                 <Row>
-                                  <Text>
-                                    <Tooltip title={value.field_name}>
-                                      {key == 'id' ? '' : key == 'montante' ? ` R$ ${value.value.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")}` : value.value}
-                                    </Tooltip>
-                                  </Text>
+                                  <Tooltip title={value.field_name}>
+                                    <Text>
+                                      {/* {
+                                        key == 'id' ? '' : value.value
+                                      } */}
+                                      {(() => {
+                                        if (value.value) {
+                                          switch (value.field_type) {
+                                            case "loockup":
+                                              // return <Link to={`/${org}/${moduleName}/${}`}></Link>
+                                              return (
+                                                <>
+                                                  <LinkOutlined style={{ marginRight: 5 }} />
+                                                  {value.value}
+                                                </>
+                                              )
+                                            case "select":
+                                              return (
+                                                <>
+                                                  <SelectOutlined style={{ marginRight: 5 }} />
+                                                  {value.value}
+                                                </>
+                                              )
+                                            case "multi_line":
+                                              return (
+                                                <>
+                                                  <FormOutlined style={{ marginRight: 5 }} />
+                                                  <Text ellipsis={{ tooltip: true }} style={{ maxWidth: 200 }}>{value.value}</Text>
+                                                </>
+                                              )
+                                            case "currency":
+                                              return (
+                                                <>
+                                                  <DollarOutlined style={{ marginRight: 5 }} />
+                                                  {`R$ ${value.value.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",")}`}
+                                                </>
+                                              )
+                                            case "number":
+                                              return (
+                                                <>
+                                                  <NumberOutlined style={{ marginRight: 5 }} />
+                                                  {value.value}
+                                                </>
+                                              )
+                                            case "checkbox":
+                                              return (
+                                                <>
+                                                  <CheckCircleOutlined style={{ marginRight: 5 }} />
+                                                  {value.value == 1 ? "Sim" : "Não"}
+                                                </>
+                                              )
+                                            case "date":
+                                              return (
+                                                <>
+                                                  <CalendarOutlined style={{ marginRight: 5 }} />
+                                                  {formatDate(value.value)}
+                                                </>
+                                              )
+                                            case "date_time":
+                                              return (
+                                                <>
+                                                  <CalendarOutlined style={{ marginRight: 5 }} />
+                                                  {formatDateTime(value.value)}
+                                                </>
+                                              )
+                                            case "email":
+                                              return (
+                                                <>
+                                                  <MailOutlined style={{ marginRight: 5 }} />
+                                                  {value.value}
+                                                </>
+                                              )
+                                            case "phone":
+                                              return (
+                                                <>
+                                                  <PhoneOutlined style={{ marginRight: 5 }} />
+                                                  {value.value}
+                                                </>
+                                              )
+                                            default:
+                                              return (
+                                                <>
+                                                  <EditOutlined style={{ marginRight: 5 }} />
+                                                  {value.value}
+                                                </>
+                                              )
+                                          }
+                                        }
+                                      })()}
+                                    </Text>
+                                  </Tooltip>
                                 </Row>
                               )
                             })}
