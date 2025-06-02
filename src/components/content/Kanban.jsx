@@ -288,11 +288,12 @@ const KanbanBoard = ({ data }) => {
                     backgroundColor: snapshot.isDraggingOver
                       ? (darkMode ? '#3a3a3c' : '#e6f7ff')
                       : darkMode ? '' : '#e0e0e0',
-                    borderTop: snapshot.isDraggingOver
+                    borderTop: 
                       // ? (darkMode ? '3px solid green' : '3px solid green')
                       // : '3px solid green',
-                      ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
-                      : '',
+                      // ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
+                      // : '',
+                      `5px solid ${column.color}`,
                     borderLeft: snapshot.isDraggingOver
                       ? (darkMode ? '1px solid #8c8c8c' : '1px solid #1890ff')
                       : '',
