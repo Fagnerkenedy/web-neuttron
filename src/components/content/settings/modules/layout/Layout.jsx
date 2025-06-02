@@ -20,6 +20,7 @@ import DateTimeOutlined from '../../../../../../src/img/datetime.png'
 import { getModulesTour, updateModulesTour } from './modulesTour';
 import { fetchModules } from '../../../selection/fetchModules';
 import TextToCopyButton from './TextToCopyButton';
+import CustomColorPicker from './CustomColorPicker';
 
 const { Title, Text, Paragraph } = Typography;
 const { Content } = Layout;
@@ -653,7 +654,8 @@ const DragAndDrop = () => {
         result.forEach(option => {
           options.push({
             id: option.id || null, // Garante que IDs sejam armazenados, se disponíveis
-            label: option.name     // Nome ou rótulo da opção
+            label: option.name,     // Nome ou rótulo da opção
+            color: option.color     // Cor da opção
           });
         });
       }
@@ -2091,7 +2093,7 @@ const DragAndDrop = () => {
                           </Form.Item>
                           <PlusCircleOutlined
                             onClick={() => {
-                              add({ id: null, label: '' }, index + 1)
+                              add({ id: null, label: '', color: '#1677ff' }, index + 1)
                               setTimeout(() => {
                                 inputRefs.current[index + 1]?.focus()
                               }, 0);
@@ -2105,6 +2107,13 @@ const DragAndDrop = () => {
                               }}
                             />
                           )}
+                          <Form.Item
+                            {...restField}
+                            name={[name, 'color']}
+                          // initialValue="#1677ff"
+                          >
+                            <CustomColorPicker />
+                          </Form.Item>
                         </Space>
                       </Form.Item>
                     ))}
