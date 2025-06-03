@@ -9,7 +9,7 @@ const noData = () => {
                 padding: "20px",
             }}
         >
-            <Text>Não há dados para exibir.</Text>
+            <Text>Não há dados para exibir.</Text><br/>
             <Text>Adicione novos registros para renderizar o gráfico.</Text>
         </div>
     )
