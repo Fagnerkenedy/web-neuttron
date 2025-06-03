@@ -1,3 +1,6 @@
+import { Typography } from "antd";
+
+const { Text } = Typography
 const noData = () => {
     return (
         <div
@@ -6,8 +9,8 @@ const noData = () => {
                 padding: "20px",
             }}
         >
-            <p>Não há dados para exibir.</p>
-            <p>Adicione novos registros para renderizar o gráfico.</p>
+            <Text>Não há dados para exibir.</Text>
+            <Text>Adicione novos registros para renderizar o gráfico.</Text>
         </div>
     )
 }

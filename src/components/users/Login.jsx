@@ -20,11 +20,6 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (e) => {
-        const data = { email, password }
-        login(data)
-    }
-
     useEffect(() => {
         document.title = "Neuttron CRM | Entre ou cadastre-se"
         document.description = "Faça login no sistema"
@@ -33,6 +28,15 @@ const Login = () => {
             navigate(`/${recoveredOrg}/home`);
         }
     }, [user, navigate]);
+
+    const handleSubmit = (e) => {
+        const data = { email, password }
+        login(data)
+    }
+
+    if (user !== null) {
+        return null; // Já está sendo redirecionado
+    }
 
     if (loading) {
         return (
