@@ -13,6 +13,7 @@ import { useAbility } from '../../contexts/AbilityContext.jsx'
 import { css } from '@emotion/css';
 import userApiURI from '../../Utility/userApiURI.js';
 import HeaderModules from './Modules.jsx';
+import { ChartNoAxesColumn } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -243,7 +244,7 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
               <Link
                 to={`home`}
               >
-                <Button style={{ marginLeft: 10 }} icon={<HomeFilled />}>Dashboard</Button>
+                <Button style={{ marginLeft: 10 }} icon={<ChartNoAxesColumn style={{ width: '20px' }} />}>Dashboard</Button>
               </Link>
             </>
           ) : (

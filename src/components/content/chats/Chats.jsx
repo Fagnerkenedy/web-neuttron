@@ -198,10 +198,10 @@ function Chats({ socket }) {
                             style={{
                                 width: "100%",
                                 maxHeight:
-                                    darkMode && usuario ? "calc(100vh - 337px)" : // É darkMode e está no usuário
-                                        darkMode && !usuario ? "calc(100vh - 518px)" : // É darkMode e está no qrCode
-                                            !darkMode && usuario ? "calc(100vh - 305px)" :  // É claro e está no usuário
-                                                !darkMode && !usuario ? "calc(100vh - 484px)" : // É claro e está no qrCode
+                                    darkMode && usuario ? "calc(100vh - 484px)" : // É darkMode e está no usuário
+                                        darkMode && !usuario ? "calc(100vh - 305px)" : // É darkMode e está no qrCode
+                                            !darkMode && usuario ? "calc(100vh - 484px)" :  // É claro e está no usuário
+                                                !darkMode && !usuario ? "calc(100vh - 305px)" : // É claro e está no qrCode
                                                     null,
                                 overflow: 'auto',
                                 padding: '0 16px',

@@ -10,7 +10,7 @@ import { EllipsisOutlined, PlusCircleFilled, PlusCircleOutlined, PlusOutlined, S
 import axios from 'axios';
 import userApiURI from '../../../Utility/userApiURI.js';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Columns2, Kanban, SquareKanban } from 'lucide-react';
+import { Columns2, Kanban } from 'lucide-react';
 const { deleteRecord } = apiURI;
 import pluralize from 'pluralize'
 const { Title, Text } = Typography;
@@ -197,7 +197,7 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSi
                   },
                   {
                     value: 'kanban',
-                    label: <div style={{ display: 'flex', alignItems: 'center' }}><SquareKanban style={{ width: '15px', marginRight: 3 }} />Kanban</div>,
+                    label: <div style={{ display: 'flex', alignItems: 'center' }}><Kanban style={{ width: '15px', marginRight: 3 }} />Kanban</div>,
                   }
                 ]
               }
