@@ -60,7 +60,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
 const ContentContainer = styled(Content)`
   margin-left: 255px;
-  padding: 6px;
+  // padding: 6px;
 `;
 
 const DragContainer = styled.div`
@@ -938,7 +938,7 @@ const DragAndDrop = () => {
             top: 0,
             left: 0,
             width: 250,
-            height: `calc(100vh - 130px)`,
+            height: `calc(100vh - 125px)`,
             marginTop: 102,
             // paddingTop: 5,
             background: colorBgContainer,
@@ -1223,9 +1223,9 @@ const DragAndDrop = () => {
                 {...provided.droppableProps}
                 style={{
                   position: 'fixed',
-                  width: `calc(100% - 220px)`,
-                  height: `calc(100vh - 145px)`,
-                  marginTop: '50px',
+                  width: `calc(100% - 250px)`,
+                  height: `calc(100vh - 127px)`,
+                  marginTop: '52px',
                   overflowY: 'auto',
                   // backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
                   padding: 8,
