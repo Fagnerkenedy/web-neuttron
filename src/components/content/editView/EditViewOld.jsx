@@ -24,7 +24,6 @@ const EditView = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const confirm = async (e) => {
-        console.log(e);
         const currentPath = window.location.pathname;
         const pathParts = currentPath.split('/');
         const moduleName = pathParts[1];
@@ -48,7 +47,6 @@ const EditView = () => {
                 }
             };
             const response = await axios.get(`${linkApi}/crm/${moduleName}/fields`, config);
-            console.log("response record:", response.data);
             // Verifica se os dados retornados pela API estão em um formato de matriz
             if (Array.isArray(response.data)) {
                 setData(response.data);
@@ -69,7 +67,6 @@ const EditView = () => {
                 }
             };
             const response = await axios.get(`${linkApi}/crm/${moduleName}/${record_id}`, config);
-            console.log("Response Record By Id:", response.data);
             // Verifica se os dados retornados pela API estão em um formato de matriz
             if (Array.isArray(response.data)) {
                 setData(response.data);
@@ -91,13 +88,11 @@ const EditView = () => {
         return <div>Carregando...</div>;
     }
 
-    console.log("datssa:", data);
 
     const onFinish = async (values) => {
         setLoading(true)
 
         try {
-            console.log("newdata", values)
 
             const currentPath = window.location.pathname;
             const pathParts = currentPath.split('/');
@@ -110,7 +105,6 @@ const EditView = () => {
             };
             await axios.post(`${linkApi}/crm/${moduleName}/record`, values, config);
             fetchData()
-            console.log("Registro criado com sucesso!");
             setLoading(false)
             navigate(`/${moduleName}`)
         } catch (error) {

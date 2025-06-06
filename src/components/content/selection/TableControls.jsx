@@ -54,7 +54,6 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSi
   const fetchLayoutType = async () => {
     const response = await axios.get(`/crm/${org}/${moduleName}/readLayoutContent`, apiConfig);
     if (response && response.data && response.data.result[0] && response.data.result[0].hasOwnProperty("layout_type")) {
-      console.log("response response:> ", response.data.result[0].layout_type)
       setLayoutType(response.data.result[0].layout_type)
       setLayoutVisualization(response.data.result[0].layout_type)
     }
@@ -67,7 +66,6 @@ const TableControls = ({ hasSelected, selectedRowKeys, start, pageSize, onPageSi
 
   const handleChange = async (value) => {
     const response = await axios.put(`/crm/${org}/${moduleName}/updateLayoutContent`, { layout_type: value }, apiConfig);
-    console.log("response:> ", response)
     setLayoutType(value)
     setLayoutVisualization(value)
   }

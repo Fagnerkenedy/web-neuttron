@@ -174,7 +174,6 @@ const DragAndDrop = () => {
 
   const updateTour = async () => {
     const updateTour = await updateModulesTour(org, user.id)
-    console.log("updateTour: ", updateTour)
 
     setModulesTour(updateTour.modulesTour)
   }
@@ -238,7 +237,6 @@ const DragAndDrop = () => {
       const responseUnusedFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/unused_fields`, config);
 
       const unusedFields = responseUnusedFields.data
-      console.log("responseUnusedFields: ", responseUnusedFields)
       sectionsData.forEach(section => {
         const sectionId = section.id;
         const sectionName = section.name;
@@ -572,9 +570,6 @@ const DragAndDrop = () => {
       sections: sectionsData
     };
 
-    console.log("payload: ", payload)
-    console.log("payload deletedSections: ", deletedSections)
-    console.log("payload config: ", config)
     try {
       const response = await axios.post(`${linkApi}/sections/${org}/${moduleName}`, payload, config);
       const responseSections = await axios.delete(`${linkApi}/sections/${org}/${moduleName}`, {
@@ -582,7 +577,6 @@ const DragAndDrop = () => {
         ...config
       });
       if (unusedItems.length !== 0) {
-        console.log("unusedItems: ", unusedItems)
         const responseUnusedItems = await axios.put(`${linkApi}/crm/${org}/${moduleName}/unused_field`, unusedItems, config);
       }
       if (deletedOptions.length !== 0) {
@@ -592,8 +586,6 @@ const DragAndDrop = () => {
         });
       }
       message.success('Layout atualizado!');
-      console.log('Changes saved successfully:', response.data);
-      console.log('Changes saved successfully sections:', responseSections.data);
 
       setIsChanged(false);
     } catch (error) {
@@ -608,7 +600,6 @@ const DragAndDrop = () => {
   }
 
   const fetchOptions = async (moduleName, api_name) => {
-    console.log("fetchh", moduleName, api_name)
 
     const token = localStorage.getItem('token');
     const config = {
@@ -621,16 +612,12 @@ const DragAndDrop = () => {
   }
 
   const showModal = async (item) => {
-    console.log("item clickedItem", clickedItem)
-    console.log("item item", item)
     if (item.hasOwnProperty("sectionId")) {
-      console.log("entrou section")
       form.setFieldsValue({
         field_type: "section",
         label: item.sectionName,
       })
     } else if (item.field_type == "loockup") {
-      console.log("entrou loockup")
       form.setFieldsValue({
         field_type: item.field_type,
         api_name: item.api_name,
@@ -641,15 +628,12 @@ const DragAndDrop = () => {
         search_field: item.search_field
       })
     } else if (item.field_type == "select") {
-      console.log("entrou select");
-      console.log("item select: ", item);
 
       let options = [{ id: null, label: '' }]; // Inicializa com uma estrutura padrão
 
       if (item.api_name) {
         options = [];
         const result = await fetchOptions(item.module, item.api_name);
-        console.log("result options: ", result);
 
         result.forEach(option => {
           options.push({
@@ -660,7 +644,6 @@ const DragAndDrop = () => {
         });
       }
 
-      console.log("options: ", options);
 
       form.setFieldsValue({
         id: item.id,
@@ -672,18 +655,14 @@ const DragAndDrop = () => {
         disabled: item.disabled
       });
       // } else if (item.field_type == "select") {
-      //   console.log("entrou select")
-      //   console.log("iitem select: ", item)
       //   let options = ['']
       //   if (item.api_name) {
       //     options = []
       //     const result = await fetchOptions(item.module, item.api_name)
-      //     console.log("result options: ", result)
       //     result.forEach(option => {
       //       options.push(option.name)
       //     });
       //   }
-      //   console.log("options: ", options)
       //   form.setFieldsValue({
       //     id: item.id,
       //     field_type: item.field_type,
@@ -694,7 +673,6 @@ const DragAndDrop = () => {
       //     disabled: item.disabled
       //   })
     } else if (item.field_type == "number") {
-      console.log("entrou loockup")
       form.setFieldsValue({
         field_type: item.field_type,
         api_name: item.api_name,
@@ -704,7 +682,6 @@ const DragAndDrop = () => {
         disabled: item.disabled
       })
     } else if (item.field_type == "currency") {
-      console.log("entrou loockup")
       form.setFieldsValue({
         field_type: item.field_type,
         api_name: item.api_name,
@@ -714,12 +691,6 @@ const DragAndDrop = () => {
         disabled: item.disabled
       })
     } else {
-      console.log("entrou outros")
-      console.log("caiu aqyui field_type", item.field_type)
-      console.log("caiu aqyui api_name", item.api_name)
-      console.log("caiu aqyui name", item.name)
-      console.log("caiu aqyui type", extractNumbers(item.type))
-      console.log("caiu aqyui required", item)
       form.setFieldsValue({
         field_type: item.field_type,
         api_name: item.api_name,
@@ -744,9 +715,6 @@ const DragAndDrop = () => {
 
   const handleOk = () => {
     form.validateFields().then(values => {
-      console.log("values select: ", values)
-      console.log("sections select: ", sections)
-      console.log("sections clickedItem: ", clickedItem)
       if (clickedItem.item.field_type == 'section') {
         sectionOrder[clickedItem.index].sectionName = values.label
       } else if (clickedItem.item.field_type == 'loockup') {
@@ -800,9 +768,7 @@ const DragAndDrop = () => {
   };
 
   const handleMenuClick = (item, position, sectionId, index) => {
-    console.log("teste", item)
     setClickedItem({ item, position, section_id: sectionId, index })
-    console.log("teste clickedItem", clickedItem)
     showModal(item);
   };
 
@@ -853,7 +819,6 @@ const DragAndDrop = () => {
       setUnusedItems(prevUnusedItems => [...prevUnusedItems, updatedItemToRemove])
       showNotification('Item removido', `O campo ${itemToRemove.name} foi movido para 'Campos não utilizados'`, 'bottom')
     }
-    console.log("sections sectionssectionssections 2: ", sections)
 
     // Atualize o estado das seções
     setSections(updatedSections);
@@ -861,7 +826,6 @@ const DragAndDrop = () => {
 
   const handleRemoveSection = (section_id) => {
     const allSections = { ...sections };
-    console.log("allSections: ", allSections[section_id].left.length)
     let allFields = []
     allSections[section_id].left.forEach(field => {
       allFields.push(field)
@@ -880,11 +844,9 @@ const DragAndDrop = () => {
     if (index !== -1) {
       itemToRemove = updatedSections.splice(index, 1)[0];
     }
-    console.log("itemToRemove: ", itemToRemove)
     if (itemToRemove) {
       const updatedItemToRemove = { ...itemToRemove };
       setDeletedSections([...deletedSections, itemToRemove])
-      console.log("deletedSections: ", deletedSections)
     }
     setSectionOrder(updatedSections);
   };
@@ -892,7 +854,6 @@ const DragAndDrop = () => {
   disableTextSelection()
 
   const onChange = (value) => {
-    console.log("clickedItem: ", clickedItem)
     sections[clickedItem.sectionId][clickedItem.position][clickedItem.index].name = value
   }
 
@@ -906,7 +867,6 @@ const DragAndDrop = () => {
       };
 
       const response = await axios.get(`${linkApi}/crm/${org}/modules`, config);
-      console.log("o que retornou? ", response)
       const matchingResponse = response.data.result.map(item => {
         return {
           field_value: item[api_name],
@@ -927,7 +887,6 @@ const DragAndDrop = () => {
       };
 
       const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
-      console.log("o que retornou fields? ", response)
       const matchingResponse = response.data.map(item => {
         return {
           field_value: item.name,
@@ -2324,8 +2283,6 @@ export default DragAndDrop;
 //   {(fields, { add, remove }, { move }) => (
 //     <>
 //       {fields.map((field, index) => {
-//         console.log("field", field)
-//         console.log("index", index)
 
 //         return (
 //           <Form.Item

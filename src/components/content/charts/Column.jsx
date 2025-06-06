@@ -9,7 +9,6 @@ const ColumnChart = ({ xField, yField, data }) => {
     
     useEffect(() => {
         if (data.length === 0) return
-        console.log("dfatazasa", data)
         const columnPlot = new Column(chartRef.current, {
             data,
             xField: xField,

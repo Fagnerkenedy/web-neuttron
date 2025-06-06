@@ -3,7 +3,6 @@ import axios from "axios";
 export function fetchUser() {
   axios.get("http://localhost:3005/fields/read")
     .then((response) => {
-      console.log(response.data);
       return response.data
     })
     .catch((err) => {
@@ -37,16 +36,13 @@ export function updateUserRecord(userRecord) {
     body: JSON.stringify({ name: userName, age: userAge }),
   }).then((response) => {
     fetchUser();
-    console.log("Update success!", response); //returns 200 ok
   })
 
 }
 
 export function deleteUser(id) {
-  console.log(id)
   axios.delete("http://localhost:3005/fields/delete/" + id)
     .then((response) => {
-      console.log(response)
      fetchUser()
     })
     .catch((err) => {

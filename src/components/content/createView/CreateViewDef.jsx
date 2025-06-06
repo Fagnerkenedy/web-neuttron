@@ -88,12 +88,9 @@ const CreateView = ({ itemId }) => {
             });
 
             const relatedModulePromises = combinedData.map(async field => {
-                console.log("fields", field)
                 if (field.related_module != null && field.field_value != "") {
-                    console.log("field.related_module", field)
 
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("response", response)
                     return {
                         api_name: field.api_name,
                         related_id: response.data.row[0].related_id
@@ -102,12 +99,9 @@ const CreateView = ({ itemId }) => {
             })
 
             const relatedModuleResponses = await Promise.all(relatedModulePromises)
-            console.log("relatedModuleResponses", relatedModuleResponses)
             const updatedCombinedData = combinedData.map(field => {
                 if (field.related_module != null) {
-                    console.log("field", field)
                     const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name)
-                    console.log("relatedData", relatedData)
                     if (relatedData) {
                         return {
                             ...field,
@@ -120,10 +114,8 @@ const CreateView = ({ itemId }) => {
                     return field
                 }
             });
-            console.log("updatedCombinedData", updatedCombinedData);
 
             const responseSections = await axios.get(`${linkApi}/sections/${org}/${moduleName}`, config);
-            // console.log("responseSections.data.sections.fields: ",responseSections.data.sections[0].fields)
             // setSections(responseSections.data.sections);
 
             const responseSectionsFields = responseSections.data.sections
@@ -154,8 +146,6 @@ const CreateView = ({ itemId }) => {
                 };
             });
 
-            console.log("updatedCombinedData", updatedCombinedData)
-            console.log("updatedSections", updatedSections)
 
             setSections(updatedSections)
 
@@ -192,7 +182,6 @@ const CreateView = ({ itemId }) => {
             };
             if (relatedModuleName == "modules") {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-                console.log("response", response)
                 const matchingResponse = response.data.result.map(item => {
                     return {
                         field_value: item[search_field],
@@ -202,14 +191,12 @@ const CreateView = ({ itemId }) => {
                 setRelatedModuleData(matchingResponse);
             } else {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-                console.log("response", response)
                 const matchingResponse = response.data.map(item => {
                     return {
                         field_value: item[search_field],
                         related_id: item.id
                     };
                 });
-                console.log("ai ai: ", matchingResponse)
                 setRelatedModuleData(matchingResponse);
             }
 
@@ -226,7 +213,6 @@ const CreateView = ({ itemId }) => {
                 }
             };
             const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/field/${api_name}`, config);
-            console.log("etstetes", response)
             setOptions(response.data);
         }
     }
@@ -283,14 +269,9 @@ const CreateView = ({ itemId }) => {
                     : row
             )
         );
-        console.log("DataSource sectionIndex: ", sectionIndex)
-        console.log("DataSource index: ", index)
-        console.log("DataSource: ", dataSource)
 
-        console.log("value checked?: ", value)
         const updatedData = [...sections];
         updatedData[sectionIndex][column][index].field_value = value;
-        console.log("datas datas cadabra: ", updatedData)
 
         setSections(updatedData)
     };
@@ -314,7 +295,6 @@ const CreateView = ({ itemId }) => {
             };
 
             const updatedRelatedFieldData = relatedFieldData ? [...relatedFieldData] : [];
-            console.log("apapapapapa: ", updatedRelatedFieldData)
             updatedRelatedFieldData.push(fieldToUpdate5);
 
             setRelatedFieldData1(updatedRelatedFieldData);
@@ -340,7 +320,6 @@ const CreateView = ({ itemId }) => {
             };
 
             const updatedRelatedFieldData = relatedFieldData1 ? [...relatedFieldData1] : [];
-            console.log("apapapapapa: ", updatedRelatedFieldData)
             updatedRelatedFieldData.push(fieldToUpdate5);
 
             setRelatedFieldData2(updatedRelatedFieldData);
@@ -351,17 +330,9 @@ const CreateView = ({ itemId }) => {
 
     const handleFieldChangeRelatedModule = (sectionIndex, index, value, api_name, column) => {
         try {
-            console.log("datadatadatadatadatadata:sectionIndex", sectionIndex)
-            console.log("datadatadatadatadatadata:index", index)
-            console.log("datadatadatadatadatadata:value", value)
-            console.log("datadatadatadatadatadata:api_name", api_name)
-            console.log("datadatadatadatadatadata:column", column)
-            // console.log("datadatadatadatadatadata:id:", id)
-            // console.log("datadatadatadatadatadata:newValue", newValue)
             let updatedData = [...sections];
             updatedData[sectionIndex][column][index].field_value = value.value
             const fieldToUpdate1 = updatedData[sectionIndex][column][index]
-            console.log("related field update", fieldToUpdate1)
 
             const fieldToUpdate5 = {
                 index: index,
@@ -374,12 +345,9 @@ const CreateView = ({ itemId }) => {
                 field_value: value.value || user.name
             };
 
-            console.log("Batatinha quando nasce", fieldToUpdate5)
-            console.log("Batatinha quando relatedFieldData", relatedFieldData)
             const updatedRelatedFieldData = relatedFieldData ? [...relatedFieldData] : [];
             updatedRelatedFieldData.push(fieldToUpdate5);
 
-            console.log("Batatinha quando updatedRelatedFieldData", updatedRelatedFieldData)
 
             setRelatedFieldData(updatedRelatedFieldData);
 
@@ -405,13 +373,11 @@ const CreateView = ({ itemId }) => {
     };
 
     const handleSave = async () => {
-        console.log("teresafwerasdfc")
         try {
             let fieldToUpdate3 = {}
             if (sections) {
                 const records = relatedFieldData.filter(record => !!record);
 
-                console.log("relatedFieldDatabatata", records)
 
                 fieldToUpdate3['related_record'] = records.reduce((acc, record) => {
                     if (record != null) {
@@ -424,7 +390,6 @@ const CreateView = ({ itemId }) => {
                     return acc;
                 }, {});
 
-                console.log("fieldToUpdate3: ", fieldToUpdate3)
 
                 let toUpdate = []
                 sections.forEach(section => {
@@ -434,7 +399,6 @@ const CreateView = ({ itemId }) => {
                         ...section.right
                     ]
                 });
-                console.log("toUpdate: ", toUpdate)
 
                 toUpdate.map(field => {
                     const { api_name, field_value } = field
@@ -467,8 +431,6 @@ const CreateView = ({ itemId }) => {
 
                 if (moduleName == "users" && fieldToUpdate3.hasOwnProperty("email")) {
                     const emailCheck = await userApiURI.checkEmail(fieldToUpdate3.email);
-                    console.log("fieldToUpdate3.email> ", fieldToUpdate3.email)
-                    console.log("emailCheck> ", emailCheck)
                     if (emailCheck.status === 200 && emailCheck.data.success === false) {
                         showNotification(
                             '',
@@ -515,7 +477,6 @@ const CreateView = ({ itemId }) => {
                     }
                 }
 
-                console.log("create: ", fieldToUpdate3)
                 const create = await axios.post(`${linkApi}/crm/${org}/${moduleName}/record`, fieldToUpdate3, config);
                 const record_id = create.data.record_id
 
@@ -526,41 +487,31 @@ const CreateView = ({ itemId }) => {
                     };
                 });
 
-                // console.log("batyatatatattatataytfdghjfhjghjkgjkgbhjkgjyhftyuvghjbjkghyuigyuibjbn1: ",relatedFieldData1)
                 // const newRelatedFieldDataa = relatedFieldData1.map((item) => {
-                //     console.log("iterererem: ",item)
                 //     return {
                 //         ...item,
                 //         module_id: record_id,
                 //     };
                 // })
-                // console.log("batyatatatattatataytfdghjfhjghjkgjkgbhjkgjyhftyuvghjbjkghyuigyuibjbn: ",relatedFieldData2)
                 // const newRelatedFieldDatab = newRelatedFieldDataa.map((item) => {
-                //     console.log("iterererem: ",item)
                 //     return {
                 //         ...item,
                 //         module_id: record_id,
                 //     };
                 // })
                 // const newRelatedFieldData = newRelatedFieldDatab.map((item) => {
-                //     console.log("iterererem: ",item)
-                //     console.log("relatedFieldData1: ",relatedFieldData1)
                 //     return {
                 //         ...item,
                 //         module_id: record_id,
                 //     };
                 // })
-                // console.log("newRelatedFieldData: ", newRelatedFieldData)
-                console.log("updatedRelatedFieldData: ", updatedRelatedFieldData)
 
                 const promises = updatedRelatedFieldData.map(async item => {
-                    console.log("item", item)
                     await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, { related_id: item.related_id, id: item.id, api_name: item.api_name }, config);
                     return axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, item, config);
                 });
                 const results = await Promise.all(promises);
 
-                console.log("results Registro Criado", results);
                 message.success('Registro Criado!');
                 navigate(`/${org}/${moduleName}/${record_id}`)
             }
@@ -585,7 +536,6 @@ const CreateView = ({ itemId }) => {
             };
 
             const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
-            console.log("o que retornou fields? ", response)
             const matchingResponse = response.data
                 .filter(item => {
                     if (moduleName == "kanban") {
@@ -600,7 +550,6 @@ const CreateView = ({ itemId }) => {
                         api_name: item.api_name
                     };
                 });
-            console.log("depois: ", matchingResponse)
             setRelatedFields(matchingResponse);
         }
     }
@@ -614,7 +563,6 @@ const CreateView = ({ itemId }) => {
 
 
     const renderField = (fieldData, index, onChange, onChangeRelatedModule, source) => {
-        console.log("fieldifekldfiel: ", fieldData.api_name)
         if (fieldData.related_module != null && fieldData.field_type == "loockup") {
             return (
                 <div>
@@ -714,7 +662,6 @@ const CreateView = ({ itemId }) => {
                         onChange={(key, value) => onChangeRelatedModule(value)}
                         // loading={loading}
                         onDropdownVisibleChange={(open) => {
-                            console.log("fieldData.field_base: ", selectedModule)
                             if (selectedModule) {
                                 fetchRelatedFields(open, selectedModule, fieldData.search_field)
                             }
@@ -987,7 +934,6 @@ const CreateView = ({ itemId }) => {
                 },
                 onChange(info) {
                     if (info.file.status !== 'uploading') {
-                        console.log(info.file, info.fileList);
                     }
                     if (info.file.status === 'done') {
                         message.success(`${info.file.name} file uploaded successfully`);
@@ -1044,9 +990,7 @@ const CreateView = ({ itemId }) => {
             }),
             { key: dataSource.length + 1 } // Adicione um identificador único
         );
-        console.log("New Row: ", newRow)
         setDataSource((prevDataSource) => [...prevDataSource, newRow]);
-        console.log("New Row dataSource: ", dataSource)
     };
 
     // Remover linha

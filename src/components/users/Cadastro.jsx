@@ -54,7 +54,6 @@ function Cadastro() {
                 setAlertMessage(<Alert message="OPS! Houve um erro ao cadastrar" description="O E-mail informado já está cadastrado no sistema." type="error" showIcon />)
                 setLoading(false)
             } else {
-                console.log("user aqui!: ", result.data)
                 const uuid = result.data.uuid
                 const email = result.data.email
                 const resultEmailConfirmation = await userApiURI.sendEmailConfirmation({ email: email, uuid: uuid })

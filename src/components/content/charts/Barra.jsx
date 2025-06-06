@@ -12,7 +12,6 @@ function Barra({ xField, yField, data }) {
         ...item,
         [yField]: parseFloat(item[yField])
     }));
-    console.log("datanumero", dataNumber)
 
     const config = {
         data: dataNumber,

@@ -13,8 +13,6 @@ import Kanban from './Kanban'
 
 const { Content, Sider } = Layout;
 
-const onSearch = (value, _e, info) => console.log(info?.source, value);
-
 const AppContent = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },

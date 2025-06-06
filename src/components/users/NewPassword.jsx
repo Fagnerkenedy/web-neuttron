@@ -47,7 +47,6 @@ function ConfirmedEmail() {
 
     try {
       const result = await userApiURI.registerPassword(values, record_id, org)
-      console.log("result api: ", result)
       if (result.status === 400) {
         setAlertMessage(<Alert message="OPS! Houve um erro ao cadastrar a senha" description="Falha na comunicação com o Servidor! Por favor entre em contato com o Suporte." type="error" showIcon />)
 

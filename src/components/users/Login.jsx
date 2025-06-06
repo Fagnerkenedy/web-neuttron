@@ -35,7 +35,7 @@ const Login = () => {
     }
 
     if (user !== null) {
-        return null; // Já está sendo redirecionado
+        return null
     }
 
     if (loading) {
@@ -43,11 +43,6 @@ const Login = () => {
             <Loading />
         )
     }
-
-    // if (user != null) {
-    //     const recoveredOrg = localStorage.getItem('org');
-    //     navigate(`/${recoveredOrg}/home`);
-    // }
 
     return (
         <ConfigProvider

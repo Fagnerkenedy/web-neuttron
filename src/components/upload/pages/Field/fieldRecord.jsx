@@ -5,7 +5,6 @@ import { Component } from "react";
 import axios from "axios";
 
 const linkApi = import.meta.env.VITE_LINK_API
-console.log("process env:", `${linkApi}/fields/create`)
 const FormItem = Form.Item;
 const { Option } = Select;
 const currentPath = window.location.pathname;
@@ -58,7 +57,6 @@ class UserRecord extends Component {
         axios
             .get(`${linkApi}/fields/read`)
             .then(response => {
-                console.log(response.data);
                 const sortedUserRecords = response.data.reverse();
                 this.setState({
                     userRecords: sortedUserRecords,
@@ -113,18 +111,15 @@ class UserRecord extends Component {
                 tableConfiguration: { loading: false }
             });
             this.fetchUser();
-            console.log("Update success!", response); //returns 200 ok
         }).catch(error => {
             console.error('Error updating user record:', error);
         });
     }
 
     deleteUser(id) {
-        console.log(id);
         axios
             .delete(`${linkApi}/fields/delete/` + id)
             .then(response => {
-                console.log(response);
                 this.fetchUser();
             })
             .catch(err => {
@@ -275,12 +270,10 @@ class UserRecord extends Component {
     };
 
     handleDeleteUser = e => {
-        console.log(e)
         this.deleteUser(e._id);
     };
 
     handleUpdateUser = e => {
-        console.log(e)
         this.setState({
             currentId: e._id,
             editing: true,

@@ -24,7 +24,6 @@ export const AuthProvider = ({children}) => {
         localStorage.removeItem("user");
         
         const response = await userApiURI.login(data)
-        console.log("response response: ",response)
 
         if(response.status === 200 && !response.data.success){
             if(response.data.message === "user_not_found")
@@ -40,7 +39,6 @@ export const AuthProvider = ({children}) => {
         } else {
 
             const loggedUser = response.data.user;
-            console.log("loggedUser: ",loggedUser)
             const org = response.data.org;
             const token = response.data.token;
 

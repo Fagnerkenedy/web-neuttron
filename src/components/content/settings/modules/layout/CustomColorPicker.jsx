@@ -52,7 +52,6 @@ const CustomColorPicker = ({ value, onChange }) => {
       value={typeof value === 'string' ? value : undefined}
       onChange={(color) => {
         const hex = color?.toHexString?.();
-        console.log('cor como HEX:', hex);
         onChange?.(hex || undefined); // só chama se onChange existir
       }}
       allowClear

@@ -206,7 +206,6 @@ const DataTable = ({ columns, data, rowSelection, currentData, totalTableWidth, 
       // const moduleName = pathParts[2]
       const { org, module } = useParams();
       const moduleName = module
-      console.log("data.field_type", field_type)
       const formatDate = (dateString) => {
         const date = new Date(dateString)
         const day = String(date.getDate()).padStart(2, '0')

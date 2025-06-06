@@ -67,19 +67,17 @@ function Chats({ socket }) {
 
         setConversations((prev) => [...prev, ...conversations]);
         setHasMore(hasMore);
-        console.log("hasMore? ", hasMore)
         setPage((prevPage) => prevPage + 1);
 
         // setConversations(conversationsResponse)
         setLoading(false)
-        console.log("conversarioin:", conversations)
     }
 
     useEffect(() => {
         fetchData()
         socket.emit('identify', { orgId: org });
         socket.on('connection', () => {
-            console.log("conectadsdfsdo!")
+            console.log("conectado!")
         });
         socket.on('disconnect', () => {
             console.log("desconectado!")

@@ -33,7 +33,6 @@ const KanbanBoard = ({ data }) => {
   const fetchStages = async () => {
     setLoading(true)
     const columns = await axios.get(`/kanbans/${org}/${moduleName}`, apiConfig);
-    console.log("Columns ns", columns.data)
     if (columns.data.hasOwnProperty("kanban")) {
       setField('')
       setColumns('')
@@ -46,7 +45,6 @@ const KanbanBoard = ({ data }) => {
 
   const fetchData = async () => {
     try {
-      console.log("data aqui dentro: ", data)
       const responseFields = await axios.get(`/crm/${org}/${moduleName}/fields`, apiConfig);
       const response = await axios.get(`/crm/${org}/${moduleName}`, apiConfig);
       const groupRecords = (records) => {
@@ -70,10 +68,8 @@ const KanbanBoard = ({ data }) => {
       };
 
       const result = groupRecords(response.data);
-      console.log("avião: ", result)
       const all = result.map(async record => {
         const response = await axios.get(`/crm/${org}/${moduleName}/${record.key}`, apiConfig);
-        console.log("record do darta", record)
         const combinedData = responseFields.data.map(field => {
           const matchingResponse = response.data.find(item => item[field.api_name]);
           return {
@@ -81,15 +77,10 @@ const KanbanBoard = ({ data }) => {
             field_value: matchingResponse ? matchingResponse[field.api_name] : ''
           };
         });
-        console.log("combinedDatacombinedData: ", combinedData)
         const relatedModulePromises = combinedData.map(async field => {
-          console.log("fields", field)
           if (field.related_module != null && field.field_value != "" && field.related_module != "fields") {
-            console.log("field.related_module", field)
             const response = await axios.get(`/crm/${org}/${field.related_module}/relatedDataById/${record.key}`, apiConfig);
-            console.log("response Batatinha", response.data)
             if (response.data.row.length != 0) {
-              console.log("entrou?")
               const fieldToUpdate5 = {
                 related_module: field.related_module,
                 related_id: field.related_id,
@@ -100,12 +91,8 @@ const KanbanBoard = ({ data }) => {
               };
 
               const index = combinedData.findIndex(combinedDataField => combinedDataField.id === field.id);
-              console.log("Batatinha quando index", index)
-              console.log("Batatinha quando nasce", fieldToUpdate5)
-              console.log("Batatinha quando relatedFieldData", relatedFieldData)
               let updatedRelatedFieldData = [...relatedFieldData];
               updatedRelatedFieldData[index] = fieldToUpdate5
-              console.log("Batatinha quando updatedRelatedFieldData", updatedRelatedFieldData)
               // setRelatedFieldData(updatedRelatedFieldData);
               return {
                 name: field.field_value,
@@ -121,15 +108,11 @@ const KanbanBoard = ({ data }) => {
           }
         })
         const relatedModuleResponses = await Promise.all(relatedModulePromises)
-        console.log("relatedModuleResponses", relatedModuleResponses)
-        console.log("Batatinha quando relatedFieldData", relatedFieldData)
         setRelatedFieldData(prevData => ({ ...prevData, relatedModuleResponses }));
 
         const updatedCombinedData = combinedData.map(field => {
           if (field.related_module != null) {
-            console.log("field", field)
             const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name)
-            console.log("relatedData", relatedData)
             if (relatedData) {
               return {
                 ...field,
@@ -142,12 +125,10 @@ const KanbanBoard = ({ data }) => {
             return field
           }
         });
-        console.log("updatedCombinedData1", updatedCombinedData)
         return updatedCombinedData
       })
 
       const promisseAll = await Promise.all(all)
-      console.log("updatedCombinedData", promisseAll)
 
       if (Array.isArray(promisseAll)) {
         setDataAll(promisseAll);
@@ -165,7 +146,6 @@ const KanbanBoard = ({ data }) => {
   }, []);
 
   const onDragEnd = async (result) => {
-    console.log("result ondragend", result)
     const { source, destination, draggableId } = result;
     if (!destination) return;
 
@@ -192,12 +172,9 @@ const KanbanBoard = ({ data }) => {
       const dataRecord = data.find(registro => registro.key === draggableId)
       dataRecord[field] = destination.droppableId
       const newJson = { ...dataRecord }
-      console.log("relatedFieldData", relatedFieldData)
       const records = relatedFieldData.relatedModuleResponses.filter(record => !!record);
-      console.log("records", records)
 
       newJson['related_record'] = records.reduce((acc, record) => {
-        console.log("record record: ", record)
         if (record != null) {
           acc[record.api_name] = {
             name: record.name,
@@ -210,7 +187,6 @@ const KanbanBoard = ({ data }) => {
       delete newJson.key
       delete newJson.created_at
       delete newJson.updated_at
-      console.log("newJson: ", newJson)
       await axios.put(`/crm/${org}/${moduleName}/${draggableId}`, newJson, apiConfig);
     }
     fetchStages()

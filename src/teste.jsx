@@ -6,7 +6,6 @@ import dayjs from 'dayjs';;
 
 // let idString = id.toString()
 
-// console.log("idString: ",idString)
 
 // let item_preco_unitario = "214,7"
 
@@ -16,9 +15,7 @@ import dayjs from 'dayjs';;
 //     item_preco_unitario = item_preco_unitario + "0"
 // }
 
-// console.log("item_preco_unitario final: ", item_preco_unitario)
 
-console.log("valor vazio",dayjs(""))
 
 return (
     <Layout style={{ padding: '15px 15px 0 15px' }}>
@@ -130,8 +127,6 @@ const Conversations = ({ socket }) => {
         });
         const conversation = response.data.conversation
         const hasMore = response.data.hasMore
-        console.log("conversaton: ",conversation)
-        console.log("hasMore: ",hasMore)
         return conversation, hasMore
     }
     
@@ -146,7 +141,6 @@ const Conversations = ({ socket }) => {
         
         const { conversation, hasMore } = await requestApi()
         
-        console.log("conversaton 2: ",conversation)
         setMessages((prev) => [...prev, ...conversation]);
         setHasMore(hasMore)
         
@@ -158,9 +152,6 @@ const Conversations = ({ socket }) => {
         //     ...prev,
         //     [conversationId]: hasMore,
         // }));
-        // console.log("hasMore? ", hasMore)
-        // console.log("hasMoreByConversation[conversationId]: ", hasMoreByConversation)
-        // console.log("hasMoreByConversation[conversationId]: ", hasMoreByConversation[conversationId])
 
         // setPaginationByConversation((prev) => ({
         //     ...prev,
@@ -174,7 +165,6 @@ const Conversations = ({ socket }) => {
         //     scrollableDiv.scrollTop += newScrollHeight - previousScrollHeight;
         // }, 0);
         // setMessages(conversationResponse);
-        // console.log("messagensss:", messages)
     };
 
     useEffect( async () => {
@@ -188,7 +178,6 @@ const Conversations = ({ socket }) => {
         // }));
         if (messages.length == 0) {
             const { conversation, hasMore } = await requestApi()
-            console.log("convrsetion 3:",conversation)
             setMessages(conversation);
             setHasMore(hasMore);
             scrollToBottom()
@@ -236,7 +225,6 @@ const Conversations = ({ socket }) => {
             const newMessage = { senderName: user.name, body: input };
             setMessages((prev) => [...prev, newMessage]);
 
-            // console.log("para: ", messages[0]?.contactNumber)
             try {
                 await axios.post(`${import.meta.env.VITE_LINK_API}/chat/${org}/send-message`, {
                     numberId: "537389792787824",

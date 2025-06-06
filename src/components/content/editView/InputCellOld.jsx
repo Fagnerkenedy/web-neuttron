@@ -10,8 +10,6 @@ const ImputCell = ({ value, type, api_name }) => {
     // setInputValue(e.target.value);
   };
 
-  console.log("sadfs", value, type, api_name);
-
   return (
     <div>
       {

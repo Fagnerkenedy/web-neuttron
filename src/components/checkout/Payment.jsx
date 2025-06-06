@@ -27,7 +27,6 @@ const Payment = () => {
       }
     })
       .then((response) => {
-        console.log("response data", response.data)
         setPreferenceId(response.data.id);
       })
       .catch((error) => {

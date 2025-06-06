@@ -11,7 +11,6 @@ const { Title, Text } = Typography;
 const linkApi = import.meta.env.VITE_LINK_API;
 
 // const onMenuClick = (e) => {
-//     console.log('click', e);
 // };
 // const items = [
 //     {
@@ -44,10 +43,7 @@ function Modules() {
     const { modules } = useParams()
 
     const onEdit = (value) => {
-        console.log("value :", value)
         form.validateFields().then(async values => {
-            console.log("! values: ", values.name)
-            console.log("! values: ", clickedItem.name)
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
@@ -57,7 +53,6 @@ function Modules() {
             try {
                 const response = await axios.put(`${linkApi}/crm/${org}/module`, { name: clickedItem.name, new_name: values.name }, config)
 
-                console.log('response:', response)
                 message.success('Registro Atualizado!');
             } catch (error) {
                 console.error('Error saving changes:', error);
@@ -70,7 +65,6 @@ function Modules() {
 
     const handleSetModalTrue = (item) => {
         setModal(true)
-        console.log("teste: ", item)
         setClickedItem(item)
         form.setFieldsValue({
             name: item.name,
@@ -82,7 +76,6 @@ function Modules() {
     }
 
     const onDelete = async (value) => {
-        console.log("value delete:", value)
         const name = value.name
         const api_name = value.api_name
         const token = localStorage.getItem('token');
@@ -97,7 +90,6 @@ function Modules() {
                 ...config,
                 data: { name, api_name }
             })
-            console.log('response:', responseDelete)
             message.success('Registro Excluído!');
         } catch (error) {
             console.error('Error saving changes:', error);
@@ -248,7 +240,6 @@ function Modules() {
 
     const handleOk = () => {
         form.validateFields().then(async values => {
-            console.log("! values: ", values)
             let api_name = ''
             const token = localStorage.getItem('token');
             const config = {
@@ -261,7 +252,6 @@ function Modules() {
                 if (response.status == 200) {
                     api_name = response.data.moduleNameApi
                 }
-                console.log('response:', response)
             } catch (error) {
                 console.error('Error saving changes:', error);
             }

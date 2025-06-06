@@ -95,6 +95,7 @@ const DetailView = ({ itemId }) => {
             };
             const responseFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);
             const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, config);
+            console.log("Fields 0: ", responseFields)
             const combinedData = responseFields.data.map(field => {
                 const matchingResponse = response.data.find(item => item[field.api_name]);
                 return {
@@ -104,9 +105,11 @@ const DetailView = ({ itemId }) => {
             });
 
             const relatedModulePromises = combinedData.map(async field => {
+                console.log("Fields 1: ", field)
                 if (field.related_module != null && field.related_module != "fields") {
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("response relatedDataById:", response)
+                    console.log("relatedId: ", response.data.row[0])
+                    
                     if (response.data.row.length != 0) {
                         return {
                             name: field.field_value,
@@ -126,8 +129,11 @@ const DetailView = ({ itemId }) => {
             setRelatedFieldData(relatedModuleResponses);
 
             const updatedCombinedData = combinedData.map(field => {
+                console.log("Fields: ", field)
                 if (field.related_module != null) {
                     const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name);
+                    console.log("relatedData: ", relatedData)
+                    
                     if (relatedData) {
                         return {
                             ...field,
@@ -140,20 +146,25 @@ const DetailView = ({ itemId }) => {
                     return field;
                 }
             });
-
+            console.log("updatedCombinedData: ", updatedCombinedData)
+            
             const responseSections = await axios.get(`${linkApi}/sections/${org}/${moduleName}`, config);
-            // console.log("responseSections.data.sections.fields: ",responseSections.data.sections[0].fields)
             // setSections(responseSections.data.sections);
-
+            
             const responseSectionsFields = responseSections.data.sections
             // Atualizar os campos das seções com os valores dos campos em combinedData
             const updatedSections = responseSectionsFields.map(section => {
                 // Atualizar campos à esquerda
+                console.log("sectionsectionsection: ", section)
+                
                 const updatedLeft = section.fields.left.map(item => {
-                    const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
+                    console.log("item:item ", item)
+
+                    const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);  
                     return {
                         ...item,
-                        field_value: matchingField ? matchingField.field_value : item.field_value
+                        field_value: matchingField ? matchingField.field_value : item.field_value,
+                        related_id: matchingField ? matchingField.related_id : null,
                     };
                 });
 
@@ -162,7 +173,8 @@ const DetailView = ({ itemId }) => {
                     const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
                     return {
                         ...item,
-                        field_value: matchingField ? matchingField.field_value : item.field_value
+                        field_value: matchingField ? matchingField.field_value : item.field_value,
+                        related_id: matchingField ? matchingField.related_id : null,
                     };
                 });
 
@@ -172,7 +184,7 @@ const DetailView = ({ itemId }) => {
                     right: updatedRight
                 };
             });
-
+            console.log("data: ", updatedSections)
             setSections(updatedSections)
 
             if (Array.isArray(updatedCombinedData)) {
@@ -205,14 +217,12 @@ const DetailView = ({ itemId }) => {
                 setRelatedModuleData(matchingResponse);
             } else {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-                console.log("rataratata: ", response.data)
                 const matchingResponse = response.data.map(item => {
                     return {
                         field_value: item[search_field],
                         related_id: item.id
                     };
                 });
-                console.log("rataratata matchingResponse: ", matchingResponse)
 
                 setRelatedModuleData(matchingResponse);
             }
@@ -249,9 +259,7 @@ const DetailView = ({ itemId }) => {
         const pathParts = currentPath.split('/');
         const org = pathParts[1];
         const moduleName = pathParts[2];
-        console.log("hskasoiiaiaiaiiai")
         const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedModuleList`, config);
-        console.log("retorno related module module: ", response.data)
         setRelatedModule(response.data)
     }
 
@@ -268,7 +276,6 @@ const DetailView = ({ itemId }) => {
         const moduleName = pathParts[2];
         const record_id = pathParts[3];
         const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedField/${record_id}`, config);
-        console.log("retorno related module list: ", response.data)
         setRelatedModuleList(response.data)
     }
 
@@ -315,15 +322,9 @@ const DetailView = ({ itemId }) => {
     const handleFieldChange = async (sectionIndex, index, value, api_name, column, id) => {
         try {
 
-            console.log("value sectionIndex?: ", sectionIndex)
-            console.log("value index?: ", index)
-            console.log("value value?: ", value)
-            console.log("value api_name?: ", api_name)
-            console.log("value column?: ", column)
 
             // const updatedData = [...sections];
             // updatedData[sectionIndex][column][index].field_value = value;
-            // console.log("datas datas cadabra: ",updatedData)
 
             // setSections(updatedData)
 
@@ -435,16 +436,8 @@ const DetailView = ({ itemId }) => {
     const handleFieldChangeRelatedModule = async (sectionIndex, index, value, api_name, column, id) => {
 
         try {
-            console.log("sectionIndex", sectionIndex)
-            console.log("index", index)
-            console.log("value", value)
-            console.log("api_name", api_name)
-            console.log("column", column)
-            console.log("id", id)
-            console.log("databatata", data)
 
             const updatedData = [...sections];
-            console.log("updatedDatabatata", data)
             const fieldToUpdate = updatedData[sectionIndex][column][index]
 
             fieldToUpdate.field_value = value.value;
@@ -455,7 +448,6 @@ const DetailView = ({ itemId }) => {
             const org = pathParts[1];
             const moduleName = pathParts[2];
             const record_id = pathParts[3];
-            console.log("fieldToUpdate", fieldToUpdate)
             const fieldToUpdate3 = {};
             fieldToUpdate3['related_record'] = [fieldToUpdate].reduce((acc, record) => {
                 if (record != null) {
@@ -503,9 +495,6 @@ const DetailView = ({ itemId }) => {
                     'Authorization': `Bearer ${token}`
                 }
             };
-            console.log("fieldToUpdate3: ", fieldToUpdate3)
-            console.log("fieldToUpdate4: ", fieldToUpdate4)
-            console.log("fieldToUpdate5: ", fieldToUpdate5)
 
             setFieldToUpdate3(fieldToUpdate3)
             setFieldToUpdate4(fieldToUpdate4)
@@ -529,7 +518,6 @@ const DetailView = ({ itemId }) => {
     }
 
     const renderField = (fieldData, index, onChange, onChangeRelatedModule) => {
-        console.log("fieldData", fieldData)
         if (fieldData.related_module != null && fieldData.related_module != "modules" && fieldData.related_module != "fields") {
             return (
                 <Form.Item
@@ -834,7 +822,6 @@ const DetailView = ({ itemId }) => {
         }
 
         // } else {
-        // console.log("openfield: ",openField)
         // if (openField == true) {
         //     return (
         //         <Input
@@ -924,10 +911,6 @@ const DetailView = ({ itemId }) => {
         //                 //             <Button 
         //                 //                 type='text'
         //                 //                 onClick={(e) => {
-        //                 //                     console.log("e: ",e)
-        //                 //                     console.log("form.getFieldValue(fieldData.api_name): ",form.getFieldValue(fieldData.api_name))
-        //                 //                     console.log("inputValue: ",inputValue)
-        //                 //                     console.log("fieldData.field_value: ",fieldData.field_value)
         //                 //                     if (form.getFieldValue(fieldData.api_name) !== "" && form.getFieldValue(fieldData.api_name) != inputValue) {
         //                 //                         form.submit();
         //                 //                         setIsEditing(false);
@@ -938,7 +921,6 @@ const DetailView = ({ itemId }) => {
         //                 //             <Button
         //                 //                 type='text'
         //                 //                 onClick={() => {
-        //                 //                     console.log("X fieldData.field_value", fieldData.field_value)
         //                 //                     setInputValue(fieldData.field_value); // Restaura o valor original
         //                 //                     setIsEditing(false);
         //                 //                 }}

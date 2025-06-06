@@ -51,7 +51,6 @@ function RelatedList({ related_module, related_id }) {
     const columnsProps = (dataIndex, title, field_type) => ({
         render: (text, data) => {
             const productId = data && data.key ? data.key : '';
-            console.log("data.field_type", field_type)
             const formatDate = (dateString) => {
                 const date = new Date(dateString)
                 const day = String(date.getDate()).padStart(2, '0')

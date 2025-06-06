@@ -38,7 +38,6 @@ const Formulario = () => {
         }
     };
     const onFinish = (values) => {
-        console.log(values);
     };
     const onReset = () => {
         form.resetFields();

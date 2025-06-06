@@ -22,7 +22,6 @@ const MyComponent = () => {
                 }
             };
             const response = await axios.get(`${linkApi}/crm/${moduleName}/records`, config);
-            console.log("Clientes: ", response.data)
             setClientes(response.data);
         } catch (error) {
             console.error('Erro ao buscar clientes:', error);

@@ -45,10 +45,8 @@ export const fetchData = async (org, moduleName, related_id) => {
       }
     };
 
-    console.log("entrou aqui")
     const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/relatedData/${related_id}`, config);
 
-    console.log("response data", response.data)
     return response.data;
   } catch (err) {
     console.log("Erro de rede: ", err);

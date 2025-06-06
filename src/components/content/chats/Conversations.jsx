@@ -52,9 +52,7 @@ const Conversations = ({ socket }) => {
         const hasMore = response.data.hasMore
         const pageServer = response.data.page
 
-        console.log("conversaton 2: ", ...conversation)
         conversation.reverse();
-        console.log("reverseArray: ", ...conversation)
 
         setMessages((prev) => [...conversation, ...prev]);
         setHasMore(hasMore)
@@ -67,7 +65,6 @@ const Conversations = ({ socket }) => {
     }
 
     useEffect(() => {
-        console.log("messagessss:", messages)
         const getMessages = async () => {
             const response = await axios.get(`/chat/${org}/messages/${conversationId}`, {
                 baseURL: import.meta.env.VITE_LINK_API,
@@ -81,8 +78,6 @@ const Conversations = ({ socket }) => {
             const conversation = response.data.conversation
             const hasMore = response.data.hasMore
             const pageServer = response.data.page
-            console.log("convrsetion 3:", conversation)
-            console.log("convrsetion Data:", conversationData.data.data)
             conversation.reverse();
             setMessages(conversation);
             setConversationData(conversationData.data.data)
@@ -124,7 +119,6 @@ const Conversations = ({ socket }) => {
     const sendMessage = async () => {
         if (input) {
             // const created_at = formatDateToISO(new Date())
-            // console.log("toLocaleString:  ", created_at.toLocaleString())
             // const toDateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',', '')
             const date = new Date()
             date.setHours(date.getHours() - 3)
@@ -152,7 +146,6 @@ const Conversations = ({ socket }) => {
     };
 
     const updateUnread = async () => {
-        console.log("Executou!")
         try {
             await axios.post(`${import.meta.env.VITE_LINK_API}/chat/${org}/conversation/${conversationId}`);
         } catch (error) {
@@ -229,7 +222,6 @@ const Conversations = ({ socket }) => {
                                             >
                                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                                                     
-                                                    {console.log("item: ", item)}
                                                     { item.pathFront ? (
                                                         // <PdfMessage pdfUrl={item.pathFront} fileName={item.body}/>
                                                         <PdfDownload pdfUrl={item.pathFront} fileName={item.body}/>

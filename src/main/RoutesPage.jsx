@@ -70,7 +70,6 @@ function RoutesPage() {
     if (loading) {
       return;
     }
-    // console.log(`ability.can(${action}, ${subject})`, ability.can(action, subject))
     ability.can(action, subject)
 
     if (!ability.can(action, subject)) {

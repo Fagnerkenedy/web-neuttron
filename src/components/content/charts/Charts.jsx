@@ -33,7 +33,6 @@ function Charts() {
     useEffect(() => {
         async function fetchChartsData() {
             const fetchedCharts = await fetchCharts(org)
-            console.log("chartttt", fetchedCharts.result)
             setCharts(fetchedCharts.result)
             // setData(fetchedCharts.result.data)
 

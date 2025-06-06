@@ -12,7 +12,6 @@ function Linha({ xField, yField, data }) {
         [xField]: new Date(item[xField]),
         [yField]: parseFloat(item[yField])
     })).sort((a, b) => new Date(a[xField]) - new Date(b[xField]))
-    console.log("dataNumber", dataNumber)
 
     const config = {
         data: dataNumber,

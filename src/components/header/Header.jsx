@@ -40,7 +40,6 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
 
   const updateTour = async () => {
     const updateTour = await updateOpenTour(org, user.id)
-    console.log("updateTour: ", updateTour)
 
     setOpenTour(updateTour.openTour)
   }

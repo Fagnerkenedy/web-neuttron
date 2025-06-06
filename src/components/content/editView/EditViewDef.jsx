@@ -88,17 +88,12 @@ const EditView = ({ itemId }) => {
                     field_value: matchingResponse ? matchingResponse[field.api_name] : ''
                 };
             });
-            console.log("combinedDatacombinedData: ", combinedData)
             setCombinedData(combinedData)
             const relatedModulePromises = combinedData.map(async field => {
-                console.log("fields", field)
                 if (field.related_module != null && field.field_value != "" && field.related_module != "fields") {
-                    console.log("field.related_module", field)
                     setSelectedModule(field.field_value)
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("response Batatinha", response.data)
                     if (response.data.row.length != 0) {
-                        console.log("entrou?")
                         const fieldToUpdate5 = {
                             related_module: field.related_module,
                             related_id: field.related_id,
@@ -109,12 +104,8 @@ const EditView = ({ itemId }) => {
                         };
 
                         const index = combinedData.findIndex(combinedDataField => combinedDataField.id === field.id);
-                        console.log("Batatinha quando index", index)
-                        console.log("Batatinha quando nasce", fieldToUpdate5)
-                        console.log("Batatinha quando relatedFieldData", relatedFieldData)
                         let updatedRelatedFieldData = [...relatedFieldData];
                         updatedRelatedFieldData[index] = fieldToUpdate5
-                        console.log("Batatinha quando updatedRelatedFieldData", updatedRelatedFieldData)
                         // setRelatedFieldData(updatedRelatedFieldData);
                         return {
                             name: field.field_value,
@@ -130,15 +121,11 @@ const EditView = ({ itemId }) => {
                 }
             })
             const relatedModuleResponses = await Promise.all(relatedModulePromises)
-            console.log("relatedModuleResponses", relatedModuleResponses)
-            console.log("Batatinha quando relatedFieldData", relatedFieldData)
             setRelatedFieldData(relatedModuleResponses);
 
             const updatedCombinedData = combinedData.map(field => {
                 if (field.related_module != null) {
-                    console.log("field", field)
                     const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name)
-                    console.log("relatedData", relatedData)
                     if (relatedData) {
                         return {
                             ...field,
@@ -151,21 +138,17 @@ const EditView = ({ itemId }) => {
                     return field
                 }
             });
-            console.log("updatedCombinedData", updatedCombinedData);
 
             // const formValues = combinedData.reduce((acc, field) => {
             //     acc[field.api_name] = field.field_value;
             //     return acc;
             // }, {});
 
-            // console.log("values: ", formValues);  // Agora você verá os valores corretamente formatados
 
             // form.setFieldsValue(formValues);
-            // console.log("form values: ", form.getFieldsValue())
 
 
             const responseSections = await axios.get(`${linkApi}/sections/${org}/${moduleName}`, config);
-            // console.log("responseSections.data.sections.fields: ",responseSections.data.sections[0].fields)
             // setSections(responseSections.data.sections);
 
             const responseSectionsFields = responseSections.data.sections
@@ -176,7 +159,8 @@ const EditView = ({ itemId }) => {
                     const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
                     return {
                         ...item,
-                        field_value: matchingField ? matchingField.field_value : item.field_value
+                        field_value: matchingField ? matchingField.field_value : item.field_value,
+                        related_id: matchingField ? matchingField.related_id : null,
                     };
                 });
 
@@ -185,7 +169,8 @@ const EditView = ({ itemId }) => {
                     const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);
                     return {
                         ...item,
-                        field_value: matchingField ? matchingField.field_value : item.field_value
+                        field_value: matchingField ? matchingField.field_value : item.field_value,
+                        related_id: matchingField ? matchingField.related_id : null,
                     };
                 });
 
@@ -196,9 +181,7 @@ const EditView = ({ itemId }) => {
                 };
             });
 
-            console.log("updatedCombinedData", updatedCombinedData)
             console.log("updatedSections", updatedSections)
-
             setSections(updatedSections)
 
             if (Array.isArray(updatedCombinedData)) {
@@ -230,15 +213,12 @@ const EditView = ({ itemId }) => {
                 setRelatedModuleData(matchingResponse);
             } else {
                 const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}`, config);
-                console.log("ai ai api_name: ", search_field)
-                console.log("ai ai response: ", response)
                 const matchingResponse = response.data.map(item => {
                     return {
                         field_value: item[search_field],
                         related_id: item.id
                     };
                 });
-                console.log("ai ai: ", matchingResponse)
                 setRelatedModuleData(matchingResponse);
             }
 
@@ -255,7 +235,6 @@ const EditView = ({ itemId }) => {
                 }
             };
             const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/field/${api_name}`, config);
-            console.log("etstetes", response)
             setOptions(response.data);
         }
     }
@@ -313,14 +292,11 @@ const EditView = ({ itemId }) => {
                     : row
             )
         );
-        console.log("value checked?: ", value)
         const updatedData = [...sections];
         updatedData[sectionIndex][column][index].field_value = value;
-        console.log("datas datas cadabra: ", updatedData)
 
         setSections(updatedData)
 
-        // console.log("datas fieldToUpdate cadabra: ",fieldToUpdate)
         // setFieldsToUpdate(prevFields => {
         //     const updatedFields = [...prevFields];
         //     updatedFields[index] = updatedData[sectionIndex][column][index]
@@ -329,7 +305,6 @@ const EditView = ({ itemId }) => {
 
         // const updatedData = [...data];
         // updatedData[index].field_value = value;
-        // console.log("tetertere", updatedData)
         // setFieldsToUpdate(updatedData);
 
         // const updatedData = [...data];
@@ -358,11 +333,9 @@ const EditView = ({ itemId }) => {
     // const handleFieldChangeRelatedModule = async (index, id, newValue) => {
     const handleFieldChangeRelatedModule = (sectionIndex, index, value, api_name, column) => {
         try {
-            // console.log("newValue:", newValue.key)
             let updatedData = [...sections];
             updatedData[sectionIndex][column][index].field_value = value.value
             const fieldToUpdate1 = updatedData[sectionIndex][column][index]
-            console.log("related field update", fieldToUpdate1)
 
             const fieldToUpdate5 = {
                 index: index,
@@ -377,11 +350,8 @@ const EditView = ({ itemId }) => {
 
             const index2 = combinedData.findIndex(combinedDataField => combinedDataField.id === fieldToUpdate1.id);
 
-            console.log("Batatinha quando nasce", fieldToUpdate5)
-            console.log("Batatinha quando handleFieldChangeRelatedModule", relatedFieldData)
             const updatedRelatedFieldData = [...relatedFieldData];
             updatedRelatedFieldData[index2] = fieldToUpdate5
-            console.log("Batatinha quando updatedRelatedFieldData updatedRelatedFieldData", updatedRelatedFieldData)
             setRelatedFieldData(updatedRelatedFieldData);
 
         } catch (error) {
@@ -394,14 +364,9 @@ const EditView = ({ itemId }) => {
             const fieldToUpdate3 = {};
             if (fieldToUpdate) {
 
-                console.log("sections", sections)
-                console.log("fieldToUpdatefieldToUpdate", fieldToUpdate)
-                console.log("relatedFieldDatarelatedFieldData", relatedFieldData)
                 const records = relatedFieldData.filter(record => !!record);
-                console.log("records", records)
 
                 fieldToUpdate3['related_record'] = records.reduce((acc, record) => {
-                    console.log("record record: ", record)
                     if (record != null) {
                         acc[record.api_name] = {
                             name: record.name,
@@ -411,7 +376,6 @@ const EditView = ({ itemId }) => {
                     }
                     return acc;
                 }, {});
-                console.log("fieldToUpdate array", fieldToUpdate3)
 
                 let toUpdate = []
                 sections.forEach(section => {
@@ -421,13 +385,11 @@ const EditView = ({ itemId }) => {
                         ...section.right
                     ]
                 });
-                console.log("toUpdate: ", toUpdate)
 
                 toUpdate.map(field => {
                     const { api_name, field_value } = field;
                     fieldToUpdate3[api_name] = field_value;
                 });
-                console.log("hahahah", fieldToUpdate3)
 
                 const token = localStorage.getItem('token');
                 const config = {
@@ -447,21 +409,18 @@ const EditView = ({ itemId }) => {
                 }
 
                 await axios.put(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, fieldToUpdate3, config);
-                console.log("RECORD ID:", record_id)
                 const newRelatedFieldData = records.map((item) => {
                     return {
                         ...item,
                         module_id: record_id
                     };
                 })
-                console.log("newRelatedFieldData: ", newRelatedFieldData)
                 const promises = newRelatedFieldData.map(async item => {
                     await axios.put(`${linkApi}/crm/${org}/${moduleName}/field`, { related_id: item.related_id, id: item.id, api_name: item.api_name }, config);
                     return axios.put(`${linkApi}/crm/${org}/${moduleName}/relatedField`, item, config);
                 });
                 const results = await Promise.all(promises);
 
-                console.log("results", results);
                 message.success('Registro Atualizado!');
                 navigate(`/${org}/${moduleName}`)
             }
@@ -487,7 +446,6 @@ const EditView = ({ itemId }) => {
             };
 
             const response = await axios.get(`${linkApi}/crm/${org}/${relatedModuleName}/fields`, config);
-            console.log("o que retornou fields? ", response)
             const matchingResponse = response.data
                 .filter(item => {
                     if (moduleName == "kanban") {
@@ -502,14 +460,11 @@ const EditView = ({ itemId }) => {
                         api_name: item.api_name
                     };
                 });
-            console.log("bablasbk", matchingResponse)
             setRelatedFields(matchingResponse);
         }
     }
 
     const renderField = (fieldData, index, onChange, onChangeRelatedModule, source) => {
-        console.log("abracadabra: ", fieldData)
-        console.log("sections: ", sections)
 
 
         if (fieldData.related_module != null && fieldData.field_type == "loockup") {
@@ -604,7 +559,6 @@ const EditView = ({ itemId }) => {
                         onChange={(key, value) => onChangeRelatedModule(value)}
                         // loading={loading}
                         onDropdownVisibleChange={(open) => {
-                            console.log("fieldData.field_base: ", selectedModule)
                             if (selectedModule) {
                                 fetchRelatedFields(open, selectedModule, fieldData.search_field)
                             }
@@ -716,7 +670,6 @@ const EditView = ({ itemId }) => {
                 </Form.Item>
             );
         } else if (fieldData.field_type == "multi_line") {
-            console.log("entrou multiline: ", fieldData)
             return (
                 <Form.Item
                     label={source == "subform" ? '' : <span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -940,9 +893,7 @@ const EditView = ({ itemId }) => {
             }),
             { key: dataSource.length + 1 } // Adicione um identificador único
         );
-        console.log("New Row: ", newRow)
         setDataSource((prevDataSource) => [...prevDataSource, newRow]);
-        console.log("New Row dataSource: ", dataSource)
     };
 
     // Remover linha

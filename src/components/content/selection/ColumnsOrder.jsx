@@ -25,7 +25,6 @@ const ColumnsOrder = ({ reload }) => {
 
     const fetchStages = async () => {
         const response = await axios.get(`/kanbans/fieldsOrder/${org}/${moduleName}`, apiConfig);
-        console.log("response: ", response.data)
         setItems(response.data.kanbanFieldsOrder)
     };
 
@@ -44,7 +43,6 @@ const ColumnsOrder = ({ reload }) => {
         const reorderedItems = Array.from(items);
         const [movedItem] = reorderedItems.splice(source.index, 1);
         reorderedItems.splice(destination.index, 0, movedItem);
-        console.log("teste: ", reorderedItems)
         const updatedItems = reorderedItems.map((item, index) => ({
             ...item,
             kanban_order: index + 1,
