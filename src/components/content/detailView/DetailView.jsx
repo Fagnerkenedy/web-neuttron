@@ -592,8 +592,11 @@ const DetailView = ({ itemId }) => {
                 </Form.Item>
             );
         } else if (fieldData.field_type === "date") {
-            const date = new Date(fieldData.field_value)
-            const toDate = date.toLocaleString("pt-br").slice(0, 10)
+            let dateTime
+            if(fieldData.field_value) {
+                const date = new Date(fieldData.field_value)
+                dateTime = date.toLocaleString("pt-br").slice(0, 10)
+            }
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -605,7 +608,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{toDate ? toDate : "—"}</Text>
+                    <Text>{dateTime ? dateTime : "—"}</Text>
                     {/* <DatePicker
                         locale={locale}
                         style={{height: '100%', width: "100%"}}
@@ -617,8 +620,11 @@ const DetailView = ({ itemId }) => {
                 </Form.Item>
             );
         } else if (fieldData.field_type === "date_time") {
-            const date = new Date(fieldData.field_value)
-            const toDateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',', '')
+            let dateTime
+            if(fieldData.field_value) {
+                const date = new Date(fieldData.field_value)
+                dateTime = date.toLocaleString("pt-br").slice(0, 20).replace(',', '')
+            }
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -630,7 +636,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{toDateTime ? toDateTime : "—"}</Text>
+                    <Text>{dateTime ? dateTime : "—"}</Text>
                     {/* <DatePicker
                         disabled
                         showTime
