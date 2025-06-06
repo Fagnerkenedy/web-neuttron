@@ -66,7 +66,7 @@ function Charts() {
                         />
                     )
                 })} */}
-                <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+                {/* <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                     {charts.map((chart, index) => (
                         <Col key={index}>
                             <Select
@@ -81,7 +81,7 @@ function Charts() {
                             />
                         </Col>
                     ))}
-                </Row>
+                </Row> */}
 
                 {charts.map((chart, index) => {
                     const filteredData = selectedValues[index] === 'Todos'

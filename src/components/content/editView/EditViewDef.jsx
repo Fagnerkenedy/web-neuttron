@@ -181,7 +181,6 @@ const EditView = ({ itemId }) => {
                 };
             });
 
-            console.log("updatedSections", updatedSections)
             setSections(updatedSections)
 
             if (Array.isArray(updatedCombinedData)) {

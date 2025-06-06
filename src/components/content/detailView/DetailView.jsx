@@ -95,7 +95,6 @@ const DetailView = ({ itemId }) => {
             };
             const responseFields = await axios.get(`${linkApi}/crm/${org}/${moduleName}/fields`, config);
             const response = await axios.get(`${linkApi}/crm/${org}/${moduleName}/${record_id}`, config);
-            console.log("Fields 0: ", responseFields)
             const combinedData = responseFields.data.map(field => {
                 const matchingResponse = response.data.find(item => item[field.api_name]);
                 return {
@@ -105,10 +104,8 @@ const DetailView = ({ itemId }) => {
             });
 
             const relatedModulePromises = combinedData.map(async field => {
-                console.log("Fields 1: ", field)
                 if (field.related_module != null && field.related_module != "fields") {
                     const response = await axios.get(`${linkApi}/crm/${org}/${field.related_module}/relatedDataById/${record_id}`, config);
-                    console.log("relatedId: ", response.data.row[0])
                     
                     if (response.data.row.length != 0) {
                         return {
@@ -129,10 +126,8 @@ const DetailView = ({ itemId }) => {
             setRelatedFieldData(relatedModuleResponses);
 
             const updatedCombinedData = combinedData.map(field => {
-                console.log("Fields: ", field)
                 if (field.related_module != null) {
                     const relatedData = relatedModuleResponses.find(data => data && data.api_name === field.api_name);
-                    console.log("relatedData: ", relatedData)
                     
                     if (relatedData) {
                         return {
@@ -146,7 +141,6 @@ const DetailView = ({ itemId }) => {
                     return field;
                 }
             });
-            console.log("updatedCombinedData: ", updatedCombinedData)
             
             const responseSections = await axios.get(`${linkApi}/sections/${org}/${moduleName}`, config);
             // setSections(responseSections.data.sections);
@@ -155,10 +149,8 @@ const DetailView = ({ itemId }) => {
             // Atualizar os campos das seções com os valores dos campos em combinedData
             const updatedSections = responseSectionsFields.map(section => {
                 // Atualizar campos à esquerda
-                console.log("sectionsectionsection: ", section)
                 
                 const updatedLeft = section.fields.left.map(item => {
-                    console.log("item:item ", item)
 
                     const matchingField = updatedCombinedData.find(field => field.api_name === item.api_name);  
                     return {
@@ -184,7 +176,6 @@ const DetailView = ({ itemId }) => {
                     right: updatedRight
                 };
             });
-            console.log("data: ", updatedSections)
             setSections(updatedSections)
 
             if (Array.isArray(updatedCombinedData)) {
