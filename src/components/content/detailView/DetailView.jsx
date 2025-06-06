@@ -592,6 +592,8 @@ const DetailView = ({ itemId }) => {
                 </Form.Item>
             );
         } else if (fieldData.field_type === "date") {
+            const date = new Date(fieldData.field_value)
+            const toDate = date.toLocaleString("pt-br").slice(0, 10)
             return (
                 <Form.Item
                     label={<span style={{ fontSize: '16px' }}>{fieldData.name}</span>}
@@ -603,7 +605,7 @@ const DetailView = ({ itemId }) => {
                         },
                     ]}
                 >
-                    <Text>{fieldData.field_value ? fieldData.field_value : "—"}</Text>
+                    <Text>{toDate ? toDate : "—"}</Text>
                     {/* <DatePicker
                         locale={locale}
                         style={{height: '100%', width: "100%"}}
