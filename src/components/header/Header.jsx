@@ -297,7 +297,11 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             </Link>
           </Col>
           <Col ref={ref4} style={{ marginLeft: '5px' }}>
-            {isDesktop ? (<Tooltip title="Perfil"> <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} /> </Tooltip>) : (
+            {isDesktop ? (
+              <Tooltip title="Perfil">
+                <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} /> 
+              </Tooltip>
+              ) : (
               <Button type="text" shape="circle" onClick={showDrawer} icon={<UserOutlined />} />
             )}
 

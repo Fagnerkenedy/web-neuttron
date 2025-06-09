@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Col, Input, Layout, List, Menu, Row, Skeleton, Space, Tabs } from "antd";
+import { Avatar, Badge, Button, Card, Col, Drawer, Grid, Input, Layout, List, Menu, Row, Skeleton, Space, Tabs, theme } from "antd";
 import React, { useEffect, useState } from "react";
 import Link from "antd/es/typography/Link";
 import { Typography } from 'antd';
@@ -7,12 +7,13 @@ import { useAbility } from '../../../contexts/AbilityContext.jsx'
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import Sider from "antd/es/layout/Sider.js";
 import axios from "axios";
-import { MessageOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import { MenuOutlined, MessageOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import './styles.css'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { formatTime } from "./formatNumbers.js";
 import WhatsAppQRCode from "./QrCode.jsx";
 import styled from "styled-components";
+import NoConversations from "./NoConversations.jsx";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -58,6 +59,15 @@ function Chats({ socket }) {
     const [data, setData] = useState([]);
     const [usuario, setUsuario] = useState(false);
     const [conversationData, setConversationData] = useState([]);
+    const { useBreakpoint } = Grid
+    const screens = useBreakpoint();
+    const isMobile = screens.xs
+    const [open, setOpen] = useState(true);
+    const showDrawer = () => setOpen(true);
+    const closeDrawer = () => setOpen(false);
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken()
 
     const fetchData = async () => {
         setLoading(true)
@@ -68,13 +78,13 @@ function Chats({ socket }) {
         setConversations((prev) => [...prev, ...conversations]);
         setHasMore(hasMore);
         setPage((prevPage) => prevPage + 1);
-
         // setConversations(conversationsResponse)
         setLoading(false)
     }
 
     useEffect(() => {
         fetchData()
+        if (isMobile) setOpen(true)
         socket.emit('identify', { orgId: org });
         socket.on('connection', () => {
             console.log("conectado!")
@@ -155,6 +165,7 @@ function Chats({ socket }) {
 
 
     const handleSelect = (itemId) => {
+        if (isMobile) closeDrawer()
         setSelectedKey(itemId)
         navigate(`/${org}/chats/${itemId}`)
     };
@@ -163,138 +174,160 @@ function Chats({ socket }) {
         setUsuario(!usuario)
     }
 
+    const ContentMessages = (
+        <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
+            <div style={{ textAlign: "center", width: '100%' }}>
+                <Tabs onChange={handleSetUsuario} defaultActiveKey="1" style={{ padding: '0 20px 0', marginBottom: "16px", width: '100%' }}>
+                    <TabPane tab="Usuário" key="1">
+                        <Avatar size={64} icon={<UserOutlined />} />
+                        <Title level={4} style={{ marginTop: "8px" }}>
+                            {user.name}
+                        </Title>
+                        <Text type="success">Disponível</Text>
+                    </TabPane>
+                    <TabPane tab="QR Code" key="2">
+                        <WhatsAppQRCode />
+                    </TabPane>
+                </Tabs>
+            </div>
+            <div style={{ width: "90%" }}>
+                <Input
+                    prefix={<SearchOutlined />}
+                    placeholder="Pesquisar..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    style={{ marginBottom: "16px", borderRadius: "8px", width: "100%" }}
+                />
+            </div>
+            {filteredConversations?.length > 0 && (
+                <div
+                    id="scrollableDiv"
+                    style={{
+                        width: "100%",
+                        maxHeight:
+                            darkMode && usuario ? "calc(100vh - 484px)" : // É darkMode e está no usuário
+                                darkMode && !usuario ? "calc(100vh - 305px)" : // É darkMode e está no qrCode
+                                    !darkMode && usuario ? "calc(100vh - 484px)" :  // É claro e está no usuário
+                                        !darkMode && !usuario ? "calc(100vh - 305px)" : // É claro e está no qrCode
+                                            null,
+                        overflow: 'auto',
+                        padding: '0 16px',
+                    }}
+                    className='custom-scrollbar'
+                >
+                    <InfiniteScroll
+                        dataLength={filteredConversations.length}
+                        next={fetchData}
+                        hasMore={hasMore}
+                        loader={
+                            <Skeleton
+                                avatar
+                                paragraph={{
+                                    rows: 1,
+                                }}
+                                active
+                            />
+                        }
+                        scrollableTarget="scrollableDiv"
+                    >
+                        <List
+                            itemLayout="horizontal"
+                            dataSource={filteredConversations}
+                            renderItem={(item) => (
+                                <ItemList className="itemList" darkMode={darkMode} selected={selectedKey === item.id}>
+
+                                    <List.Item
+                                        onClick={() => handleSelect(item.id)}
+                                        actions={
+                                            !loading ? [
+                                                <Col>
+                                                    {item.unread !== 0 && (
+                                                        <Row>
+                                                            <Space>
+                                                                <MessageOutlined />
+                                                                <Text>{item.unread}</Text>
+                                                            </Space>
+                                                        </Row>
+                                                    )}
+                                                    <Row>
+                                                        <Text>{formatTime(item.updated_at)}</Text>
+                                                    </Row>
+                                                </Col>
+                                            ] : undefined
+                                        }
+                                        style={{
+                                            cursor: "pointer",
+                                            padding: "10px 12px",
+                                            borderRadius: 5,
+                                            // backgroundColor: 
+                                            //     selectedKey === item.id && darkMode ? "#101010" : 
+                                            //     selectedKey === item.id && !darkMode ? "#f5f5f5" : 
+                                            //     "transparent" 
+                                        }}
+                                    >
+                                        <Skeleton avatar title={false} loading={loading} active>
+                                            <List.Item.Meta
+                                                avatar={<Avatar icon={<UserOutlined />} />}
+                                                title={<Text ellipsis={{ tooltip: item.name }} strong>{item.name}</Text>}
+                                                // title={<Text ellipsis={{ tooltip: conversationData.name }} strong>{conversationData.name}</Text>}
+                                                description={<Text type="secondary" ellipsis={{ tooltip: item.last_message }}>{item.last_message || "Sem mensagens"}</Text>}
+                                            />
+                                        </Skeleton>
+                                    </List.Item>
+                                </ItemList>
+                            )}
+                        />
+                    </InfiniteScroll>
+                </div>
+            )}
+        </Col>
+    )
+
     return (
         <Layout>
-            <Sider width={"22%"} theme="light">
-                <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
-                    <div style={{ textAlign: "center", width: '100%' }}>
-                        <Tabs onChange={handleSetUsuario} defaultActiveKey="1"  style={{ padding: '0 20px 0', marginBottom: "16px", width: '100%' }}>
-                            <TabPane tab="Usuário" key="1">
-                                <Avatar size={64} icon={<UserOutlined />} />
-                                <Title level={4} style={{ marginTop: "8px" }}>
-                                    {user.name}
-                                </Title>
-                                <Text type="success">Disponível</Text>
-                            </TabPane>
-                            <TabPane tab="QR Code" key="2">
-                                <WhatsAppQRCode />
-                            </TabPane>
-                        </Tabs>
-                    </div>
-                    <div style={{ width: "90%" }}>
-                        <Input
-                            prefix={<SearchOutlined />}
-                            placeholder="Pesquisar..."
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                            style={{ marginBottom: "16px", borderRadius: "8px", width: "100%" }}
-                        />
-                    </div>
-                    {filteredConversations?.length > 0 && (
-                        <div
-                            id="scrollableDiv"
-                            style={{
-                                width: "100%",
-                                maxHeight:
-                                    darkMode && usuario ? "calc(100vh - 484px)" : // É darkMode e está no usuário
-                                        darkMode && !usuario ? "calc(100vh - 305px)" : // É darkMode e está no qrCode
-                                            !darkMode && usuario ? "calc(100vh - 484px)" :  // É claro e está no usuário
-                                                !darkMode && !usuario ? "calc(100vh - 305px)" : // É claro e está no qrCode
-                                                    null,
-                                overflow: 'auto',
-                                padding: '0 16px',
-                            }}
-                            className='custom-scrollbar'
-                        >
-                            <InfiniteScroll
-                                dataLength={filteredConversations.length}
-                                next={fetchData}
-                                hasMore={hasMore}
-                                loader={
-                                    <Skeleton
-                                        avatar
-                                        paragraph={{
-                                            rows: 1,
-                                        }}
-                                        active
-                                    />
-                                }
-                                scrollableTarget="scrollableDiv"
-                            >
-                                <List
-                                    itemLayout="horizontal"
-                                    dataSource={filteredConversations}
-                                    renderItem={(item) => (
-                                        <ItemList className="itemList" darkMode={darkMode} selected={selectedKey === item.id}>
-
-                                            <List.Item
-                                                onClick={() => handleSelect(item.id)}
-                                                actions={
-                                                    !loading ? [
-                                                        <Col>
-                                                            {item.unread !== 0 && (
-                                                                <Row>
-                                                                    <Space>
-                                                                        <MessageOutlined />
-                                                                        <Text>{item.unread}</Text>
-                                                                    </Space>
-                                                                </Row>
-                                                            )}
-                                                            <Row>
-                                                                <Text>{formatTime(item.updated_at)}</Text>
-                                                            </Row>
-                                                        </Col>
-                                                    ] : undefined
-                                                }
-                                                style={{
-                                                    cursor: "pointer",
-                                                    padding: "10px 12px",
-                                                    borderRadius: 5,
-                                                    // backgroundColor: 
-                                                    //     selectedKey === item.id && darkMode ? "#101010" : 
-                                                    //     selectedKey === item.id && !darkMode ? "#f5f5f5" : 
-                                                    //     "transparent" 
-                                                }}
-                                            >
-                                                <Skeleton avatar title={false} loading={loading} active>
-                                                    <List.Item.Meta
-                                                        avatar={<Avatar icon={<UserOutlined />} />}
-                                                        title={<Text ellipsis={{ tooltip: item.name }} strong>{item.name}</Text>}
-                                                        // title={<Text ellipsis={{ tooltip: conversationData.name }} strong>{conversationData.name}</Text>}
-                                                        description={<Text type="secondary" ellipsis={{ tooltip: item.last_message }}>{item.last_message || "Sem mensagens"}</Text>}
-                                                    />
-                                                </Skeleton>
-                                            </List.Item>
-                                        </ItemList>
-                                    )}
-                                />
-                            </InfiniteScroll>
-                        </div>
-                    )}
-                </Col>
-            </Sider>
-            {conversationId ? <Outlet context={{ darkMode }} /> : (
-                <Content
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "calc(100vh - 79px)",
-                        // backgroundImage: "url('/images/whats-dark-dark.PNG')",
-                        backgroundColor: darkMode ? '#1A1A1A' : "#EDEDED",
-                    }}
+            {console.log("wseofhsuo", screens)}
+            {screens.xs ?
+                <Drawer
+                    open={open}
+                    title="Conversas"
+                    onClose={closeDrawer}
+                    placement="left"
                 >
-                    <Space direction="vertical" align="center">
-                        <Typography.Title level={4}>
-                            Nenhuma conversa selecionada
-                        </Typography.Title>
-                        <Typography.Text>
-                            Por favor, selecione uma conversa à esquerda para visualizar os
-                            detalhes.
-                        </Typography.Text>
-                    </Space>
-                </Content>
-            )}
+                    {ContentMessages}
+                </Drawer>
+                :
+                <Sider width={"22%"} theme="light">
+                    {ContentMessages}
+                </Sider>
+            }
+            {conversationId ?
+                <Outlet context={{ darkMode, showDrawer, isMobile }} />
+                : (
+                    <Layout
+                        style={{
+                            height: "calc(100vh - 79px)",
+                            // backgroundImage: "url('/images/whats-dark-dark.PNG')",
+                            backgroundColor: darkMode ? '#1A1A1A' : "#EDEDED",
+                        }}
+                    >
+                        {isMobile ? (
+                            <>
+                                <Header style={{ maxHeight: '50px', backgroundColor: colorBgContainer, padding: "0 8px", alignContent: 'center' }}>
+                                    <Button
+                                        style={{ marginRight: 8 }}
+                                        onClick={() => showDrawer()}
+                                        type="text"
+                                        icon={<MenuOutlined />}
+                                    />
+                                </Header>
+                                <NoConversations />
+                            </>
+                        ) : (
+                            <NoConversations />
+                        )}
+                    </Layout>
+                )
+            }
         </Layout>
     )
 }

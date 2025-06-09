@@ -1,5 +1,5 @@
-import { Button, Input, Layout, List, Typography, Card, Space, Tabs, Col, Skeleton, theme } from "antd";
-import { UserOutlined, SendOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Input, Layout, List, Typography, Card, Space, Tabs, Col, Skeleton, theme, Row } from "antd";
+import { UserOutlined, SendOutlined, SearchOutlined, PlusOutlined, BarsOutlined, MenuOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -31,7 +31,7 @@ const Conversations = ({ socket }) => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken()
-    const { darkMode } = useOutletContext();
+    const { darkMode, showDrawer, isMobile } = useOutletContext();
 
     const scrollToBottom = () => {
         const scrollableDiv = document.getElementById("scrollableDivMessages");
@@ -154,17 +154,31 @@ const Conversations = ({ socket }) => {
     }
 
     return (
-        <Layout 
-            style={{ 
-                height: "calc(100vh - 79px)", 
-                // backgroundImage: "url('/images/whats-dark-dark.PNG')",
+        <Layout
+            style={{
+                height: "calc(100vh - 79px)",
+                backgroundImage: "url('/images/whats-dark-dark.PNG')",
                 backgroundColor: darkMode ? '#1A1A1A' : "#EDEDED",
             }}
         >
             {/* Main Chat Area */}
-            <Header style={{ height: '50px', backgroundColor: colorBgContainer, padding: "0 16px", alignContent: 'center' }}>
-                <Title level={4} style={{ margin: 0 }}>
-                    {conversationData.name}
+            <Header style={{ maxHeight: '50px', backgroundColor: colorBgContainer, padding: "0 8px", alignContent: 'center' }}>
+                <Title level={4} style={{ margin: 0 }} ellipsis={true}>
+                    {isMobile ? (
+                        <>
+                            <Button
+                                style={{ marginRight: 8 }}
+                                onClick={() => showDrawer()}
+                                type="text"
+                                icon={<MenuOutlined />}
+                            />
+                            {conversationData.name}
+                        </>
+                    ) : (
+                        <>
+                            {conversationData.name}
+                        </>
+                    )}
                 </Title>
             </Header>
             <Content style={{ width: '100%', display: "flex", flexDirection: "column" }}>
@@ -210,24 +224,24 @@ const Conversations = ({ socket }) => {
                                                     margin: darkMode ? '0' : '3px 0',
                                                     borderRadius: "8px",
                                                     border: 0,
-                                                    backgroundColor: 
-                                                        isMyMessage && darkMode ? "#01294c" : 
-                                                        isMyMessage && !darkMode ? "#b3dbfe" : 
-                                                        !isMyMessage && darkMode ? "#2A2A2A" : 
-                                                        !isMyMessage && !darkMode ? "" : null,
+                                                    backgroundColor:
+                                                        isMyMessage && darkMode ? "#01294c" :
+                                                            isMyMessage && !darkMode ? "#b3dbfe" :
+                                                                !isMyMessage && darkMode ? "#2A2A2A" :
+                                                                    !isMyMessage && !darkMode ? "" : null,
                                                     maxWidth: "70%",
                                                 }}
                                                 size="small"
                                                 bodyStyle={{ padding: 0 }}
                                             >
                                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                                                    
-                                                    { item.pathFront ? (
+
+                                                    {item.pathFront ? (
                                                         // <PdfMessage pdfUrl={item.pathFront} fileName={item.body}/>
-                                                        <PdfDownload pdfUrl={item.pathFront} fileName={item.body}/>
-                                                    ) : 
-                                                    // <Text>{item.body}</Text>
-                                                    <TextoFormatado fileName={item.body} />
+                                                        <PdfDownload pdfUrl={item.pathFront} fileName={item.body} />
+                                                    ) :
+                                                        // <Text>{item.body}</Text>
+                                                        <TextoFormatado fileName={item.body} />
 
 
                                                     }
@@ -266,7 +280,7 @@ const Conversations = ({ socket }) => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onPressEnter={sendMessage}
-                        style={{  flex: 1, width: '100%' }}
+                        style={{ flex: 1, width: '100%' }}
                         onClick={() => updateUnread()}
                     />
                 </Col>
