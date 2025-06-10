@@ -282,18 +282,26 @@ const AppHeader = ({ darkMode, toggleDarkMode }) => {
             <Link
               to={`chats`}
             >
+              {isDesktop ? (
               <Tooltip title="Mensagens">
                 <Button type="text" shape="circle" icon={<MessageOutlined />} />
               </Tooltip>
+              ) : (
+                <Button type="text" shape="circle" icon={<MessageOutlined />} />
+              )}
             </Link>
           </Col>
           <Col ref={ref3} style={{ marginLeft: '5px' }}>
             <Link
               to={`settings`}
             >
+              {isDesktop ? (
               <Tooltip title="Configurações">
                 <Button type="text" shape="circle" icon={<SettingOutlined />} />
               </Tooltip>
+              ) : (
+                <Button type="text" shape="circle" icon={<SettingOutlined />} />
+              )}
             </Link>
           </Col>
           <Col ref={ref4} style={{ marginLeft: '5px' }}>
